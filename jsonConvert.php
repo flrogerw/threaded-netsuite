@@ -10,7 +10,6 @@ require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 		}
 		fclose($file_handle);
 
-
 		
 		$sJson = OrderJSON::convert( $aOutput );
 		
