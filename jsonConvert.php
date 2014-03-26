@@ -1,5 +1,4 @@
 <?php 
-echo('HELLO WORLD');
 
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
