@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Constants Used Throughout the Application
  * - Netsuite Credentials
