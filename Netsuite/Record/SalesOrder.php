@@ -115,47 +115,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			//Set Sales Order Customer's Activa Number
 			$this->custentity_customer_source_id = $this->_customer->custentity_customer_source_id;
 
-			// Set Shipdate 3 working days in advance
-			//$this->shipdate = date( 'm/d/Y', strtotime( $this->trandate . ' +3 Weekday') );
-			//$this->trandate = date( 'm/d/Y', strtotime( $this->trandate ) );
-
-			// Set Shipping Methhod
-			//$sLocation = $this->_customer->addressbook['shipping']['state'];
-			//$this->shipmethod = (int) $oModel->getShippingMethod( $sLocation, $this->shipmethod );
-
-			// Discount Logic  ADD PUSH TO SANATIZE LOGIC
-			//$this->custbody_source_code = ( $this->_promocode == null )?$this->custbody_source_code: $this->_promocode;
-
-			//if( intval( $this->_promoamount ) != 0 || $this->_gcamount != 0 ) {
-			//$this->discountitem = $oModel->callXrefTable( 'DiscountType', 'webdiscount' );
-			//$this->discounttotal = ( $this->_promoamount + $this->_gcamount );
-			//$this->discountrate = $this->discounttotal;
-			//}
-
-			// Set Payment Method Record Reference Id
-			//switch( $this->_paymentmethod_flag ){
-
-			//case( 'creditcard' ):
-			//$this->paymentmethod = $oModel->callXrefTable( 'PaymentMethod', $this->paymentmethod );
-			//break;
-
-			//default:
-			//$this->paymentmethod = $oModel->callXrefTable( 'PaymentMethod', $this->_paymentmethod_flag );
-			//break;
-			//}
-
-			// Set CC Expire Date  & CC Zip
-			//if( $this->ccnumber != '' ) {
-			//$this->ccexpiredate = sprintf("%02d", $this->_ccexpiremonth) . '/' . $this->_ccexpireyear;
-			//$this->cczipcode = $this->_customer->addressbook['billing']['zip'];
-			//}
-
-			// Set Source Codes ( department, leadsource, location, etc... )
-			//$this->_setSources();
-
-			// Billing and Shipping Address Strings
-			//$this->billaddress = ( isset( $this->_customer->addressbook['billing'] ) )? $this->getAddressString( $this->_customer->addressbook['billing'] ): $this->getAddressString( $oModel->getStoreAddress( $this->location ) );
-
+			
 			switch( true ){
 					
 				// Look at AddressBook for Shipping Address First
