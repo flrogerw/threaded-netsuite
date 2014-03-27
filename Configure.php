@@ -25,7 +25,7 @@ $constants = array(
 		
 		// System Database Credentials
 		'SYSTEM_DB_HOST' => '127.0.0.1',
-		'SYSTEM_DB_USER' => 'root',
+		'SYSTEM_DB_USER' => 'netsuite',
 		'SYSTEM_DB_PASS' => '7x36mg!4m06Ar14u',
 		'SYSTEM_DB_DATABASE' => 'netsuite_queue',
 		
