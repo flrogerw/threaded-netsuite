@@ -234,7 +234,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 	public function setItemList() {
 
-		$oItemList = new Netsuite_Record_ItemList( $this->_tmp_items_list, $this->location, $this->custentity_customer_source_id, $this->entity );
+		$oItemList = new Netsuite_Record_ItemList( $this->_tmp_items_list, $this->location, $this->custentity_customer_source_id, $this->entity, $this->ismultishipto );
 
 		if( !$oItemList->isOk() ) {
 
