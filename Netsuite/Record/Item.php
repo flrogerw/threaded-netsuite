@@ -39,7 +39,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		try{
 
 			$aItem = ( array_merge( get_object_vars( $this ), $aItem ) );
-				
+
 			$this->_setValues( $aItem, $iLocationId, $sActivaId, $sItemType );
 
 			if( !$this->_validate( $this->getFields() ) ) {
@@ -101,7 +101,8 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 
 		// Shipmethods that require NO address
 		//if( strtolower( $this->shipmethod ) != 'cpu' /* && strtolower( $this->shipmethod ) != 'str' */ ){
-		if( $this->custcol_produce_in_store === false ){
+		//if( $this->custcol_produce_in_store === false ){
+		if( $this->ismultishipto === true ){
 
 			// Set Address Internal Id And Shipping Method
 			$oAddress = new Netsuite_Record_Address( $aItem );
