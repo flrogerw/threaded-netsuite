@@ -24,7 +24,7 @@ final class Netsuite_Db_Activa extends PDO
 			$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		}catch( Exception $e ) {
-			self::logError( $e );
+			Netsuite_Db_Model::logError( $e );
 		}
 	}
 
@@ -49,7 +49,7 @@ final class Netsuite_Db_Activa extends PDO
 			return( $this->_dbResults );
 	
 		}catch( Exception $e ){
-			self::logError( $e );
+			Netsuite_Db_Model::logError( $e );
 			throw new Exception( 'Could NOT Get Orders From the Queue DB' );
 		}
 	}
