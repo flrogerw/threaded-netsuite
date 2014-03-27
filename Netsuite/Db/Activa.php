@@ -24,8 +24,7 @@ final class Netsuite_Db_Activa extends PDO
 			$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		}catch( Exception $e ) {
-			var_dump("HERE");
-			//Netsuite_Db_Model::logError( $e );
+			Netsuite_Db_Model::logError( $e );
 		}
 	}
 
