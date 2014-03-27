@@ -56,8 +56,6 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 		$this->_entity_id = $iEntityId;
 		$iCount = count( array_filter( $aItemListData, 'is_array' ) );
 		$this->_itemListArray = ( $iCount == count( $aItemListData ) )? $aItemListData: array( $aItemListData );
-		//$model = new Netsuite_Db_Model();
-		//self::$EXCEPTION_ITEMS = $model->getExceptionItems();
 		$this->_updateAddressList( $iLocationId );
 		$this->_validate( $iLocationId );
 
@@ -110,22 +108,25 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 				$aNetsuiteAddresses = json_decode( $oAddressBook->setAddressBookEntry( $this->_entity_id, $aOrderAddresses ), true );
 
 				switch( true ){
+					
 					// Check for a NULL Response
 					case( gettype($aNetsuiteAddresses) != 'array' ):
 						$this->logError( 'Netsuite Error: Netsuite Returned a NULL Response');
 						break;
+						
 						// Check for an Error
 					case( isset( $aNetsuiteAddresses['error'] ) ):
 						// LOG ERROR
 						$this->logError( 'Netsuite Error: ' . $aNetsuiteAddresses['error']['code'] . ' :: ' . $aNetsuiteAddresses['error']['message'] );
 						break;
+						
 						// Check for Failure
 					case( $aNetsuiteAddresses['status'] == 'failure' ):
 						$this->logError( 'Netsuite Error: ' . $aNetsuiteAddresses['payload']['code'] . ' :: ' . $aNetsuiteAddresses['payload']['details'] );
 						break;
-					default:
+						
 						// Update Local Database
-
+					default:
 						foreach( $aNetsuiteAddresses as $aAddress ){
 							$oAddressBook->setSystemAddress( $this->_activa_id, $aAddress['id'], $aAddress['text'] );
 						}
