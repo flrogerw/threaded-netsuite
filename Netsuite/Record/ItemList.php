@@ -50,7 +50,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @access protected
 	 * @return void
 	*/
-	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId ) {
+	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId, $ismultishipto = false ) {
 
 		$this->_activa_id = $sActivaId;
 		$this->_entity_id = $iEntityId;
@@ -75,6 +75,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 			$oAddressBook = new Netsuite_Record_AddressBook();
 				
 			// Build Address Object, Check if Address is In Database and add to Netsuite Payload if NOT
+			if( $ismultishipto === true ){
 			foreach( $this->_itemListArray as $iKey => &$aItem ){
 
 				// Set Item Address to Store if Shipping Method is STR (In-Store)
@@ -88,7 +89,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 						
 					$aItem = array_merge( $aItem, $aStoreAddress );
 				}
-
+				
 				$oAddress = new Netsuite_Record_Address( $aItem );
 
 				switch( true ){
@@ -100,6 +101,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 						$aOrderAddresses[] = $oAddress;
 						break;
 				}
+			}
 			}
 
 			if( !empty( $aOrderAddresses ) ){
