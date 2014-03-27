@@ -13,7 +13,7 @@
  * @name Constants
  * @copyright 2013
  */
-////////////////////////////////
+
 $constants = array(
 
 		// System Settings
