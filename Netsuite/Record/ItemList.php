@@ -71,37 +71,38 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	protected function _updateAddressList( $iLocationId ){
 
 		try{
-				
+
 			$oAddressBook = new Netsuite_Record_AddressBook();
-				
+
 			// Build Address Object, Check if Address is In Database and add to Netsuite Payload if NOT
 			if( $ismultishipto === true ){
-			foreach( $this->_itemListArray as $iKey => &$aItem ){
-
-				// Set Item Address to Store if Shipping Method is STR (In-Store)
-				if( $aItem['custcol_produce_in_store'] === true ){
-						
-					$model = new Netsuite_Db_Model();
-					$aStoreAddress = $model->getStoreAddress( $iLocationId );
-					$aStoreAddress['defaultshipping'] = true;
-					$aStoreAddress['isresidential'] = false;
-					$aStoreAddress['label'] = ucfirst( strtolower($aStoreAddress['store_name'] ) ) . ' Store';
-						
-					$aItem = array_merge( $aItem, $aStoreAddress );
-				}
 				
-				$oAddress = new Netsuite_Record_Address( $aItem );
+				foreach( $this->_itemListArray as $iKey => &$aItem ){
 
-				switch( true ){
-					case( !$oAddress->isOk() ):
-						$this->logError( 'Item List Entry '. ucfirst($iKey) . ' Has Errors: ' . implode( ', ', $oAddress->getErrors() ) );
-						break;
+					// Set Item Address to Store if Shipping Method is STR (In-Store)
+					if( $aItem['custcol_produce_in_store'] === true ){
 
-					case( $oAddressBook->getAddress( $this->_activa_id, $oAddress->getAddress() ) === false ):
-						$aOrderAddresses[] = $oAddress;
-						break;
+						$model = new Netsuite_Db_Model();
+						$aStoreAddress = $model->getStoreAddress( $iLocationId );
+						$aStoreAddress['defaultshipping'] = true;
+						$aStoreAddress['isresidential'] = false;
+						$aStoreAddress['label'] = ucfirst( strtolower($aStoreAddress['store_name'] ) ) . ' Store';
+
+						$aItem = array_merge( $aItem, $aStoreAddress );
+					}
+
+					$oAddress = new Netsuite_Record_Address( $aItem );
+
+					switch( true ){
+						case( !$oAddress->isOk() ):
+							$this->logError( 'Item List Entry '. ucfirst($iKey) . ' Has Errors: ' . implode( ', ', $oAddress->getErrors() ) );
+							break;
+
+						case( $oAddressBook->getAddress( $this->_activa_id, $oAddress->getAddress() ) === false ):
+							$aOrderAddresses[] = $oAddress;
+							break;
+					}
 				}
-			}
 			}
 
 			if( !empty( $aOrderAddresses ) ){
