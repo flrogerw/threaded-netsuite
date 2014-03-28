@@ -198,6 +198,20 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	}
 	
 	public function setGiftCertificates(){
+		
+		$aCerts = array();
+		
+		foreach( $this->giftcertificateitem as $aCert ){
+			$oCert = Netsuite_Record::factory()->giftCertificate( $aCert );
+			if( !$oCert->isOk() ) {
+			
+				$aErrors = $oCert->getErrors();
+				$this->logError( 'Could NOT Create Gift Certificate( '. sizeof( $aErrors ) .' Errors): ' .  implode( ', ', $aErrors ) );
+				return;
+			}
+			$aCerts[] = $oCert;
+		}
+		$this->giftcertificateitem = $aCerts;
 		var_dump($this->giftcertificateitem);
 		return(array());
 	}
