@@ -22,6 +22,14 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 			'quantity'
 	);
 
+	protected $_gcRequiredFields = array(
+			'giftcertfrom',
+			'giftcertmessage',
+			'giftcertnumber',
+			'giftcertrecipientemail',
+			'giftcertrecipientname'
+	);
+
 	protected $_aSanatizeFinal = array(
 			'amount' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'custcol_produce_in_store' => array('filter' => FILTER_VALIDATE_BOOLEAN),
@@ -66,6 +74,9 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 
 	protected function _logic( array $aItem ) {
 		$this->_record = $aItem;
-		
+		if( $this->_record['giftcertnumber'] != '' ) {
+			$this->_requiredFields = array_merge( $this->_requiredFields, $this->_gcRequiredFields );
+		}
+
 	}
 }

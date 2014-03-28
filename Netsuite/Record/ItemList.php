@@ -50,7 +50,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @access protected
 	 * @return void
 	*/
-	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId, $ismultishipto = false ) {
+	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId, $ismultishipto ) {
 
 		$this->_activa_id = $sActivaId;
 		$this->_entity_id = $iEntityId;
