@@ -35,7 +35,7 @@ class Thread_Server {
 
 			$sOrderData = json_decode( $this->_decrypt( $aOrder['order_json'] ), true );
 
-			var_dump($sOrderData);
+			var_dump($aOrder);
 			
 			$this->_replaceBool( $sOrderData );
 			$aWork[] = $tThread = $this->_pool->submit( new Netsuite_Netsuite( $sOrderData, $aOrder['queue_id'], $aOrder['order_activa_id'] ) );
