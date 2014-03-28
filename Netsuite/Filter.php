@@ -31,6 +31,6 @@ class Netsuite_Filter {
 	}
 	
 	public function giftCertificate(  array $aGcArray ) {
-		return( new Netsuite_Filter_Item( $aGcArray ) );
+		return( new Netsuite_Filter_GiftCertificate( $aGcArray ) );
 	}
 }
