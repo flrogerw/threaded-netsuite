@@ -162,7 +162,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			$this->item = $this->setItemList();
 			
 			// Create Gift Certificate List
-			$this->giftcertificateitem = $this->setGiftCertificates();
+			$this->setGiftCertificates();
 
 		} catch( Exception $e ) {
 			self::logError( 'Could NOT Create SalesOrder: ' . $e->getMessage() );
@@ -212,8 +212,6 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			$aCerts[] = $oCert;
 		}
 		$this->giftcertificateitem = $aCerts;
-		var_dump($this->giftcertificateitem);
-		return(array());
 	}
 
 	public function setItemList() {
