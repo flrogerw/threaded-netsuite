@@ -183,7 +183,7 @@ function createOrder(args) {
 
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
-			if (fieldname != 'recordtype' && fieldname != 'item') {
+			if (fieldname != 'recordtype' && fieldname != 'item' && fieldname != 'giftcertificateitem' ) {
 				var value = order[fieldname];
 				if (value && typeof value != 'object') {
 					record.setFieldValue(fieldname, value);
@@ -191,9 +191,23 @@ function createOrder(args) {
 			}
 		}
 	}
+	if (order.hasOwnProperty('giftcertificateitem')) {
+		setGiftCertificates(record, order.giftcertificateitem);
+	}
 	setItems(record, order.item);
 	var isOk = nlapiSubmitRecord(record);
 	return isOk;
+}
+
+function setGiftCertificates(record, gcDataArray) {
+
+	for (count in gcDataArray) {
+		counter = parseInt(count) + 1;
+		for (key in gcDataArray[count]) {
+			record.setLineItemValue('giftcertificateitem', key, counter,
+					gcDataArray[count][key]);
+		}
+	}
 }
 
 function createContact(args) {
