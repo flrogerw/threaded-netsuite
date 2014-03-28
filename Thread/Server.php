@@ -54,6 +54,7 @@ class Thread_Server {
 
 	protected function _replaceBool( &$aArray ){
 
+var_dump($aArray);
 		$aIsBoolean = array(
 				'isperson',
 				'custcol_produce_in_store',
