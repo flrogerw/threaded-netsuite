@@ -33,6 +33,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $entity;
 	public $excludecommission = false;
 	public $getauth = false;
+	public $giftcertificateitem = array();
 	public $handlingcost = 0;
 	public $ismultishipto = true;
 	public $istaxable = true;
@@ -156,8 +157,12 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 					
 				$this->billaddress = $this->getAddressString( $sLocation );
 			}
+			
 			// Create Item List
 			$this->item = $this->setItemList();
+			
+			// Create Gift Certificate List
+			$this->giftcertificateitem = $this->setGiftCertificates();
 
 		} catch( Exception $e ) {
 			self::logError( 'Could NOT Create SalesOrder: ' . $e->getMessage() );
@@ -183,13 +188,18 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 		$aSalesOrder =  $this->_filter->optimizeValues( $this->_filter->getRecord() );
 		$aSalesOrder['item'] =  $this->item;
-
+		$aSalesOrder['giftcertificateitem'] =  $this->giftcertificateitem;
 		return( $aSalesOrder );
 	}
 
 	public function getJSON() {
 
 		return( json_encode( $this->getSalesOrder() ) );
+	}
+	
+	public function setGiftCertificates(){
+		
+		return(array());
 	}
 
 	public function setItemList() {
