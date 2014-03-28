@@ -104,8 +104,6 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 		foreach( $aSalesOrder as $key => $value ) {
 			$this->$key = $value;
 		}
-		
-		var_dump($this);
 
 		$this->_tmp_items_list = $aSalesOrder['item'];
 
@@ -200,7 +198,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	}
 	
 	public function setGiftCertificates(){
-		
+		var_dump($this->giftcertificateitem);
 		return(array());
 	}
 

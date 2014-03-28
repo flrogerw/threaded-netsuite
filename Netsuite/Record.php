@@ -42,4 +42,8 @@ class Netsuite_Record{
 	public function discountitem( array $aItem, $iLocationId, $sActivaId ) {
 		return( new Netsuite_Record_Item( $aItem, $iLocationId, $sActivaId, 'DiscountType' ) );
 	}
+	
+	public function giftCertificate( array $aGc ) {
+		return( new Netsuite_Record_GiftCertificate( $aGc ) );
+	}
 }
