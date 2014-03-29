@@ -14,11 +14,11 @@ class Netsuite_Filter_GiftCertificate extends Netsuite_Filter_Base implements Ne
 {
 	protected $_requiredFields = array(
 			
-			'itemid',
+			'giftcertcode',
 	);
 
 	protected $_aSanatizeFinal = array(
-			'itemid' => array('filter' => FILTER_SANITIZE_STRING)
+			'giftcertcode' => array('filter' => FILTER_SANITIZE_STRING)
 	);
 
 

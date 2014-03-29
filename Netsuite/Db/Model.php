@@ -468,7 +468,6 @@ final class Netsuite_Db_Model
 	public function insertCustomer( $sXrefValue, $iInternalId )
 	{
 		
-		var_dump($iInternalId);
 		try{
 
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'INSERT_CUSTOMER' ) );

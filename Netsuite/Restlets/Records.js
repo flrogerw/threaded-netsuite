@@ -183,7 +183,7 @@ function createOrder(args) {
 
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
-			if (fieldname != 'recordtype' && fieldname != 'item' && fieldname != 'giftcertificateitem' ) {
+			if (fieldname != 'recordtype' && fieldname != 'item' && fieldname != 'giftcertificateitem') {
 				var value = order[fieldname];
 				if (value && typeof value != 'object') {
 					record.setFieldValue(fieldname, value);
@@ -191,23 +191,51 @@ function createOrder(args) {
 			}
 		}
 	}
+
 	if (order.hasOwnProperty('giftcertificateitem')) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
 	setItems(record, order.item);
-	var isOk = nlapiSubmitRecord(record);
+	var isOk = nlapiSubmitRecord(record );
 	return isOk;
 }
 
 function setGiftCertificates(record, gcDataArray) {
 
+// Apply Gift Certificate
+
+
+columns=[];
+filters=[];
+results=[];
+columns.push(new nlobjSearchColumn("giftcertcode"));
+
 	for (count in gcDataArray) {
+
+		filters.push(new nlobjSearchFilter("giftcertcode", null, "is",	gcDataArray[count]['giftcertcode']));
+}
+		var search = nlapiCreateSearch('giftcertificate', filters, columns);
+		var resultset = search.runSearch();
+
+		
+			var resultslice = resultset.getResults(0, 100);
+			for ( var rs in resultslice) {
+				results.push(resultslice[rs]['id']);
+			}	
+			
+
+var crap = JSON.stringify(results);
+nlapiLogExecution('DEBUG', 'GC ID', crap);
+
+return;
 		counter = parseInt(count) + 1;
-		for (key in gcDataArray[count]) {
-			record.setLineItemValue('giftcertificateitem', key, counter,
-					gcDataArray[count][key]);
-		}
-	}
+		record.insertLineItem('giftcertredemption', counter);
+		record.setLineItemValue('giftcertredemption', 'authcode', counter, '277');
+//record.setLineItemValue('giftcertredemption', 'internalid', counter, '292');
+record.setLineItemValue('giftcertredemption', 'giftcertcode', counter, '6tt75c36');
+
+ 
+	}	
 }
 
 function createContact(args) {
