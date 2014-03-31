@@ -183,7 +183,8 @@ function createOrder(args) {
 
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
-			if (fieldname != 'recordtype' && fieldname != 'item' && fieldname != 'giftcertificateitem') {
+			if (fieldname != 'recordtype' && fieldname != 'item'
+					&& fieldname != 'giftcertificateitem') {
 				var value = order[fieldname];
 				if (value && typeof value != 'object') {
 					record.setFieldValue(fieldname, value);
@@ -196,46 +197,49 @@ function createOrder(args) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
 	setItems(record, order.item);
-	var isOk = nlapiSubmitRecord(record );
+	var isOk = nlapiSubmitRecord(record);
 	return isOk;
 }
 
 function setGiftCertificates(record, gcDataArray) {
 
-// Apply Gift Certificate
+	// Apply Gift Certificate
 
+	columns = [];
+	filters = [];
+	certIdResults = [];
+	certCodeResults = [];
 
-columns=[];
-filters=[];
-results=[];
-columns.push(new nlobjSearchColumn("giftcertcode"));
+	columns.push(new nlobjSearchColumn("giftcertcode"));
 
 	for (count in gcDataArray) {
 
-		filters.push(new nlobjSearchFilter("giftcertcode", null, "is",	gcDataArray[count]['giftcertcode']));
-}
-		var search = nlapiCreateSearch('giftcertificate', filters, columns);
-		var resultset = search.runSearch();
+		filters.push(new nlobjSearchFilter("giftcertcode", null, "is",
+				gcDataArray[count]['giftcertcode']));
+	}
+	var search = nlapiCreateSearch('giftcertificate', filters, columns);
+	var resultset = search.runSearch();
 
-		
-			var resultslice = resultset.getResults(0, 100);
-			for ( var rs in resultslice) {
-				results.push(resultslice[rs]['id']);
-			}	
-			
+	var resultslice = resultset.getResults(0, 100);
+	for ( var rs in resultslice) {
+		var resultObj = resultslice[rs];
+		certIdResults.push(resultObj.getId());
+		certCodeResults.push(resultObj.getValue('giftcertcode'));
+	}
 
-var crap = JSON.stringify(results);
-nlapiLogExecution('DEBUG', 'GC ID', crap);
-
-return;
+	for (count in gcDataArray) {
 		counter = parseInt(count) + 1;
-		record.insertLineItem('giftcertredemption', counter);
-		record.setLineItemValue('giftcertredemption', 'authcode', counter, '277');
-//record.setLineItemValue('giftcertredemption', 'internalid', counter, '292');
-record.setLineItemValue('giftcertredemption', 'giftcertcode', counter, '6tt75c36');
-
- 
-	}	
+		var index = certCodeResults.indexOf(gcDataArray[count]['giftcertcode']);
+		if (index != -1) {
+			record.insertLineItem('giftcertredemption', counter);
+			record.setLineItemValue('giftcertredemption', 'authcode', counter,
+					certIdResults[index]);
+			record.setLineItemValue('giftcertredemption', 'giftcertcode',
+					counter, gcDataArray[count]['giftcertcode']);
+		}
+	}
+	nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ', JSON
+			.stringify(certCodeResults));
 }
 
 function createContact(args) {
@@ -287,7 +291,7 @@ function createCustomer(args) {
 
 	setAddressBook(record, customer.addressbook);
 	var recordId = nlapiSubmitRecord(record);
-	
+
 	if (record.getFieldValue('isperson') == "F") {
 		var contactId = createContact(args);
 		nlapiAttachRecord('contact', contactId, 'customer', recordId, null)

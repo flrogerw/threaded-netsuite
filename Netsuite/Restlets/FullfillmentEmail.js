@@ -224,14 +224,23 @@ function afterSubmit(type) {
 		vBody = vBody + '<tr>';
 		vBody = vBody
 				+ '<td style="width: 450px; height: 20px;" align="left" valign="top">';
-		if (vBillCompany != null && vBillCompany != '')
+		if (vBillCompany != null && vBillCompany != ''
+				&& vBillCompany != vBillAttention)
 			vBody = vBody + vBillCompany + '<br />';
 		if (vBillAttention != null && vBillAttention != '')
 			vBody = vBody + vBillAttention + '<br />';
-		vBody = vBody + vBillAddr1 + '<br />';
+
+		if (vBillAddr1 != null && vBillAddr1 != '')
+			vBody = vBody + vBillAddr1 + '<br />';
 		if (vBillAddr2 != null && vBillAddr2 != '')
 			vBody = vBody + vBillAddr2 + '<br />';
-		vBody = vBody + vBillCity + ', ' + vBillState + ' ' + vBillZip;
+		if (vBillCity != null && vBillCity != '')
+			vBody = vBody + vBillCity + ', ';
+		if (vBillState != null && vBillState != '')
+			vBody = vBody + vBillState + ' ';
+		if (vBillZip != null && vBillZip != '')
+			vBody = vBody + vBillZip;
+	
 		vBody = vBody + '</td>';
 		vBody = vBody
 				+ '<td style="width: 250px; height: 20px;" valign="top" align="left">';
@@ -256,14 +265,22 @@ function afterSubmit(type) {
 		vBody = vBody + '<tr>';
 		vBody = vBody
 				+ '<td style="width: 450px; height: 20px;" align="left" valign="top">';
-		if (vShipCompany != null && vShipCompany != '')
+		if (vShipCompany != null && vShipCompany != ''
+				&& vShipCompany != vShipAttention)
 			vBody = vBody + vShipCompany + '<br />';
 		if (vShipAttention != null && vShipAttention != '')
 			vBody = vBody + vShipAttention + '<br />';
 		vBody = vBody + vShipAddr1 + '<br />';
 		if (vShipAddr2 != null && vShipAddr2 != '')
 			vBody = vBody + vShipAddr2 + '<br />';
-		vBody = vBody + vShipCity + ', ' + vShipState + ' ' + vShipZip;
+		
+		if (vShipCity != null && vShipCity != '')
+			vBody = vBody + vShipCity + ', ';
+		if (vShipState != null && vShipState != '')
+			vBody = vBody + vShipState + ' ';
+		if (vShipZip != null && vShipZip != '')
+			vBody = vBody + vShipZip;
+		
 		vBody = vBody + '</td>';
 		vBody = vBody
 				+ '<td style="width: 250px; height: 20px;" valign="top" align="left">';
@@ -370,7 +387,8 @@ function afterSubmit(type) {
 				// gWilli
 				vItemLocation = nlapiGetLineItemValue('item', 'location', i);
 
-				if (vStorePickup == 'F' && vProductInStore == 'F' && vItemLocation == vCorporateLocationId) {
+				if (vStorePickup == 'F' && vProductInStore == 'F'
+						&& vItemLocation == vCorporateLocationId) {
 					vKitLevel = nlapiGetLineItemValue('item', 'kitlevel', i)
 
 					if (vKitLevel == null)
