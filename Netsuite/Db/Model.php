@@ -22,6 +22,37 @@ final class Netsuite_Db_Model
 		$this->_dbHandle = Netsuite_Db_Db::getInstance();
 	}
 	
+	
+	/**
+	 * Set Netsuite Login Information and NUmber of Orders Queued
+	 *
+	 * @param int $iOrdersRun
+	 * @access public
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function setPoolQueueLog( $iOrdersRun ){
+	
+		try{
+	
+			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'POOL_QUEUE_LOG', NETSUITE_COMPANY ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+			
+
+			$sth->execute(  array( ':orders_run' => (int) $iOrdersRun, ':netsuite_id' => NETSUITE_AUTH_EMAIL ) );
+			return( true );
+	
+	
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Set Pool Queue Log in the DB' );
+		}
+	}
+	
+	
 	/**
 	 * Returns Internal ID for Tax Code
 	 *

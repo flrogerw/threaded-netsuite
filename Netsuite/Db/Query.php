@@ -9,6 +9,8 @@
  */
 final class Netsuite_Db_Query
 {
+	protected static $POOL_QUEUE_LOG = "INSERT INTO pool_queue_log ( orders_run, netsuite_id ) VALUES (:orders_run, :netsuite_id)";
+	
 	protected static $GET_CUSTOMER = "SELECT SQL_CACHE InternalID FROM customers_xref_dev WHERE Company = '[TABLE_PREFIX]' AND XrefValue = ?";
 
 	protected static $GET_ACTIVA_CUSTOMER = "SELECT netsuite_id FROM users WHERE id = ?";
