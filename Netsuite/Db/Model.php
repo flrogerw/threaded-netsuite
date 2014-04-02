@@ -31,11 +31,11 @@ final class Netsuite_Db_Model
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function setPoolQueueLog( $iOrdersRun ){
+	public static function setPoolQueueLog( $iOrdersRun ){
 	
 		try{
-	
-			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'POOL_QUEUE_LOG', NETSUITE_COMPANY ) );
+			$connection = Netsuite_Db_Db::getInstance();
+			$sth = $connection->prepare( Netsuite_Db_Query::getQuery( 'POOL_QUEUE_LOG', NETSUITE_COMPANY ) );
 	
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );

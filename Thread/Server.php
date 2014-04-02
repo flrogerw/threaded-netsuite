@@ -3,41 +3,44 @@
 class Thread_Server {
 
 	protected $_model;
-	protected $_orders;
+	public $orders;
 	protected $_pool;
+	public $orderCount;
 
 	public function __construct(){
 
 		$this->_pool = new Thread_Pool( MAX_THREADS );
 		$this->_model = new Netsuite_Db_Model();
 		$this->_activa = new Netsuite_Db_Activa();
-		$this->_orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
+		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
 	}
 
 	protected function _setOrders(){
 
-		//$this->_orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
-		$this->_model->setOrderWorking( $this->_orders );
-		$this->_activa->setOrderWorking( $this->_orders );
+		//$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
+		$this->_model->setOrderWorking( $this->orders );
+		$this->_activa->setOrderWorking( $this->orders );
 	}
 
 	public function hasOrders(){
 
 		//$this->_setOrders();
-		$bReturn = ( sizeof( $this->_orders ) < 1 )? false: true;
-		if( $bReturn ){ $this->_setOrders(); }
+		$bReturn = ( sizeof( $this->orders ) < 1 )? false: true;
+		if( $bReturn ){
+			$this->_setOrders();
+		}
 		return( $bReturn );
 	}
 
 	public function poolOrders() {
-	
-		foreach( $this->_orders as $aOrder ){
+
+		foreach( $this->orders as $aOrder ){
 
 			$sOrderData = json_decode( $this->_decrypt( $aOrder['order_json'] ), true );
-			
+				
 			$this->_replaceBool( $sOrderData );
 			$aWork[] = $tThread = $this->_pool->submit( new Netsuite_Netsuite( $sOrderData, $aOrder['queue_id'], $aOrder['order_activa_id'] ) );
-				
+
 		}
 
 		$this->_pool->shutdown();

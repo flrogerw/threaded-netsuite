@@ -41,7 +41,7 @@ function processOrders(){
 		$processOrder = new Thread_Server();
 
 		if( $processOrder->hasOrders() ){
-
+			Netsuite_Db_Model::setPoolQueueLog( sizeof( $processOrder->orders ) );
 			$processOrder->poolOrders();
 			processOrders();
 		} else {
