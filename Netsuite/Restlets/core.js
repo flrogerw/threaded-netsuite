@@ -95,7 +95,7 @@ return( addressString.join('\n') )
   }
 
 
-	function getCurrentCustomer( var customer ) {
+	function getCurrentCustomer( customer ) {
 
 		var filters = [];
 		var columns = [];
@@ -111,6 +111,7 @@ return( addressString.join('\n') )
 			filters.push(new nlobjSearchFilter("firstname", null, "is", customer.firstname));
 			filters.push(new nlobjSearchFilter("lastname", null, "is", customer.lastname));
 		}
+		filters.push(new nlobjSearchFilter("isinactive", null, "is","F"));
 		
 
 		var savedsearch = nlapiCreateSearch('customer', filters, columns);
@@ -119,11 +120,11 @@ return( addressString.join('\n') )
 		do {
 			var resultslice = resultset.getResults(searchid, searchid + 1000);
 			for ( var rs in resultslice) {
-				results.push(resultslice[rs]);
+				results.push(resultslice[rs]['id']);
 				searchid++;
 			}
 		} while (resultslice.length >= 1000);
-		return JSON.stringify(results);
+		return(results);
 	}  
   
   

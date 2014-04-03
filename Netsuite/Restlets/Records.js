@@ -279,7 +279,9 @@ function createCustomer(args) {
 	var customer = JSON.parse(args.data);
 	
 	
-	return( getCurrentCustomer( customer ) );
+	var CurrentCustomer = getCurrentCustomer( customer ) );
+	
+	return( CurrentCustomer );
 	
 	
 
