@@ -12,9 +12,7 @@ class Thread_Server {
 		$this->_pool = new Thread_Pool( MAX_THREADS );
 		$this->_model = new Netsuite_Db_Model();
 		$this->_activa = new Netsuite_Db_Activa();
-		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
-			
-		var_dump($this->orders);		
+		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );		
 	}
 
 	protected function _setOrders(){
