@@ -76,7 +76,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 			if( $ismultishipto === true ){
 				
 				foreach( $this->_itemListArray as $iKey => &$aItem ){
-
+echo('HERE');
 					// Set Item Address to Store if Shipping Method is STR (In-Store)
 					if( $aItem['custcol_produce_in_store'] === true ){
 
