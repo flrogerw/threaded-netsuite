@@ -273,9 +273,15 @@ function createCustomer(args) {
 	if (!args.recordtype) {
 		throw nlapiCreateError('Missing Record Type',
 				'This function requires a record type');
-	}
+	}	
+		
 	var record = nlapiCreateRecord(args.recordtype);
 	var customer = JSON.parse(args.data);
+	
+	
+	return( getCurrentCustomer( customer ) );
+	
+	
 
 	for ( var fieldname in customer) {
 		if (customer.hasOwnProperty(fieldname)) {

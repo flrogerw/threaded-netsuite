@@ -95,7 +95,7 @@ return( addressString.join('\n') )
   }
 
 
-	function currentCustomer( var customer ) {
+	function getCurrentCustomer( var customer ) {
 
 		var filters = [];
 		var columns = [];
@@ -103,8 +103,15 @@ return( addressString.join('\n') )
 
 		
 		columns.push(new nlobjSearchColumn("custentity_customer_source_id"));
-		filters.push(new nlobjSearchFilter("custentity_customer_source_id",
-				null, "isnotempty", null));
+		filters.push(new nlobjSearchFilter("custentity_customer_source_id", null, "is", customer.custentity_customer_source_id));
+		filters.push(new nlobjSearchFilter("email", null, "is", customer.email));
+		if(customer.isperson == 'F'){
+			filters.push(new nlobjSearchFilter("companyname", null, "is", customer.companyname));
+		}else{
+			filters.push(new nlobjSearchFilter("firstname", null, "is", customer.firstname));
+			filters.push(new nlobjSearchFilter("lastname", null, "is", customer.lastname));
+		}
+		
 
 		var savedsearch = nlapiCreateSearch('customer', filters, columns);
 		var resultset = savedsearch.runSearch();
