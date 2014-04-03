@@ -74,9 +74,9 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 
 			// Build Address Object, Check if Address is In Database and add to Netsuite Payload if NOT
 			if( $ismultishipto === true ){
-				
+				echo('HERE');
 				foreach( $this->_itemListArray as $iKey => &$aItem ){
-echo('HERE');
+
 					// Set Item Address to Store if Shipping Method is STR (In-Store)
 					if( $aItem['custcol_produce_in_store'] === true ){
 
