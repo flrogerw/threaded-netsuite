@@ -13,6 +13,8 @@ class Thread_Server {
 		$this->_model = new Netsuite_Db_Model();
 		$this->_activa = new Netsuite_Db_Activa();
 		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
+			
+		var_dump($this->orders);		
 	}
 
 	protected function _setOrders(){
@@ -56,7 +58,7 @@ class Thread_Server {
 
 
 	protected function _replaceBool( &$aArray ){
-var_dump($aArray);
+		
 		$aIsBoolean = array(
 				'isperson',
 				'custcol_produce_in_store',
