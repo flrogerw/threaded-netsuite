@@ -86,6 +86,8 @@ class Netsuite_Netsuite extends Stackable {
 			}
 			
 			$mInternalId = $this->_isCustomer( $customer->custentity_customer_source_id );
+			var_dump($mInternalId);
+			die();
 			
 			if( $mInternalId == null ){
 				$results = $this->_process('customer', $customer );
