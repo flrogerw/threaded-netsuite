@@ -85,11 +85,9 @@ class Netsuite_Netsuite extends Stackable {
 				return;
 			}
 			
-			$mInternalId = $this->_isCustomer( $customer->custentity_customer_source_id );
-			var_dump($customer->entityid);
-			die();
+	
 			
-			if( $mInternalId == null ){
+			if( empty( $customer->entityid )  ){
 				$results = $this->_process('customer', $customer );
 				
 				if( $results['success'] === true ){
@@ -99,9 +97,9 @@ class Netsuite_Netsuite extends Stackable {
 				}
 				$this->worker->addData( $results );
 			} else {
-				$results['netsuite']['record_id'] = $customer->entityid = $mInternalId;
+				//$results['netsuite']['record_id'] = $customer->entityid = $mInternalId;
 				$results['success'] = true;
-				$results['json'] = 'Using Existing Netsuite Id: ' . $mInternalId;
+				$results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
 				$this->worker->addData( $results );
 			}
 
