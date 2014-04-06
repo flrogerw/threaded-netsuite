@@ -56,7 +56,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 		$this->_entity_id = $iEntityId;
 		$iCount = count( array_filter( $aItemListData, 'is_array' ) );
 		$this->_itemListArray = ( $iCount == count( $aItemListData ) )? $aItemListData: array( $aItemListData );
-		$this->_updateAddressList( $iLocationId );
+		$this->_updateAddressList( $iLocationId, $ismultishipto );
 		$this->_validate( $iLocationId );
 
 	}
@@ -66,7 +66,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 		return( $this->_itemListEntries );
 	}
 
-	protected function _updateAddressList( $iLocationId ){
+	protected function _updateAddressList( $iLocationId, $ismultishipto ){
 
 		try{
 
