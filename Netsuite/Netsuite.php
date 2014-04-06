@@ -90,9 +90,6 @@ class Netsuite_Netsuite extends Stackable {
 			if( $mInternalId == null ){
 				$results = $this->_process('customer', $customer );
 				
-				var_dump($results);
-				die();
-				
 				if( $results['success'] === true ){
 					$customer->entityid = $results['netsuite']['record_id'];
 					$model->insertCustomer( $customer->custentity_customer_source_id, $customer->entityid );

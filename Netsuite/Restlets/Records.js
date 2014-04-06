@@ -1,4 +1,8 @@
-// Get and Set Netsuite Records
+/**
+ * 
+ * 
+ * @author gWilli
+ */
 function Records(datain) {
 
 	var record = {
@@ -242,12 +246,8 @@ function setGiftCertificates(record, gcDataArray) {
 			.stringify(certCodeResults));
 }
 
-function createContact(args) {
-	// Validate if mandatory record type is set in the request
-	if (!args.recordtype) {
-		throw nlapiCreateError('Missing Record Type',
-				'This function requires a record type');
-	}
+function createContact(args, contactCount) {
+
 	var record = nlapiCreateRecord('contact');
 	var contact = JSON.parse(args.data);
 
@@ -263,27 +263,24 @@ function createContact(args) {
 		}
 	}
 
+	var entityid = (contactCount > 0) ? ' -00' + (contactCount + 1) : '';
+	record.setFieldValue('entityid', contact.firstname + ' ' + contact.lastname
+			+ entityid);
+
 	// setAddressBook(record, contact.addressbook);
 	var recordId = nlapiSubmitRecord(record);
 	return recordId;
+
 }
 
 function createCustomer(args) {
-	// Validate if mandatory record type is set in the request
-	if (!args.recordtype) {
-		throw nlapiCreateError('Missing Record Type',
-				'This function requires a record type');
-	}	
-		
-	var record = nlapiCreateRecord(args.recordtype);
+
+	var record = nlapiCreateRecord('customer');
 	var customer = JSON.parse(args.data);
-	
-	
-	var CurrentCustomer = getCurrentCustomer( customer ) );
-	
-	return( CurrentCustomer );
-	
-	
+
+	if (customer['isperson'] == 'F') {
+		var existingContact = getExistingContact(customer);
+	}
 
 	for ( var fieldname in customer) {
 		if (customer.hasOwnProperty(fieldname)) {
@@ -298,12 +295,13 @@ function createCustomer(args) {
 	}
 
 	setAddressBook(record, customer.addressbook);
+
 	var recordId = nlapiSubmitRecord(record);
 
 	if (record.getFieldValue('isperson') == "F") {
-		var contactId = createContact(args);
+		var contactId = createContact(args, existingContact.length);
 		nlapiAttachRecord('contact', contactId, 'customer', recordId, null)
-
 	}
+
 	return recordId;
 }
