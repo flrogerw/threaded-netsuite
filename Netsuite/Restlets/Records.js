@@ -1,8 +1,3 @@
-/**
- * 
- * 
- * @author gWilli
- */
 function Records(datain) {
 
 	var record = {
@@ -134,7 +129,6 @@ function setAddress(args) {
 function getAddressbook(args) {
 
 	var record = nlapiLoadRecord('customer', args.data.id);
-
 	var addressbook = new Array();
 
 	for (i = 1; i <= record.getLineItemCount('addressbook'); i++) {
