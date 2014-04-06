@@ -85,7 +85,6 @@ class Netsuite_Netsuite extends Stackable {
 				return;
 			}
 			
-	
 			
 			if( empty( $customer->entityid )  ){
 				$results = $this->_process('customer', $customer );
