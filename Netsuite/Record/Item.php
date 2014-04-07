@@ -69,7 +69,10 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		foreach( $aItem as $key => $value ) {
 			$this->$key = $value;
 		}
-
+		
+		//Set Amount
+		$this->amount = $this->quantity * $this->rate;
+				
 		$oModel = new Netsuite_Db_Model();
 
 		// Set Activa Customer Id
@@ -77,11 +80,11 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		$this->_locationId = $iLocationId;
 
 		// Set ImageSku Value
-		if( isset( $this->custcol162 ) && $this->custcol162 !== false ){
-			$this->custcol162 = $oModel->getImageSku( $this->custcol162 );
-		} else {
-			$this->custcol162 = '';
-		}
+		//if( isset( $this->custcol162 ) && $this->custcol162 !== false ){
+			//$this->custcol162 = $oModel->getImageSku( $this->custcol162 );
+		//} else {
+			//$this->custcol162 = '';
+		//}
 
 		// Get Internal Id for Item
 		//$sCurrentItem = (int) $oModel->getItem( $sItemType, $this->item );
@@ -92,9 +95,6 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		//}
 
 		//$this->item = $sCurrentItem;
-
-		//Set Amount
-		$this->amount = $this->quantity * $this->rate;
 
 		// Location Logic
 		//$sItemLocation = ( $this->custcol_produce_in_store === true )? 'store': 'corporate';
