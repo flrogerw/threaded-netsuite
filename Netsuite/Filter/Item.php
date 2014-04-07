@@ -31,7 +31,13 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 	);
 
 	protected $_aSanatizeFinal = array(
+			'addressee' => array('filter' => FILTER_SANITIZE_STRING),
+			'addr1' => array('filter' => FILTER_SANITIZE_STRING),
+			'addr2' => array('filter' => FILTER_SANITIZE_STRING),
 			'amount' => array('filter' => FILTER_VALIDATE_FLOAT),
+			'attention' => array('filter' => FILTER_SANITIZE_STRING),
+			'city' => array('filter' => FILTER_SANITIZE_STRING),
+			'country' => array('filter' => FILTER_SANITIZE_STRING),
 			'custcol_produce_in_store' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custcol_store_pickup' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custcol162' => array('filter' => FILTER_SANITIZE_STRING),
@@ -49,12 +55,17 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 			'item' => array('filter' => FILTER_VALIDATE_INT),
 			'location'  => array('filter' => FILTER_SANITIZE_STRING),
 			'options' => array('filter' => FILTER_SANITIZE_STRING),
+			'phone' => array('filter' => FILTER_VALIDATE_REGEXP,
+						'flags'  => FILTER_NULL_ON_FAILURE,
+						'options' => array('regexp' => self::PHONE_REGEXP ) ),
 			'price' => array('filter' => FILTER_VALIDATE_INT),
 			'quantity' => array('filter' => FILTER_VALIDATE_INT),
 			'taxcode' => array('filter' => FILTER_VALIDATE_INT ),
 			'rate' => array('filter' => FILTER_VALIDATE_FLOAT),
-			'shipaddress' => array('filter' => FILTER_SANITIZE_STRING),
-			'shipmethod' => array('filter' => FILTER_SANITIZE_STRING));
+			//'shipaddress' => array('filter' => FILTER_SANITIZE_STRING),
+			'shipmethod' => array('filter' => FILTER_SANITIZE_STRING),
+			'state' => array('filter' => FILTER_SANITIZE_STRING),
+			'zip' => array('filter' => FILTER_SANITIZE_STRING));
 
 
 	public function __construct( array $aItem )
