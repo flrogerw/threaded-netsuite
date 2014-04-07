@@ -102,7 +102,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		// Shipmethods that require NO address
 		//if( strtolower( $this->shipmethod ) != 'cpu' /* && strtolower( $this->shipmethod ) != 'str' */ ){
 		if( $this->custcol_produce_in_store === false ){
-	
+	var_dump($aItem);
 
 			// Set Address Internal Id And Shipping Method
 			$oAddress = new Netsuite_Record_Address( $aItem );
