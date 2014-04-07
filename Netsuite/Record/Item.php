@@ -25,6 +25,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 	public $istaxable = true;
 	public $item;
 	public $location;
+	public $phone;
 	public $price = -1;
 	public $quantity = 0;
 	public $rate;
