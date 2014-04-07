@@ -161,6 +161,12 @@ function setAddressBook(record, addressBook) {
 function setItems(record, items) {
 	// --- Set Address Book line items.
 	var counter = 0;
+	
+	if(record.getFieldValue('ismultishipto') == 'T'){
+		var args = {"data":{"id":record.getFieldValue('entityid')}}; 
+		
+		var addressbook = getAddressbook(args);
+	}
 
 	for (count in items) {
 		counter = parseInt(count) + 1;
@@ -194,7 +200,9 @@ function createOrder(args) {
 	if (order.hasOwnProperty('giftcertificateitem')) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
+	
 	setItems(record, order.item);
+	
 	var isOk = nlapiSubmitRecord(record);
 	return isOk;
 }
