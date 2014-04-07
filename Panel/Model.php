@@ -57,7 +57,8 @@ final class Panel_Model extends PDO
 			parent::__construct( $dsn, $this->_user, $this->_pass );
 
 		}catch( Exception $e ) {
-			self::logError( $e );
+			echo( $e->getMessage() );
+			Netsuite_Db_Model::logError( $e );
 		}
 	}
 
@@ -72,7 +73,7 @@ final class Panel_Model extends PDO
 			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
 			return( $this->_dbResults );
 		}catch( Exception $e ){
-			self::logError( $e );
+			Netsuite_Db_Model::logError( $e );
 			throw new Exception( 'Could NOT Get XrefVAlues Information From DB' );
 		}
 	}
@@ -88,7 +89,7 @@ final class Panel_Model extends PDO
 			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
 			return( $this->_dbResults );
 		}catch( Exception $e ){
-			self::logError( $e );
+			Netsuite_Db_Model::logError( $e );
 			throw new Exception( 'Could NOT Get Sources Information From DB' );
 		}
 	}
@@ -104,7 +105,7 @@ final class Panel_Model extends PDO
 			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
 			return( $this->_dbResults );
 		}catch( Exception $e ){
-			self::logError( $e );
+			Netsuite_Db_Model::logError( $e );
 			throw new Exception( 'Could NOT Get Products Information From DB' );
 		}
 	}

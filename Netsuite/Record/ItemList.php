@@ -50,7 +50,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @access protected
 	 * @return void
 	*/
-	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId, $ismultishipto ) {
+	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId ) {
 
 		$this->_activa_id = $sActivaId;
 		$this->_entity_id = $iEntityId;
@@ -73,7 +73,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @param unknown $ismultishipto
 	 */
 	protected function _updateAddressList( $iLocationId, $ismultishipto ){
-
+/*
 		try{
 
 			$oAddressBook = new Netsuite_Record_AddressBook();
@@ -147,6 +147,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 		}catch( Exception $e ){
 			Netsuite_Db_Model::logError( $e->getMessage() );
 		}
+		*/
 	}
 
 
@@ -177,7 +178,6 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 				$this->logWarn( 'Item List Entry ' . ($iKey + 1) . ' Has Warnings: ' . implode( ', ', $oItem->getWarnings() ) );
 			}
 		}
-
 	}
 
 	/**
