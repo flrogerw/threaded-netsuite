@@ -161,18 +161,60 @@ function setAddressBook(record, addressBook) {
 function setItems(record, items) {
 	// --- Set Address Book line items.
 	var counter = 0;
-	
-	if(record.getFieldValue('ismultishipto') == 'T'){
-		var args = {"data":{"id":record.getFieldValue('entityid')}}; 
-		
-		var addressbook = getAddressbook(args);
+
+	if (record.getFieldValue('ismultishipto') == 'T') {
+
+		var addressIdArray = [];
+		var addressTextArray = [];
+
+		var args = {
+			"data" : {
+				"id" : record.getFieldValue('entity'),
+				"address" : []
+			}
+		};
+		for (count in items) {
+			var item = items[count];
+			var addressObj = {
+				"attention" : item.attention,
+				"addressee" : item.addressee,
+				"addr1" : item.addr1,
+				"city" : item.city,
+				"state" : item.state,
+				"zip" : item.zip,
+				"country" : item.country,
+				"phone" : item.phone
+			};
+
+			if (item.addr2 != null) {
+				addressObj.addr2 = item.addr2;
+			}
+
+			args.data.address.push(addressObj);
+
+		}
+
+		var addressbook = setAddress(args);
+
+		for (i in addressbook) {
+			var address = addressbook[i];
+			addressIdArray.push(address.id);
+			addressTextArray.push(md5(address.text));
+
+		}
+
 	}
 
 	for (count in items) {
 		counter = parseInt(count) + 1;
 		for (key in items[count]) {
+
 			record.setLineItemValue('item', key, counter, items[count][key]);
 		}
+		var addrIndex = addressTextArray
+				.indexOf(md5(getAddressString(items[count])));
+		record.setLineItemValue('item', 'shipaddress', counter,
+				addressIdArray[addrIndex]);
 	}
 }
 
@@ -200,9 +242,9 @@ function createOrder(args) {
 	if (order.hasOwnProperty('giftcertificateitem')) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
-	
+
 	setItems(record, order.item);
-	
+
 	var isOk = nlapiSubmitRecord(record);
 	return isOk;
 }
