@@ -33,7 +33,7 @@ final class Panel_Model extends PDO
 	 * @var string
 	 * @access private
 	 */
-	private $_user = "root";
+	private $_user = "netsuite";
 
 	/**
 	 * DataBase Password
@@ -53,8 +53,9 @@ final class Panel_Model extends PDO
 	 */
 	public function __construct() {
 		try{
-			$dsn = "mysql:host={$this->_host};dbname={$this->_database}";
-			parent::__construct( $dsn, $this->_user, $this->_pass );
+			$dsn = 'mysql:host=' . SYSTEM_DB_HOST . ';dbname=' . SYSTEM_DB_DATABASE;
+			parent::__construct( $dsn, SYSTEM_DB_USER, SYSTEM_DB_PASS );
+			$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		}catch( Exception $e ) {
 			echo( $e->getMessage() );
