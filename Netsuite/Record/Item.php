@@ -3,6 +3,12 @@
 class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Interface_INetsuite {
 
 	public $amount = 0;
+	public $addressee;
+	public $addr1;
+	public $addr2;
+	public $attention;
+	public $city;
+	public $country;
 	public $custcol_produce_in_store = false;
 	public $custcol_store_pickup = false;
 	public $custcol162 = null;
@@ -24,7 +30,9 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 	public $rate;
 	public $shipaddress;
 	public $shipmethod;
+	public $state;
 	//public $taxcode = -125;
+	public $zip;
 
 	private $_activa_id;
 	private $_additionalcustomizations;
