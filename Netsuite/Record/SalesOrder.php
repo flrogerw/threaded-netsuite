@@ -107,7 +107,10 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 		$this->_tmp_items_list = $aSalesOrder['item'];
 
+		
+		
 		try{
+			/*
 			$oModel = new Netsuite_Db_Model();
 
 			// Set entity to customer entityid
@@ -157,7 +160,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 					
 				$this->billaddress = $this->getAddressString( $sLocation );
 			}
-			
+			*/
 			// Create Item List
 			$this->item = $this->setItemList();
 			
