@@ -60,7 +60,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		foreach( $aItem as $key => $value ) {
 			$this->$key = $value;
 		}
-
+var_dump($this);
 		$oModel = new Netsuite_Db_Model();
 
 		// Set Activa Customer Id

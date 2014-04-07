@@ -54,8 +54,6 @@ class Netsuite_Netsuite extends Stackable {
 	protected function _createSalesOrder( $customer ){
 
 		$salesOrder = Netsuite_Record::factory()->salesOrder( $this->_order['order'], $customer );
-		
-		var_dump($salesOrder);
 
 		if( !$salesOrder->isOk() ){
 
