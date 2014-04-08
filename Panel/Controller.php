@@ -20,6 +20,12 @@ class Panel_Controller {
 		$this->view->aOrders = $this->_model->getProcessLogView();
 		$this->view->show(__FUNCTION__);
 	}
+	
+	public function orderqueueAction(){
+	
+		$this->view->aOrders = $this->_model->getOrderQueueView();
+		$this->view->show(__FUNCTION__);
+	}
 
 	public function nstestAction( $aRecord = null ){
 			
