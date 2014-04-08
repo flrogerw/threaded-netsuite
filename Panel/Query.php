@@ -12,6 +12,7 @@ final class Panel_Query
 	
 	protected static $GET_PROCESS_LOG_VIEW = "SELECT process_id, status, process_date, customer_status, customer_warnings, customer_errors, order_status, order_warnings, order_errors FROM process_log ORDER BY process_id DESC LIMIT :limit";	
 	protected static $GET_ORDER_INFO = "SELECT order_json, customer_json FROM process_log WHERE process_id = :process_id";
+	protected static $GET_ORDER_QUEUE_VIEW = "SELECT order_activa_id, order_status, order_insert_date, order_working_date, order_complete_date FROM fotobar_order_queue ORDER BY queue_id DESC LIMIT :limit";	
 /**
  * 
  * @param string $TablePrefix

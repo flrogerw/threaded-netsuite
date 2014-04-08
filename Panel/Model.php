@@ -135,6 +135,36 @@ final class Panel_Model extends PDO
 		}
 		
 	}
+
+	
+	
+	/**
+	 * Returns Orders From the Queue
+	 *
+	 *
+	 *
+	 */
+	public function getOrderQueueView( $iLimit = 20 ) {
+	
+		try{
+	
+			$sth = $this->prepare( Panel_Query::getQuery( 'GET_ORDER_QUEUE_VIEW' ) );
+			$sth->bindValue(':limit', (int)$iLimit, PDO::PARAM_INT);
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$sth->execute();
+			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+			return( $this->_dbResults );
+	
+		}catch( Exception $e ){
+			Netsuite_Db_Model::logError( $e );
+			throw new Exception( 'Could NOT Get Orders From the Queue DB for the Control Panel' );
+		}
+	}
+	
 	
 	
 	/**
