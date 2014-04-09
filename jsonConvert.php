@@ -99,7 +99,6 @@ try {
 			)
 	);
 
-
 	$sJson = json_encode( $sJsonArray);
 	//die();
 
