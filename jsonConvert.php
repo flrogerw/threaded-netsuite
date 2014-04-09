@@ -20,7 +20,7 @@ require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 		
 		
 		
-	echo( json_decode( $sJson ) );
+	var_dump( json_decode( $sJson ) );
 		die();
 		
 		/** FIXES
