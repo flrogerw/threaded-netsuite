@@ -24,12 +24,12 @@ try {
 	"order"=>
 	array(
 	"_source"=>"Fotobar",
-	"location"=>1,
-	"department"=>1,
+	"location"=>2,
+	"department"=>2,
 	"leadsource"=>-6,
-	"custbody_order_source"=>1,
+	"custbody_order_source"=>28,
 	"ccprocessor"=>1,
-	"custbody_order_source_id"=>"FD50689",
+	"custbody_order_source_id"=>"FDX50689",
 	"trandate"=>"04/01/2014",
 	"entity"=>342609,
 	"item"=>
@@ -102,8 +102,8 @@ try {
 	);
 
 
-	var_dump( json_encode( $sJsonArray) );
-	die();
+	$sJson = json_encode( $sJsonArray);
+	//die();
 
 	/** FIXES
 	 Removed:
