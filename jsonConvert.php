@@ -32,8 +32,8 @@ try {
 	"custbody_order_source_id"=>"FDX50689",
 	"trandate"=>"04/01/2014",
 	"entity"=>342609,
-	"item"=>
-	array( array(
+	"item"=>array(
+	array(
 	"attention"=>"Nathan Pelton",
 	"addressee"=>"Pelton Solutions LLC",
 	"addr1"=>"18090 Shamrock Blvd",
@@ -48,8 +48,8 @@ try {
 	"quantity"=>1,
 	"rate"=>50,
 	"subtotal"=>50,
-	"custcol_produce_in_store"=>true,
-	"custcol_store_pickup"=>true,
+	"custcol_produce_in_store"=>false,
+	"custcol_store_pickup"=>false,
 	"discounttotal"=>0,
 	"giftcertnumber"=>"TEST".rand(10000,90000),
 	"giftcertfrom"=>"Nathan",
