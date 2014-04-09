@@ -56,9 +56,7 @@ try {
 	"giftcertrecipientname"=>"Nathan",
 	"giftcertrecipientemail"=>"npelton@gmail.com",
 	"giftcertmessage"=>"testing",
-	"location"=>1
-	)
-	),
+	"location"=>1)),
 	"taxtotal"=>0,
 	"taxrate"=>0,
 	"shippingcost"=>0,
