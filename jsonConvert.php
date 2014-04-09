@@ -51,7 +51,7 @@ try {
 	"custcol_produce_in_store"=>true,
 	"custcol_store_pickup"=>true,
 	"discounttotal"=>0,
-	"giftcertnumber"=>"TEST49353",
+	"giftcertnumber"=>"TEST".rand(10000,90000),
 	"giftcertfrom"=>"Nathan",
 	"giftcertrecipientname"=>"Nathan",
 	"giftcertrecipientemail"=>"npelton@gmail.com",
