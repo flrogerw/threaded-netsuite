@@ -74,7 +74,7 @@ try {
 	"cczipcode"=>"",
 	"shipdate"=>"04/04/2014",
 	"customform"=>107,
-	"ismultishipto"=>false,
+	"ismultishipto"=>true,
 	"custbody_web_discount_code"=>""
 			),
 			"customer"=>array(
