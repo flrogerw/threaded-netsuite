@@ -49,7 +49,7 @@ try {
 			"rate"=>50,
 			"subtotal"=>50,
 			"custcol_produce_in_store"=>true,
-			"custcol_store_pickup"=>false,
+			"custcol_store_pickup"=>true,
 			"discounttotal"=>0,
 			"giftcertnumber"=>"TEST".rand(10000,90000),
 			"giftcertfrom"=>"Nathan",
