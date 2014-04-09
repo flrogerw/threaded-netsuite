@@ -48,7 +48,7 @@ try {
 			"quantity"=>1,
 			"rate"=>50,
 			"subtotal"=>50,
-			"custcol_produce_in_store"=>false,
+			"custcol_produce_in_store"=>true,
 			"custcol_store_pickup"=>false,
 			"discounttotal"=>0,
 			"giftcertnumber"=>"TEST".rand(10000,90000),
@@ -73,7 +73,7 @@ try {
 	"cczipcode"=>"",
 	"shipdate"=>"04/04/2014",
 	"customform"=>107,
-	"ismultishipto"=>true,
+	"ismultishipto"=>false,
 	"custbody_web_discount_code"=>""),
 	
 	"customer"=>array(
