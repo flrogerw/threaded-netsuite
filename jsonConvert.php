@@ -22,41 +22,42 @@ try {
 
 	$sJsonArray = array(
 	"order"=>
-	array(
-	"_source"=>"Fotobar",
-	"location"=>2,
-	"department"=>2,
-	"leadsource"=>-6,
-	"custbody_order_source"=>28,
-	"ccprocessor"=>1,
-	"custbody_order_source_id"=>"FDX50689",
-	"trandate"=>"04/01/2014",
-	"entity"=>342609,
-	"item"=>array(
-	array(
-	"attention"=>"Nathan Pelton",
-	"addressee"=>"Pelton Solutions LLC",
-	"addr1"=>"18090 Shamrock Blvd",
-	"city"=>"Big Rapids",
-	"state"=>"MI",
-	"zip"=>49307,
-	"country"=>"US",
-	"phone"=>2489461046,
-	"shipmethod"=>1011,
-	"description"=>"GC50",
-	"item"=>1119,
-	"quantity"=>1,
-	"rate"=>50,
-	"subtotal"=>50,
-	"custcol_produce_in_store"=>false,
-	"custcol_store_pickup"=>false,
-	"discounttotal"=>0,
-	"giftcertnumber"=>"TEST".rand(10000,90000),
-	"giftcertfrom"=>"Nathan",
-	"giftcertrecipientname"=>"Nathan",
-	"giftcertrecipientemail"=>"npelton@gmail.com",
-	"giftcertmessage"=>"testing",
-	"location"=>1)),
+		array(
+		"_source"=>"Fotobar",
+		"location"=>2,
+		"department"=>2,
+		"leadsource"=>-6,
+		"custbody_order_source"=>28,
+		"ccprocessor"=>1,
+		"custbody_order_source_id"=>"FDX50689",
+		"trandate"=>"04/01/2014",
+		"entity"=>342609,
+		"item"=>array( 
+			array(
+			"attention"=>"Nathan Pelton",
+			"addressee"=>"Pelton Solutions LLC",
+			"addr1"=>"18090 Shamrock Blvd",
+			"city"=>"Big Rapids",
+			"state"=>"MI",
+			"zip"=>49307,
+			"country"=>"US",
+			"phone"=>2489461046,
+			"shipmethod"=>1011,
+			"description"=>"GC50",
+			"item"=>1119,
+			"quantity"=>1,
+			"rate"=>50,
+			"subtotal"=>50,
+			"custcol_produce_in_store"=>false,
+			"custcol_store_pickup"=>false,
+			"discounttotal"=>0,
+			"giftcertnumber"=>"TEST".rand(10000,90000),
+			"giftcertfrom"=>"Nathan",
+			"giftcertrecipientname"=>"Nathan",
+			"giftcertrecipientemail"=>"npelton@gmail.com",
+			"giftcertmessage"=>"testing",
+			"location"=>1)),
+		
 	"taxtotal"=>0,
 	"taxrate"=>0,
 	"shippingcost"=>0,
@@ -73,31 +74,28 @@ try {
 	"shipdate"=>"04/04/2014",
 	"customform"=>107,
 	"ismultishipto"=>false,
-	"custbody_web_discount_code"=>""
-			),
-			"customer"=>array(
-			"custentity_customer_source"=>1,
-			"custentity_customer_source_id"=>"F50000",
-			"firstname"=>"Nathan",
-			"lastname"=>"Pelton",
-			"email"=>"npelton@gmail.com",
-			"isperson"=>false,
-			"companyname"=>"Pelton Solutions LLC",
-			"custentity_fotomail"=>"nathan50000+dev@myfotobar.com",
-			"addressbook"=>array(
-			"billing"=>array(
-			"addr1"=>"18090 Shamrock Blvd",
-			"city"=>"Big Rapids",
-			"state"=>"MI",
-			"zip"=>49307,
-			"country"=>"US",
-			"phone"=>2489461046)
-			),
-			"_source"=>"Fotobar",
-			"custentitycustomer_department"=>1,
-			"entityid"=>342609
-			)
-	);
+	"custbody_web_discount_code"=>""),
+	
+	"customer"=>array(
+		"custentity_customer_source"=>1,
+		"custentity_customer_source_id"=>"F50000",
+		"firstname"=>"Nathan",
+		"lastname"=>"Pelton",
+		"email"=>"npelton@gmail.com",
+		"isperson"=>false,
+		"companyname"=>"Pelton Solutions LLC",
+		"custentity_fotomail"=>"nathan50000+dev@myfotobar.com",
+		"addressbook"=>array(
+		"billing"=>array(
+		"addr1"=>"18090 Shamrock Blvd",
+		"city"=>"Big Rapids",
+		"state"=>"MI",
+		"zip"=>49307,
+		"country"=>"US",
+		"phone"=>2489461046)),
+		"_source"=>"Fotobar",
+		"custentitycustomer_department"=>1,
+		"entityid"=>342609));
 
 
 	
