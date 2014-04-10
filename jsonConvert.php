@@ -66,7 +66,7 @@ try {
 	"total"=>50,
 	"pnrefnum"=>"253645576879605",
 	"authcode"=>123456,
-	"paymentmethod"=>5,
+	"paymentmethod"=>1,
 	"ccname"=>"Nathan Pelton",
 	"ccnumber"=>"4111111111111111",
 	"ccexpiredate"=>"08/2016",
