@@ -24,8 +24,8 @@ try {
 	"order"=>
 		array(
 		"_source"=>"Fotobar",
-		"location"=>2,
-		"department"=>2,
+		"location"=>1,
+		"department"=>1,
 		"leadsource"=>-6,
 		"custbody_order_source"=>28,
 		"ccprocessor"=>1,
