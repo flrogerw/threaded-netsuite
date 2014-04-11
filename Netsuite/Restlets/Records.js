@@ -313,6 +313,11 @@ function createContact(args, contactCount) {
 
 }
 
+/**
+ * Create new NS Customer 
+ * @param string args
+ * @returns int recordId
+ */
 function createCustomer(args) {
 
 	var record = nlapiCreateRecord('customer');
