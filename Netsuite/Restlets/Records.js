@@ -211,20 +211,16 @@ function setItems(record, items) {
 
 			record.setLineItemValue('item', key, counter, items[count][key]);
 		}
-		var addrIndex = addressTextArray
-				.indexOf(md5(getAddressString(items[count])));
-		record.setLineItemValue('item', 'shipaddress', counter,
-				addressIdArray[addrIndex]);
+if (record.getFieldValue('ismultishipto') == 'T') {
+		var addrIndex = addressTextArray.indexOf(md5(getAddressString(items[count])));
+		record.setLineItemValue('item', 'shipaddress', counter, addressIdArray[addrIndex]);
+}
 	}
 }
 
 function createOrder(args) {
-	// Validate if mandatory record type is set in the request
-	if (!args.recordtype) {
-		throw nlapiCreateError('Missing Record Type',
-				'This function requires a record type');
-	}
-	var record = nlapiCreateRecord(args.recordtype);
+	
+	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
 
 	for ( var fieldname in order) {
@@ -286,8 +282,8 @@ function setGiftCertificates(record, gcDataArray) {
 					counter, gcDataArray[count]['giftcertcode']);
 		}
 	}
-	nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ', JSON
-			.stringify(certCodeResults));
+	//nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ', JSON
+	//		.stringify(certCodeResults));
 }
 
 function createContact(args, contactCount) {

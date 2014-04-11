@@ -5,8 +5,9 @@ var keyStr = "ABCDEFGHIJKLMNOP" +
                "=";
 
 function getAddressString( address ){
-var addressString = [ address.addressee,
+var addressString = [ 
 		address.attention,
+address.addressee,
 		address.addr1,
 		address.addr2,
 		address.addr3,
@@ -112,25 +113,44 @@ return( addressString.join('\n') )
 			filters.push(new nlobjSearchFilter("lastname", null, "is", customer.lastname));
 		}
 		filters.push(new nlobjSearchFilter("isinactive", null, "is","F"));
-		
 
 		var savedsearch = nlapiCreateSearch('customer', filters, columns);
 		var resultset = savedsearch.runSearch();
-		var searchid = 0;
-		do {
-			var resultslice = resultset.getResults(searchid, searchid + 1000);
+		
+			var resultslice = resultset.getResults(0, 999);
 			for ( var rs in resultslice) {
 				results.push(resultslice[rs]['id']);
-				searchid++;
 			}
-		} while (resultslice.length >= 1000);
+		
 		return(results);
 	}  
   
   
-  
-  
+  function getExistingContact( customer ) {
+
+		var filters = [];
+		var columns = [];
+		var results = [];
+
+		filters.push(new nlobjSearchFilter("email", null, "is", customer.email));
+		filters.push(new nlobjSearchFilter("firstname", null, "is", customer.firstname));
+		filters.push(new nlobjSearchFilter("lastname", null, "is", customer.lastname));
+		
+		filters.push(new nlobjSearchFilter("isinactive", null, "is","F"));
+
+		var savedsearch = nlapiCreateSearch('contact', filters, columns);
+		var resultset = savedsearch.runSearch();
+		
+			var resultslice = resultset.getResults(0, 999);
+			for ( var rs in resultslice) {
+				results.push(resultslice[rs]['id']);
+			}
+	
+		return(results);
+	}  
+ 
 function handleException(error) {
+
 	var message;
 	if (error instanceof nlobjError) {
 		message = {
@@ -149,4 +169,5 @@ function handleException(error) {
 	}
 	nlapiLogExecution('ERROR', message.code, message.details);
 	return message;
+
 }
