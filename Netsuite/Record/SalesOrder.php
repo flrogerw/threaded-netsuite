@@ -2,7 +2,8 @@
 
 class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuite_Interface_INetsuite {
 
-	public $customform = 107;
+	//public $customform = 107; // Standard Form
+	public $customform = 129; // POS Form
 	public $recordtype = "salesorder";
 
 	public $authcode;
