@@ -222,7 +222,7 @@ var_dump(json_decode(decrypt( 'nx3arHBVbhV2elo6n7cdfxtP4agsbAatrt7wMlaF6Py9XSWMv
 				"giftcertmessage"=>"test",
 				"location"=>1),
 		
-		*/
+		
 		
 			array(
 				"attention"=>"Nathan Pelton",
@@ -248,7 +248,7 @@ var_dump(json_decode(decrypt( 'nx3arHBVbhV2elo6n7cdfxtP4agsbAatrt7wMlaF6Py9XSWMv
 				"giftcertrecipientemail"=>"npelton@gmail.com",
 				"giftcertmessage"=>"testing",
 				"location"=>1),
-				
+				*/
 			
 			array(
 				"attention"=>"Nathan Pelton",
