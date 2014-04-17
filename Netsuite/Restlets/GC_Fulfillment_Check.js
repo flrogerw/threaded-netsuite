@@ -53,6 +53,7 @@ var items = {
 			var item = items[i];
 			if (item.dependencies != null) {
 				var itemKey = this.isitem(item.dependencies);
+				this.additem(itemKey, 0, null);
 				this.updaterequiredby(itemKey, item.quantity);
 			}
 
@@ -60,8 +61,9 @@ var items = {
 	},
 
 	updaterequiredby : function(itemname, quantity) {
-		items[itemname]['requiredby'] = items[itemname]['requiredby']
-				+ quantity;
+
+		var item = items[itemname];
+		item.requiredby = item.requiredby + quantity;
 	},
 
 	checkfulfillment : function() {
@@ -81,16 +83,19 @@ var items = {
 		var errors = [];
 
 		for (i in items) {
-			var item = items[i];
-			nlapiLogExecution('DEBUG', 'error array', item.errors);
 
-			// if( item.errors.length > 0 ){
-			for (e in item.errors) {
-				errors.push(item.errors[e]);
+			var item = items[i];
+
+			if (typeof (item) !== "function") {
+				if (item.errors.length > 0) {
+					for (e in item.errors) {
+						errors.push(item.errors[e]);
+					}
+				}
 			}
-			// }
 		}
-		var returnstring = (errors.length > 0) ? errors.join() : false;
+
+		var returnstring = (errors.length > 0) ? errors : false;
 		return (returnstring);
 	}
 
@@ -130,8 +135,7 @@ function beforeLoad(type) {
 			if (haserrors !== false) {
 				throw haserrors.join();
 			}
-			// nlapiLogExecution('DEBUG', 'Required Item',
-			// JSON.stringify(items));
+			nlapiLogExecution('DEBUG', 'Final Array', JSON.stringify(items));
 
 		} catch (e) {
 
