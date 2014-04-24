@@ -12,7 +12,42 @@ class Thread_Server {
 		$this->_pool = new Thread_Pool( MAX_THREADS );
 		$this->_model = new Netsuite_Db_Model();
 		$this->_activa = new Netsuite_Db_Activa();
-		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );		
+		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
+		if( $this->hasOrders() ){
+			$this->_hasDuplicates();
+		}
+	}
+
+	/**
+	 * Looks at Current Order Array for Duplicate Orders
+	 * @return void
+	 */
+	protected function _hasDuplicates(){
+
+		$aCurrentOrders = [];
+		$aSetToDuplicate = [];
+		$aNewOrders = [];
+
+		array_walk( $this->orders, function( $aOrder, $iKey ) use( &$aCurrentOrders){
+			$aCurrentOrders[$aOrder['order_activa_id']] = $aOrder['queue_id'];
+		});
+
+			$aDupOrders = Netsuite_Record_SalesOrder::hasBeenProcessed( array_keys($aCurrentOrders) );
+
+			if(!empty($aDupOrders)){
+
+				$aSetToDuplicate = array_values(array_intersect_key($aCurrentOrders, array_flip(array_intersect( $aDupOrders, array_keys($aCurrentOrders) ))));
+				$this->_model->setOrdersDuplicate( $aSetToDuplicate );
+
+				array_walk( $this->orders, function( $aOrder, $iKey ) use( &$aSetToDuplicate, &$aNewOrders){
+						
+					if( !in_array($aOrder['queue_id'], $aSetToDuplicate) ){
+						$aNewOrders[] = $this->orders[$iKey];
+					}
+				});
+			}
+				
+			$this->orders = $aNewOrders;
 	}
 
 	protected function _setOrders(){
@@ -37,7 +72,7 @@ class Thread_Server {
 		foreach( $this->orders as $aOrder ){
 
 			$sOrderData = json_decode( $this->_decrypt( $aOrder['order_json'] ), true );
-				
+
 			$this->_replaceBool( $sOrderData );
 			$aWork[] = $tThread = $this->_pool->submit( new Netsuite_Netsuite( $sOrderData, $aOrder['queue_id'], $aOrder['order_activa_id'] ) );
 
@@ -56,7 +91,7 @@ class Thread_Server {
 
 
 	protected function _replaceBool( &$aArray ){
-		
+
 		$aIsBoolean = array(
 				'isperson',
 				'custcol_produce_in_store',

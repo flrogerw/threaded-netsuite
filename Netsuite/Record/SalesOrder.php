@@ -99,6 +99,13 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			return;
 		}
 	}
+	
+	public static function hasBeenProcessed( array $aNewOrders ){
+		
+		$oDb = new Netsuite_Db_Model();
+		$aBeenProcessed = $oDb->hasBeenProcessed( $aNewOrders );
+		return($aBeenProcessed);
+	}
 
 	protected function _setValues( array $aSalesOrder ) {
 

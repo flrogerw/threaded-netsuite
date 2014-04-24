@@ -9,6 +9,8 @@
  */
 final class Netsuite_Db_Query
 {
+	protected static $IS_ORDER_PROCESSED = "SELECT order_activa_id FROM process_log WHERE status IN ('complete','pending') AND order_activa_id IN (%s)";
+	
 	protected static $POOL_QUEUE_LOG = "INSERT INTO pool_queue_log ( orders_run, netsuite_id ) VALUES (:orders_run, :netsuite_id)";
 	
 	protected static $GET_CUSTOMER = "SELECT SQL_CACHE InternalID FROM customers_xref_dev WHERE Company = '[TABLE_PREFIX]' AND XrefValue = ?";
@@ -50,6 +52,8 @@ final class Netsuite_Db_Query
 	protected static $GET_ACTIVA_ADDRESSES = "SELECT SQL_CACHE address_hash FROM address_book WHERE activa_id = ?";
 
 	protected static $SET_ORDER_WORKING = "UPDATE fotobar_order_queue SET order_status = 'working', order_working_date = :order_working_date WHERE queue_id IN (%s)";
+	
+	protected static $SET_ORDER_DUPLICATE = "UPDATE fotobar_order_queue SET order_status = 'duplicate', order_complete_date = :order_complete_date WHERE queue_id IN (%s)";
 	
 	protected static $SET_ACTIVA_ORDER_WORKING = "UPDATE orders SET netsuite_status = 'working' WHERE id IN (%s)";
 

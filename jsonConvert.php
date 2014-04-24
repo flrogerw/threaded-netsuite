@@ -2,6 +2,11 @@
 
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
+var_dump( Netsuite_Record_SalesOrder::hasBeenProcessed( array ('F72373', 'F72384') ) );
+
+die();
+
+
 try {
 
 	/*

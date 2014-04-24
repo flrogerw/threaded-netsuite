@@ -101,7 +101,80 @@ final class Netsuite_Db_Model
 	
 	}
 	
-
+	
+	/**
+	 * Looks at Process Log to See if Any of the Current Pending Orders 
+	 * Have Already Been Processed.
+	 *
+	 * @param array $aNewOrders - Pending Orders to Be Processed
+	 * @access public
+	 * @return array|null $_dbResults
+	 * @throws Exception
+	 */
+	public function hasBeenProcessed( array $aNewOrders ){
+		
+		$connection = Netsuite_Db_Db::getInstance();
+	
+		try{
+	
+			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'IS_ORDER_PROCESSED', null, count( $aNewOrders ) ) );
+			
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$aBindArgs = array();
+	
+			array_walk( $aNewOrders, function( $aNewOrders, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = $aNewOrders;
+			});
+					
+				$sth->execute( $aBindArgs  );
+				$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+				$aFlattenedResults =  iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($this->_dbResults)), false);
+				return( $aFlattenedResults );
+	
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Read Processed Orders From the DB' );
+		}
+	}
+	
+	
+	/**
+	 * Set Duplicate Orders to a Status of Duplicate
+	 *
+	 * @param array $aOrders - Array of Batched Orders
+	 * @access public
+	 * @return int|null $_dbResults
+	 * @throws Exception
+	 */
+	public function setOrdersDuplicate( $aOrders ){
+	
+		try{
+	
+			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'SET_ORDER_DUPLICATE', null, count( $aOrders ) ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$aBindArgs = array( ':order_complete_date' => date( "Y-m-d H:i:s" ) );
+	
+			array_walk( $aOrders, function( $aOrder, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = (int)$aOrder;
+			});
+					
+				$sth->execute( $aBindArgs  );
+				return( true );
+	
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Set Orders to Working Status in the DB' );
+		}
+	}
+	
+	
 	/**
 	 * Set Current Batches Orders to a Status of Working
 	 *
