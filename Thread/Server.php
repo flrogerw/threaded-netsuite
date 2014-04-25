@@ -12,11 +12,13 @@ class Thread_Server {
 		$this->_pool = new Thread_Pool( MAX_THREADS );
 		$this->_model = new Netsuite_Db_Model();
 		$this->_activa = new Netsuite_Db_Activa();
+		$this->_model->resetStalledOrders();
 		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
 		if( $this->hasOrders() ){
 			$this->_hasDuplicates();
 		}
 	}
+	
 
 	/**
 	 * Looks at Current Order Array for Duplicate Orders
@@ -45,21 +47,18 @@ class Thread_Server {
 						$aNewOrders[] = $this->orders[$iKey];
 					}
 				});
+					$this->orders = $aNewOrders;
 			}
-				
-			$this->orders = $aNewOrders;
 	}
 
 	protected function _setOrders(){
 
-		//$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
 		$this->_model->setOrderWorking( $this->orders );
 		$this->_activa->setOrderWorking( $this->orders );
 	}
 
 	public function hasOrders(){
 
-		//$this->_setOrders();
 		$bReturn = ( sizeof( $this->orders ) < 1 )? false: true;
 		if( $bReturn ){
 			$this->_setOrders();
@@ -89,7 +88,6 @@ class Thread_Server {
 		}
 	}
 
-
 	protected function _replaceBool( &$aArray ){
 
 		$aIsBoolean = array(
@@ -112,6 +110,7 @@ class Thread_Server {
 
 		}
 	}
+	
 	protected function _decrypt( $sData ){
 
 		$td = mcrypt_module_open( 'rijndael-128', '', 'ecb', '' );

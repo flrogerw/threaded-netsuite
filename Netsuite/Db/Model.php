@@ -22,6 +22,22 @@ final class Netsuite_Db_Model
 		$this->_dbHandle = Netsuite_Db_Db::getInstance();
 	}
 	
+/**
+ * Resets Stalled orders from Working to Pending 1 Time
+ * 
+ * @return void
+ * @throws Exception
+ */
+	public function resetStalledOrders(){
+		try{
+					
+			$rowsAffected = $this->_dbHandle->exec( Netsuite_Db_Query::getQuery( 'RESET_STALLED_ORDERS' ) );
+
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT ReSet Stalled Orders in the DB' );
+		}
+	}
 	
 	/**
 	 * Set Netsuite Login Information and NUmber of Orders Queued
@@ -112,8 +128,6 @@ final class Netsuite_Db_Model
 	 * @throws Exception
 	 */
 	public function hasBeenProcessed( array $aNewOrders ){
-		
-		$connection = Netsuite_Db_Db::getInstance();
 	
 		try{
 	
