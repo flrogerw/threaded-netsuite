@@ -212,6 +212,8 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 		
 		$aCerts = array();
 		
+		if( sizeof( $this->giftcertificateitem ) < 1 ){ return( $aCerts );}
+		
 		foreach( $this->giftcertificateitem as $aCert ){
 			$oCert = Netsuite_Record::factory()->giftCertificate( $aCert );
 			if( !$oCert->isOk() ) {
