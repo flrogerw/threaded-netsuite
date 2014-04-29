@@ -114,61 +114,9 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 		}
 
 		$this->_tmp_items_list = $aSalesOrder['item'];
-
-		
 		
 		try{
-			/*
-			$oModel = new Netsuite_Db_Model();
-
-			// Set entity to customer entityid
-			$this->entity = $this->_customer->entityid;
-
-			//Set Sales Order Customer's Activa Number
-			$this->custentity_customer_source_id = $this->_customer->custentity_customer_source_id;
-
 			
-			switch( true ){
-					
-				// Look at AddressBook for Shipping Address First
-				case( isset( $this->_customer->addressbook['shipping'] ) ):
-					$aAddressString = $this->_customer->addressbook['shipping'];
-					break;
-
-					// Look for Shipping Address in Items List
-				default:
-					foreach( $this->_tmp_items_list as $aItem ){
-						$oAddress = new Netsuite_Record_Address( $aItem );
-						if( $oAddress->isOk() ){
-							$aAddressString = $oAddress->getAddress();
-						}
-					}
-					break;
-			}
-
-			// Billing and Shipping Address Strings
-			if( isset( $aAddressString ) ){
-				$this->shipaddress = $this->getAddressString($aAddressString);
-			}else{
-				$sLocation = $oModel->getStoreAddress( $this->location );
-				if( $sLocation === false ){
-					throw new Exception( 'Can NOT set Shipping Address to Store Location using: ' . $this->location );
-				}
-					
-			 $this->shipaddress = $this->getAddressString( $sLocation );
-			}
-
-			if( isset( $this->_customer->addressbook['billing'] ) ){
-				$this->billaddress = $this->getAddressString( $this->_customer->addressbook['billing'] );
-			}else{
-				$sLocation = $oModel->getStoreAddress( $this->location );
-				if( $sLocation === false ){
-					throw new Exception( 'Can NOT set Billing Address to Store Location using: ' . $this->location );
-				}
-					
-				$this->billaddress = $this->getAddressString( $sLocation );
-			}
-			*/
 			// Create Item List
 			$this->item = $this->setItemList();
 			
