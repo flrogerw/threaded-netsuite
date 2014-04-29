@@ -113,6 +113,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			$this->$key = $value;
 		}
 
+		$this->entity = $this->_customer->entityid;
 		$this->_tmp_items_list = $aSalesOrder['item'];
 		
 		try{
