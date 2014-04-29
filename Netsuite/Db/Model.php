@@ -1,5 +1,4 @@
 <?php
-
 /**
  * DB Model class
  *
