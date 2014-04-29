@@ -214,6 +214,7 @@ function setItems(record, items) {
 if (record.getFieldValue('ismultishipto') == 'T') {
 		var addrIndex = addressTextArray.indexOf(md5(getAddressString(items[count])));
 		record.setLineItemValue('item', 'shipaddress', counter, addressIdArray[addrIndex]);
+nlapiLogExecution('DEBUG', 'Set Ship Address To: ', addressIdArray[addrIndex] );
 }
 	}
 }
@@ -313,11 +314,6 @@ function createContact(args, contactCount) {
 
 }
 
-/**
- * Create new NS Customer 
- * @param string args
- * @returns int recordId
- */
 function createCustomer(args) {
 
 	var record = nlapiCreateRecord('customer');
