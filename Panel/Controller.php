@@ -32,11 +32,11 @@ class Panel_Controller {
 		$this->view->show(__FUNCTION__);
 	}
 
-	public function viewrecordAction(){
+	public function viewrecordAction(){		
 
-		//$this->view->aOrder = $this->_model->getOrderInfo( $this->params['q']);
-		$this->nstestAction( $this->_model->getOrderInfo( $this->params['q']) );
-		//$this->view->show(__FUNCTION__);
+		$this->view->aOrder = $this->_model->getOrderInfo( $this->params['q']);
+		//$this->nstestAction( $this->_model->getOrderInfo( $this->params['q']) );
+		$this->view->show(__FUNCTION__);
 	}
 
 }
