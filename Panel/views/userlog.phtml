@@ -1,0 +1,44 @@
+<?php $ignore = array( 'order_errors', 'order_warnings', 'customer_errors', 'customer_warnings', 'process_id' ) ?>
+<?php $title = 'Completed Successfully' ?>
+<style>
+#main {
+width: 800px;
+
+}
+.td_status:hover{
+cursor: pointer;
+}
+
+
+
+</style>
+<table id="main">
+	<tr>
+		<?php foreach( array_keys($this->aOrders[0]) as $sHeading ):
+		if( in_array(  $sHeading, $ignore ) ){
+			continue;
+		}?>
+		<th><?php echo( ucwords( str_replace( '_',' ', strtolower( $sHeading ) ) ) ) ?>
+		</th>
+		<?php endforeach ?>
+	</tr>
+	<?php foreach( $this->aOrders as $aOrder ): ?>
+	<tr>
+		<?php foreach( $aOrder as $sKey => $mValue ):
+		if( in_array(  $sKey, $ignore ) ){
+			continue;
+		}
+		if($sKey == 'status' && $mValue == 'error'){
+			$title = '';
+			$title .= ( $aOrder['customer_errors'] != '')?"Customer Errors:\n" .$aOrder['customer_errors']."\n":'';
+			$title .= ( $aOrder['order_errors'] != '')?"Order Errors:\n". $aOrder['order_errors']:'';
+		}
+		?>
+		<td class="td_<?php echo( $sKey ) ?>" align="center" title="<?php echo( $title ) ?>"><?php echo( $mValue ) ?>
+		</td>
+		<?php $title = 'Completed Successfully' ?>
+		<?php endforeach ?>
+		
+	</tr>
+	<?php endforeach ?>
+</table>

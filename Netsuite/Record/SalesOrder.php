@@ -99,9 +99,9 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			return;
 		}
 	}
-	
+
 	public static function hasBeenProcessed( array $aNewOrders ){
-		
+
 		$oDb = new Netsuite_Db_Model();
 		$aBeenProcessed = $oDb->hasBeenProcessed( $aNewOrders );
 		return($aBeenProcessed);
@@ -115,12 +115,12 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 		$this->entity = $this->_customer->entityid;
 		$this->_tmp_items_list = $aSalesOrder['item'];
-		
+
 		try{
-			
+				
 			// Create Item List
 			$this->item = $this->setItemList();
-			
+				
 			// Create Gift Certificate List
 			$this->setGiftCertificates();
 
@@ -156,17 +156,19 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 		return( json_encode( $this->getSalesOrder() ) );
 	}
-	
+
 	public function setGiftCertificates(){
-		
+
 		$aCerts = array();
-		
-		if( sizeof( $this->giftcertificateitem ) < 1 ){ return( $aCerts );}
-		
+
+		if( sizeof( $this->giftcertificateitem ) < 1 ){
+			return( $aCerts );
+		}
+
 		foreach( $this->giftcertificateitem as $aCert ){
 			$oCert = Netsuite_Record::factory()->giftCertificate( $aCert );
 			if( !$oCert->isOk() ) {
-			
+					
 				$aErrors = $oCert->getErrors();
 				$this->logError( 'Could NOT Create Gift Certificate( '. sizeof( $aErrors ) .' Errors): ' .  implode( ', ', $aErrors ) );
 				return;
