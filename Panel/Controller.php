@@ -29,6 +29,7 @@ class Panel_Controller {
 	public function orderqueueAction(){
 	
 		$this->view->aOrders = $this->_model->getOrderQueueView();
+		$this->view->queueStats = $this->_model->getQueueStats();
 		$this->view->show(__FUNCTION__);
 	}
 

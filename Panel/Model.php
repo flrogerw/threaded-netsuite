@@ -30,7 +30,7 @@ final class Panel_Model extends PDO
 	}
 
 
-	public function getUserLogView( $iLimit = 20 ){
+	public function getUserLogView(){
 		 
 		try{
 		
@@ -72,6 +72,34 @@ final class Panel_Model extends PDO
 	}
 
 	
+	/**
+	 * Returns Stats From the Queue
+	 *
+	 *
+	 *
+	 */
+	public function getQueueStats() {
+	
+		try{
+	
+			$sth = $this->prepare( Panel_Query::getQuery( 'GET_QUEUE_STATS' ) );
+			$sth->bindValue(':limit', (int)"7", PDO::PARAM_INT);
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$sth->execute();
+			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+			return( $this->_dbResults );
+	
+		}catch( Exception $e ){
+			Netsuite_Db_Model::logError( $e );
+			throw new Exception( 'Could NOT Get Orders From the Queue DB for the Control Panel' );
+		}
+	}
+	
+	
 	
 	/**
 	 * Returns Orders From the Queue
@@ -79,7 +107,7 @@ final class Panel_Model extends PDO
 	 *
 	 *
 	 */
-	public function getOrderQueueView( $iLimit = 20 ) {
+	public function getOrderQueueView() {
 	
 		try{
 	
@@ -108,7 +136,7 @@ final class Panel_Model extends PDO
 	 *
 	 *
 	 */
-	public function getProcessLogView( $iLimit = 20 ) {
+	public function getProcessLogView() {
 
 		try{
 
