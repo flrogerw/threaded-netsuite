@@ -35,7 +35,7 @@ final class Panel_Model extends PDO
 		try{
 		
 			$sth = $this->prepare( Panel_Query::getQuery( 'GET_USER_LOG_VIEW' ) );
-			$sth->bindValue(':limit', (int)$iLimit, PDO::PARAM_INT);
+			$sth->bindValue(':limit', (int) PANEL_MAX_RESULTS, PDO::PARAM_INT);
 		
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
@@ -84,7 +84,7 @@ final class Panel_Model extends PDO
 		try{
 	
 			$sth = $this->prepare( Panel_Query::getQuery( 'GET_ORDER_QUEUE_VIEW' ) );
-			$sth->bindValue(':limit', (int)$iLimit, PDO::PARAM_INT);
+			$sth->bindValue(':limit', (int) PANEL_MAX_RESULTS, PDO::PARAM_INT);
 	
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
@@ -113,7 +113,7 @@ final class Panel_Model extends PDO
 		try{
 
 			$sth = $this->prepare( Panel_Query::getQuery( 'GET_PROCESS_LOG_VIEW' ) );
-			$sth->bindValue(':limit', (int)$iLimit, PDO::PARAM_INT);
+			$sth->bindValue(':limit', (int) PANEL_MAX_RESULTS, PDO::PARAM_INT);
 
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );

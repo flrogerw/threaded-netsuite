@@ -47,11 +47,19 @@
 	margin: 0;
 }
 </style>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
+<link href="public/scripts/jquery.tablesorter/themes/blue/style.css" type="text/css" rel="stylesheet" />
+<link href="public/scripts/jquery.tablesorter/addons/pager/jquery.tablesorter.pager.css" type="text/css" rel="stylesheet" />
+<script src="public/scripts/jquery.tablesorter/jquery-latest.js"></script>
+<script type="text/javascript" src="public/scripts/jquery.tablesorter/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="public/scripts/jquery.tablesorter/addons/pager/jquery.tablesorter.pager.js"></script>  
 <script type="text/javascript">
 $(document).ready(function(){
 
+
+	
+		        $("#main").tablesorter({widthFixed: true, widgets: ['zebra']}).tablesorterPager({container: $("#pager")}); 
+		
+	
 	var sPath=window.location.pathname;
 	var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
 	

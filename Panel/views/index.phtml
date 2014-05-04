@@ -1,5 +1,6 @@
 <?php $ignore = array( 'order_errors', 'order_warnings', 'customer_errors', 'customer_warnings', 'process_id' ) ?>
 <?php $title = 'Completed Successfully' ?>
+
 <style>
 #main {
 width: 600px;
@@ -16,7 +17,8 @@ body {
 }
 
 </style>
-<table id="main">
+<table id="main" class="tablesorter">
+<thead>
 	<tr>
 		<?php foreach( array_keys($this->aOrders[0]) as $sHeading ):
 		if( in_array(  $sHeading, $ignore ) ){
@@ -25,7 +27,12 @@ body {
 		<th><?php echo( ucwords( str_replace( '_',' ', strtolower( $sHeading ) ) ) ) ?>
 		</th>
 		<?php endforeach ?>
+		<th>
+		Record View
+		</th>
 	</tr>
+	</thead>
+	<tbody>
 	<?php foreach( $this->aOrders as $aOrder ): ?>
 	<tr>
 		<?php foreach( $aOrder as $sKey => $mValue ):
@@ -45,4 +52,20 @@ body {
 		<td><a href="ViewRecord?q=<?php echo( $aOrder['process_id'] ) ?>">Veiw Record</a></td>
 	</tr>
 	<?php endforeach ?>
+	</tbody>
 </table>
+<div class="pager" id="pager">
+	<form>
+		<img class="first" src="public/images/first.png">
+		<img class="prev" src="public/images/prev.png">
+		<input type="text" class="pagedisplay">
+		<img class="next" src="public/images/next.png">
+		<img class="last" src="public/images/last.png">
+		<select class="pagesize">
+			<option value="10" selected="selected">10</option>
+			<option value="20">20</option>
+			<option value="30">30</option>
+			<option value="40">40</option>
+		</select>
+	</form>
+</div>
