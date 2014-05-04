@@ -33,7 +33,8 @@ public function getUserStats(){
 	try{
 	
 		$sth = $this->prepare( Panel_Query::getQuery( 'GET_USER_STATS' ) );
-	
+		$sth->bindValue(':limit', (int) PANEL_SUMMARY_RESULTS, PDO::PARAM_INT);
+		
 		if ( !$sth ) {
 			throw new Exception( explode(',', $sth->errorInfo() ) );
 		}
