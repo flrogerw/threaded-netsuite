@@ -29,7 +29,25 @@ final class Panel_Model extends PDO
 		}
 	}
 
-
+public function getUserStats(){
+	try{
+	
+		$sth = $this->prepare( Panel_Query::getQuery( 'GET_USER_STATS' ) );
+	
+		if ( !$sth ) {
+			throw new Exception( explode(',', $sth->errorInfo() ) );
+		}
+	
+		$sth->execute();
+		$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+		return( $this->_dbResults );
+	
+	}catch( Exception $e ){
+		Netsuite_Db_Model::logError( $e );
+		throw new Exception( 'Could NOT Get User Log Stats From the Queue DB for the Control Panel' );
+	}
+}
+	
 	public function getUserLogView(){
 		 
 		try{
@@ -96,7 +114,7 @@ final class Panel_Model extends PDO
 	
 		}catch( Exception $e ){
 			Netsuite_Db_Model::logError( $e );
-			throw new Exception( 'Could NOT Get Ques Stats From the Queue DB for the Control Panel' );
+			throw new Exception( 'Could NOT Get Queue Stats From the Queue DB for the Control Panel' );
 		}
 	}
 	

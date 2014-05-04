@@ -17,6 +17,7 @@ class Panel_Controller {
 	
 	public function userlogAction(){
 		$this->view->aOrders = $this->_model->getUserLogView();
+		$this->view->queueStats = $this->_model->getUserStats();
 		$this->view->show(__FUNCTION__);
 	}
 

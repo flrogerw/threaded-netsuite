@@ -1,29 +1,10 @@
-<?php $ignore = array( 'order_errors', 'order_warnings', 'customer_errors', 'customer_warnings', 'process_id' ) ?>
-<?php $title = 'Completed Successfully' ?>
-<style>
-body {
-	background-image:
-		url('public/images/cool_background_image.gif');
-	background-repeat: repeat;
-}
-#main {
-width: 800px;
-
-}
-.td_status:hover{
-cursor: pointer;
-}
-
-
-
-</style>
+<div id="main_div">
+	<h2>NetSuite User Log</h2>
+	<span class="max_results">*<?php echo( PANEL_MAX_RESULTS) ?> Results Returned</span>
 <table id="main" class="tablesorter">
 <thead>
 	<tr>
-		<?php foreach( array_keys($this->aOrders[0]) as $sHeading ):
-		if( in_array(  $sHeading, $ignore ) ){
-			continue;
-		}?>
+		<?php foreach( array_keys($this->aOrders[0]) as $sHeading ):?>
 		<th><?php echo( ucwords( str_replace( '_',' ', strtolower( $sHeading ) ) ) ) ?>
 		</th>
 		<?php endforeach ?>
@@ -32,19 +13,9 @@ cursor: pointer;
 	<tbody>
 	<?php foreach( $this->aOrders as $aOrder ): ?>
 	<tr>
-		<?php foreach( $aOrder as $sKey => $mValue ):
-		if( in_array(  $sKey, $ignore ) ){
-			continue;
-		}
-		if($sKey == 'status' && $mValue == 'error'){
-			$title = '';
-			$title .= ( $aOrder['customer_errors'] != '')?"Customer Errors:\n" .$aOrder['customer_errors']."\n":'';
-			$title .= ( $aOrder['order_errors'] != '')?"Order Errors:\n". $aOrder['order_errors']:'';
-		}
-		?>
-		<td class="td_<?php echo( $sKey ) ?>" align="center" title="<?php echo( $title ) ?>"><?php echo( $mValue ) ?>
+		<?php foreach( $aOrder as $sKey => $mValue ): ?>
+		<td class="td_<?php echo( $sKey ) ?>" align="center"><?php echo( $mValue ) ?>
 		</td>
-		<?php $title = 'Completed Successfully' ?>
 		<?php endforeach ?>
 		
 	</tr>
@@ -65,4 +36,35 @@ cursor: pointer;
 			<option value="40">40</option>
 		</select>
 	</form>
+</div>
+</div>
+<h3>User Summary</h3>
+
+<div id="stats">
+
+	<table id="stats_table" class="tablesorter">
+		<thead>
+			<tr>
+				<?php foreach( array_keys($this->queueStats[0]) as $sHeading ):?>
+				<th><?php echo( ucwords( str_replace( '_',' ', strtolower( $sHeading ) ) ) ) ?>
+				</th>
+				<?php endforeach ?>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach( $this->queueStats as $aOrder ): 
+			
+			?>
+			<tr>
+				<?php foreach( $aOrder as $sKey => $mValue ):?>
+				
+				<td class="td_<?php echo( $sKey ) ?>" align="center"><?php echo( trim($mValue) ) ?>
+				</td>
+
+				<?php endforeach ?>
+
+			</tr>
+			<?php endforeach ?>
+		</tbody>
+	</table>
 </div>
