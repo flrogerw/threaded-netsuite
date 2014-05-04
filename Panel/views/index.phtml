@@ -1,22 +1,10 @@
 <?php $ignore = array( 'order_errors', 'order_warnings', 'customer_errors', 'customer_warnings', 'process_id' ) ?>
 <?php $title = 'Completed Successfully' ?>
 
-<style>
-#main {
-width: 600px;
 
-}
-.td_status:hover{
-cursor: pointer;
-}
-
-body {
-	background-image:
-		url('public/images/cool_background_image.gif');
-	background-repeat: repeat;
-}
-
-</style>
+<div id="main_div">
+	<h2>NetSuite Process Log</h2>
+	*<?php echo( PANEL_MAX_RESULTS) ?> Results Returned
 <table id="main" class="tablesorter">
 <thead>
 	<tr>
@@ -68,4 +56,35 @@ body {
 			<option value="40">40</option>
 		</select>
 	</form>
+</div>
+</div>
+<h3><?php echo( PANEL_SUMMARY_RESULTS) ?> Day Summary</h3>
+
+<div id="stats">
+
+	<table id="stats_table" class="tablesorter">
+		<thead>
+			<tr>
+				<?php foreach( array_keys($this->queueStats[0]) as $sHeading ):?>
+				<th><?php echo( ucwords( str_replace( '_',' ', strtolower( $sHeading ) ) ) ) ?>
+				</th>
+				<?php endforeach ?>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach( $this->queueStats as $aOrder ): 
+			
+			?>
+			<tr>
+				<?php foreach( $aOrder as $sKey => $mValue ):?>
+				
+				<td class="td_<?php echo( $sKey ) ?>" align="center"><?php echo( trim($mValue) ) ?>
+				</td>
+
+				<?php endforeach ?>
+
+			</tr>
+			<?php endforeach ?>
+		</tbody>
+	</table>
 </div>

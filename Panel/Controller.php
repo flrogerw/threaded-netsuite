@@ -23,6 +23,7 @@ class Panel_Controller {
 	public function indexAction(){
 
 		$this->view->aOrders = $this->_model->getProcessLogView();
+		$this->view->queueStats = $this->_model->getProcessStats();
 		$this->view->show(__FUNCTION__);
 	}
 	

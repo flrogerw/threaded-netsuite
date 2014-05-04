@@ -1,34 +1,9 @@
 <?php $ignore = array( 'order_errors', 'order_warnings', 'customer_errors', 'customer_warnings', 'process_id' ) ?>
 <?php $title = 'Completed Successfully' ?>
-<style>
-body {
-	background-image: url('public/images/cool_background_image.gif');
-	background-repeat: repeat;
-}
 
-#main_div {
-	float: left;
-	margin-right: 60px;
-	margin-left: 30px;
-}
-
-#main {
-	width: 800px;
-}
-
-#stats {
-	width: 300px;
-	height: 300px;
-	overflow: auto;
-	margin-left: 50px;
-}
-
-.td_status:hover {
-	cursor: pointer;
-}
-</style>
 <div id="main_div">
 	<h2>NetSuite Order Queue</h2>
+	<span class="max_results">*<?php echo( PANEL_MAX_RESULTS) ?> Results Returned</span>
 	<table id="main" class="tablesorter">
 		<thead>
 			<tr>
@@ -78,7 +53,7 @@ body {
 		</form>
 	</div>
 </div>
-<h3>7 Day Summary</h3>
+<h3><?php echo( PANEL_SUMMARY_RESULTS) ?> Day Summary</h3>
 <div id="stats">
 
 	<table id="stats_table" class="tablesorter">
