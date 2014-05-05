@@ -19,6 +19,12 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @access private
 	*/
 	private $_itemListEntries = array();
+	
+	/**
+	 * @var boolean
+	 * @access private
+	 */
+	private $_ismultishipto;
 
 	/**
 	 * Customer Activa Id
@@ -50,13 +56,13 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @access protected
 	 * @return void
 	*/
-	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId ) {
+	public function __construct( $aItemListData, $iLocationId, $sActivaId, $iEntityId, $ismultishipto = false ) {
 
 		$this->_activa_id = $sActivaId;
 		$this->_entity_id = $iEntityId;
+		$this->_ismultishipto = $ismultishipto;
 		$iCount = count( array_filter( $aItemListData, 'is_array' ) );
 		$this->_itemListArray = ( $iCount == count( $aItemListData ) )? $aItemListData: array( $aItemListData );
-		//$this->_updateAddressList( $iLocationId, $ismultishipto );
 		$this->_validate( $iLocationId );
 
 	}
@@ -64,90 +70,6 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	public function getItemList() {
 
 		return( $this->_itemListEntries );
-	}
-
-	
-	/**
-	 * @deprecated
-	 * @param unknown $iLocationId
-	 * @param unknown $ismultishipto
-	 */
-	protected function _updateAddressList( $iLocationId, $ismultishipto ){
-/*
-		try{
-
-			$oAddressBook = new Netsuite_Record_AddressBook();
-
-			// Build Address Object, Check if Address is In Database and add to Netsuite Payload if NOT
-			if( $ismultishipto === true ){
-				
-				foreach( $this->_itemListArray as $iKey => &$aItem ){
-
-					// Set Item Address to Store if Shipping Method is STR (In-Store)
-					if( $aItem['custcol_produce_in_store'] === true ){
-
-						$model = new Netsuite_Db_Model();
-						$aStoreAddress = $model->getStoreAddress( $iLocationId );
-						$aStoreAddress['defaultshipping'] = true;
-						$aStoreAddress['isresidential'] = false;
-						$aStoreAddress['label'] = ucfirst( strtolower($aStoreAddress['store_name'] ) ) . ' Store';
-
-						$aItem = array_merge( $aItem, $aStoreAddress );
-					}
-
-					$oAddress = new Netsuite_Record_Address( $aItem );
-
-					switch( true ){
-						case( !$oAddress->isOk() ):
-							$this->logError( 'Item List Entry '. ucfirst($iKey) . ' Has Errors: ' . implode( ', ', $oAddress->getErrors() ) );
-							break;
-
-						case( $oAddressBook->getAddress( $this->_activa_id, $oAddress->getAddress() ) === false ):
-							$aOrderAddresses[] = $oAddress;
-							break;
-					}
-				}
-			}
-
-			if( !empty( $aOrderAddresses ) ){
-
-				$aNetsuiteAddresses = json_decode( $oAddressBook->setAddressBookEntry( $this->_entity_id, $aOrderAddresses ), true );
-
-				switch( true ){
-					
-					// Check for a NULL Response
-					case( gettype($aNetsuiteAddresses) != 'array' ):
-						$this->logError( 'Netsuite Error: Netsuite Returned a NULL Response');
-						break;
-						
-						// Check for an Error
-					case( isset( $aNetsuiteAddresses['error'] ) ):
-						// LOG ERROR
-						$this->logError( 'Netsuite Error: ' . $aNetsuiteAddresses['error']['code'] . ' :: ' . $aNetsuiteAddresses['error']['message'] );
-						break;
-						
-						// Check for Failure
-					case( $aNetsuiteAddresses['status'] == 'failure' ):
-						$this->logError( 'Netsuite Error: ' . $aNetsuiteAddresses['payload']['code'] . ' :: ' . $aNetsuiteAddresses['payload']['details'] );
-						break;
-						
-						// Update Local Database
-					default:
-						foreach( $aNetsuiteAddresses as $aAddress ){
-							$oAddressBook->setSystemAddress( $this->_activa_id, $aAddress['id'], $aAddress['text'] );
-						}
-						break;
-				}
-			}
-
-
-			// Not Required, Only for UPDATING the entire Address Book
-			//$this->updateSystemAddressBook( $iEntityId, $sActivaId );
-
-		}catch( Exception $e ){
-			Netsuite_Db_Model::logError( $e->getMessage() );
-		}
-		*/
 	}
 
 
@@ -170,7 +92,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 				$this->_itemListEntries[] = $oItem->getItem();
 				// Check For Discount
 				if( $oItem->hasDiscount() ){
-					$this->_itemListEntries[] = $oItem->getDiscountItem( $oItem->discountitem );
+					$this->_itemListEntries[] = $oItem->getDiscountItem( $oItem->discountitem, $this->_ismultishipto );
 				}
 			}
 

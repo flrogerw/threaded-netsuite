@@ -78,61 +78,6 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		// Set Activa Customer Id
 		$this->_activa_id = $sActivaId;
 		$this->_locationId = $iLocationId;
-
-		// Set ImageSku Value
-		//if( isset( $this->custcol162 ) && $this->custcol162 !== false ){
-			//$this->custcol162 = $oModel->getImageSku( $this->custcol162 );
-		//} else {
-			//$this->custcol162 = '';
-		//}
-
-		// Get Internal Id for Item
-		//$sCurrentItem = (int) $oModel->getItem( $sItemType, $this->item );
-
-		//if( $sCurrentItem == 0 ){
-
-		//self::logError( 'Could NOT Find Item in the DataBase Using: '. $this->item );
-		//}
-
-		//$this->item = $sCurrentItem;
-
-		// Location Logic
-		//$sItemLocation = ( $this->custcol_produce_in_store === true )? 'store': 'corporate';
-		//$this->location = ( $sItemLocation == 'corporate' )? $oModel->callXrefTable( 'Location', 'corporate' ): $this->_locationId;
-
-		// Set Tax Code Based on Item Location
-		//$iTaxCode = $oModel->getTaxCode( $this->_locationId );
-		//if( $iTaxCode == null ){
-		//self::logError( 'Could NOT Find TaxCode in the DataBase Using: ' . $this->_locationId );
-		//}
-
-		//$this->taxcode = $iTaxCode;
-
-		// Shipmethods that require NO address
-		//if( strtolower( $this->shipmethod ) != 'cpu' /* && strtolower( $this->shipmethod ) != 'str' */ ){
-		/*
-		if( $this->custcol_produce_in_store === false ){
-
-			// Set Address Internal Id And Shipping Method
-			$oAddress = new Netsuite_Record_Address( $aItem );
-
-			if( $oAddress->isOk() ){
-				// Set Shipping Methhod
-				//$this->shipmethod = (int) $oModel->getShippingMethod( $oAddress->state, $this->shipmethod );
-				$sAddress = $this->getAddressString( $oAddress->getAddress() );
-				$iInternalId = $oModel->getAddress( $this->_activa_id, $sAddress );
-
-				if( $iInternalId !== false ){
-					$this->shipaddress = $iInternalId;
-				} else{
-					self::logError( 'Could NOT Get Address Netsuite Internal Id Using: ' . $this->_activa_id . ' - ' . $sAddress );
-				}
-			}
-		} else {
-			//$this->shipmethod = (int) $oModel->getShippingMethod( null, $this->shipmethod );
-
-		}
-		*/
 	}
 
 	/**
@@ -155,7 +100,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		return( true );
 	}
 
-	public function getDiscountItem( $sDiscountType = 'webdiscount') {
+	public function getDiscountItem( $sDiscountType = 'webdiscount', $ismultishipto) {
 
 		$oModel = new Netsuite_Db_Model();
 
@@ -164,9 +109,27 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 				'rate' => $this->discounttotal,
 				'quantity' => 1,
 				'istaxable' => false,
-				'shipaddress' => $this->shipaddress,
+				//'shipaddress' => $this->shipaddress,
 				'price' => -1
 		);
+		
+		if( $ismultishipto ){
+			
+			$aAddress = array(
+					'attention' => $this->attention,
+					'addressee' => $this->addressee,
+					'addr1' => $this->addr1,
+					'addr2' => $this->addr2,
+					'addr3' => $this->addr3,
+					'city' => $this->city,
+					'state' => $this->state,
+					'zip' => $this->zip,
+					'country' => $this->country,
+					'phone' => $this->phone,
+			);
+			
+			$aDiscountItem = array_merge( $aDiscountItem, $aAddress );
+		}
 
 		$oDiscountItem = Netsuite_Record::factory()->discountitem( $aDiscountItem, $this->_locationId, $this->_activa_id );
 
