@@ -240,7 +240,7 @@ function afterSubmit(type) {
 			vBody = vBody + vBillState + ' ';
 		if (vBillZip != null && vBillZip != '')
 			vBody = vBody + vBillZip;
-	
+
 		vBody = vBody + '</td>';
 		vBody = vBody
 				+ '<td style="width: 250px; height: 20px;" valign="top" align="left">';
@@ -273,14 +273,14 @@ function afterSubmit(type) {
 		vBody = vBody + vShipAddr1 + '<br />';
 		if (vShipAddr2 != null && vShipAddr2 != '')
 			vBody = vBody + vShipAddr2 + '<br />';
-		
+
 		if (vShipCity != null && vShipCity != '')
 			vBody = vBody + vShipCity + ', ';
 		if (vShipState != null && vShipState != '')
 			vBody = vBody + vShipState + ' ';
 		if (vShipZip != null && vShipZip != '')
 			vBody = vBody + vShipZip;
-		
+
 		vBody = vBody + '</td>';
 		vBody = vBody
 				+ '<td style="width: 250px; height: 20px;" valign="top" align="left">';

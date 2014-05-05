@@ -109,7 +109,6 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 				'rate' => $this->discounttotal,
 				'quantity' => 1,
 				'istaxable' => false,
-				//'shipaddress' => $this->shipaddress,
 				'price' => -1
 		);
 		

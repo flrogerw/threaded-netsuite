@@ -6,13 +6,13 @@
  * @platform NetSuite 
  */
 
-/** 
- * Items Required by Other Items 
+/**
+ * Items Required by Other Items
  */
 var dependentitems = [];
 
-/** 
- * Items That Require Other Items 
+/**
+ * Items That Require Other Items
  */
 var itemsdependent = [];
 
@@ -20,12 +20,12 @@ var itemsdependent = [];
  * 
  */
 var items = {
-		
+
 	/**
 	 * Loads all items with dependencies
 	 * 
 	 * @return void
-	 */ 
+	 */
 	getdependentitems : function() {
 
 		if (dependentitems.length > 0) {
@@ -35,7 +35,8 @@ var items = {
 		var loadSearch = nlapiLoadSearch('item', 'customsearch_dependent_items');
 
 		var getData = loadSearch.runSearch();
-		getData.forEachResult(function(searchRow) {
+		getData
+				.forEachResult(function(searchRow) {
 
 					itemsdependent.push(searchRow.getValue('name').replace(
 							/\s+/g, ''));
@@ -45,15 +46,18 @@ var items = {
 					return true;
 				});
 	},
-	
+
 	/**
-	 * Adds new item to items object 
+	 * Adds new item to items object
 	 * 
-	 * @param string itemname
-	 * @param int quantity
-	 * @param int internalid
+	 * @param string
+	 *            itemname
+	 * @param int
+	 *            quantity
+	 * @param int
+	 *            internalid
 	 * @returns void
-	 */ 
+	 */
 	additem : function(itemname, quantity, internalid) {
 
 		var itemKey = this.isitem(itemname);
@@ -68,8 +72,9 @@ var items = {
 	/**
 	 * Gets an Items dependent item from itemsdependent/dependentitems arrays
 	 * 
-	 * @param string itemname
-	 * @return mixed 
+	 * @param string
+	 *            itemname
+	 * @return mixed
 	 */
 	getdependents : function(itemname) {
 
@@ -84,9 +89,10 @@ var items = {
 	/**
 	 * Test for exsistance of item in items object, creates new if not
 	 * 
-	 * @param string itemname
+	 * @param string
+	 *            itemname
 	 * @returns string itemname
-	 */ 
+	 */
 	isitem : function(itemname) {
 
 		itemname = itemname.replace(/\s+/g, '');
@@ -99,7 +105,8 @@ var items = {
 	/**
 	 * Creates new item object
 	 * 
-	 * @param string itemname
+	 * @param string
+	 *            itemname
 	 * @returns void
 	 */
 	createitem : function(itemname) {
@@ -149,8 +156,8 @@ var items = {
 
 			var item = items[i];
 			if (item.quantity < item.requiredby) {
-				item.errors.push(' ' + item.requiredby + ' Item(s) Require ' + i
-						+ ': ' + item.quantity + ' Were Ordered.');
+				item.errors.push(' ' + item.requiredby + ' Item(s) Require '
+						+ i + ': ' + item.quantity + ' Were Ordered.');
 			}
 		}
 	},
@@ -214,24 +221,24 @@ function beforeLoad(type) {
 					var quantity = record.getLineItemValue('item', 'quantity',
 							i);
 					var internalid = record.getLineItemValue('item', 'item', i);
-					
+
 					// add item to items array
 					items.additem(itemname, quantity, internalid);
 
 				}
 			}
-			
+
 			// sets item dependencies
 			items.setdependents();
 			// check for correct number if dependencies
 			items.checkfulfillment();
-			
+
 			// check for fulfillment errors
 			var haserrors = items.haserrors();
 			if (haserrors !== false) {
 				throw haserrors;
 			}
-			//nlapiLogExecution('DEBUG', 'Final Array', JSON.stringify(items));
+			// nlapiLogExecution('DEBUG', 'Final Array', JSON.stringify(items));
 
 		} catch (e) {
 			throw e.join("<br>");
