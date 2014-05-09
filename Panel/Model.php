@@ -28,6 +28,27 @@ final class Panel_Model extends PDO
 			Netsuite_Db_Model::logError( $e );
 		}
 	}
+	
+	public function getSearchLogView( $searchId ){
+		
+		try{
+		
+			$sth = $this->prepare( Panel_Query::getQuery( 'GET_SEARCH_RESULTS' ) );
+		
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+		
+			$sth->execute( array($searchId) );
+			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+			
+			return( $this->_dbResults );
+		
+		}catch( Exception $e ){
+			Netsuite_Db_Model::logError( $e );
+			throw new Exception( 'Could NOT Get Order Search From the Queue DB for the Control Panel' );
+		}
+	}
 
 public function getUserStats(){
 	try{

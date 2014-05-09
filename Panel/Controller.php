@@ -28,6 +28,13 @@ class Panel_Controller {
 		$this->view->show(__FUNCTION__);
 	}
 	
+	public function searchAction(){
+		
+		$this->view->aOrders = $this->_model->getSearchLogView( '%'.$_POST['q'].'%' );
+		$this->view->queueStats = $this->_model->getProcessStats();
+		$this->view->show('indexAction');
+	}
+	
 	public function orderqueueAction(){
 	
 		$this->view->aOrders = $this->_model->getOrderQueueView();
