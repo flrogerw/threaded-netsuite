@@ -29,8 +29,8 @@ class Panel_Controller {
 	}
 	
 	public function searchAction(){
-		
-		$this->view->aOrders = $this->_model->getSearchLogView( '%'.$_POST['q'].'%' );
+
+		$this->view->aOrders = $this->_model->getSearchLogView( '%'.$this->params['q'].'%' );
 		$this->view->queueStats = $this->_model->getProcessStats();
 		$this->view->show('indexAction');
 	}
@@ -42,10 +42,11 @@ class Panel_Controller {
 		$this->view->show(__FUNCTION__);
 	}
 
-	public function viewrecordAction(){		
-
-		$this->view->aOrder = $this->_model->getOrderInfo( $this->params['q']);
-		//$this->nstestAction( $this->_model->getOrderInfo( $this->params['q']) );
+	public function viewrecordAction(){
+				
+		$aOrder = $this->_model->getOrderInfo( $this->params['q']);
+		$this->view->aOrder = json_decode($aOrder[0]['order_json'], true);
+		$this->view->aCustomer = json_decode($aOrder[0]['customer_json'], true);
 		$this->view->show(__FUNCTION__);
 	}
 

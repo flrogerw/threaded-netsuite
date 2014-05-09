@@ -1,3 +1,16 @@
-<?php 
-var_dump( $this->aOrder );
-?>
+<?php foreach( $this->aOrder as $key => $value ): 
+if( is_array($value)){ ?>
+	<h3><?php echo($key)?></h3>
+	<?php 
+
+	$count = (sizeof($value)-1);
+	for( $i=0; $i<=$count; $i++):
+	foreach( $value[$i] as $key2 => $value2 ):
+	
+	echo($key2) ?>:<?php echo($value2) ?><br>
+	<?php endforeach;
+	 endfor;
+}else{?>
+
+<?php echo($key) ?>:<?php echo($value); }?><br>
+<?php endforeach ?>
