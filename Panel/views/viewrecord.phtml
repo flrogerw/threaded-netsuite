@@ -7,10 +7,10 @@ if( is_array($value)){ ?>
 	for( $i=0; $i<=$count; $i++):
 	foreach( $value[$i] as $key2 => $value2 ):
 	
-	echo($key2) ?>:<?php echo($value2) ?><br>
+	 echo($key2) ?>:&nbsp;<b><?php echo($value2) ?></b><br>
 	<?php endforeach;
 	 endfor;
 }else{?>
 
-<?php echo($key) ?>:<?php echo($value); }?><br>
+<?php echo($key) ?>:&nbsp;<b><?php echo($value); }?></b><br>
 <?php endforeach ?>
