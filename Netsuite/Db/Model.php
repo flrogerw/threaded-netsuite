@@ -28,10 +28,11 @@ final class Netsuite_Db_Model
  * @return void
  * @throws Exception
  */
-	public function resetStalledOrders(){
+	public static function resetStalledOrders(){
+		
 		try{
-					
-			$rowsAffected = $this->_dbHandle->exec( Netsuite_Db_Query::getQuery( 'RESET_STALLED_ORDERS' ) );
+			$connection = Netsuite_Db_Db::getInstance();
+			$connection->exec( Netsuite_Db_Query::getQuery( 'RESET_STALLED_ORDERS' ) );
 
 		} catch( Exception $e ){
 			self::logError( $e );

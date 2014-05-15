@@ -12,7 +12,7 @@ class Thread_Server {
 		$this->_pool = new Thread_Pool( MAX_THREADS );
 		$this->_model = new Netsuite_Db_Model();
 		$this->_activa = new Netsuite_Db_Activa();
-		$this->_model->resetStalledOrders();
+		//$this->_model->resetStalledOrders();
 		$this->orders = $this->_model->readOrderQueue( MAX_ORDER_RECORDS );
 		if( $this->hasOrders() ){
 			$this->_hasDuplicates();
