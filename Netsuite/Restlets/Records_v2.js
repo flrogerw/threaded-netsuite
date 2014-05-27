@@ -91,6 +91,7 @@ function setAddress(args) {
 
 	for ( var i = 0; i < args.data.address.length; i++) {
 		var address = args.data.address[i];
+
 		if (addresshash.indexOf(md5(getAddressString(address))) == -1) {
 
 			addressbookCount++;
@@ -103,6 +104,8 @@ function setAddress(args) {
 								address[key]);
 			}
 			record.commitLineItem('addressbook');
+			addresshash.push(md5(getAddressString(address)));
+
 		} else {
 			var addrIndex = addresshash.indexOf(md5(getAddressString(address)))
 			returnAddrBook.push(addressbook[addrIndex]);
@@ -159,6 +162,7 @@ function setAddressBook(record, addressBook) {
 }
 
 function setItems(record, items) {
+
 	// --- Set Address Book line items.
 	var counter = 0;
 
@@ -203,6 +207,25 @@ function setItems(record, items) {
 
 		}
 
+	} else {
+		if (record.hasOwnProperty('shipaddress')) {
+			var addressObj = {
+				"addrtext" : record.shipaddress,
+				"defaultshipping" : 'T'
+			};
+
+			args.data.address.push(addressObj);
+		}
+		if (record.hasOwnProperty('billaddress')) {
+			var addressObj = {
+				"addrtext" : record.billaddress,
+				"defaultbilling" : 'T'
+			};
+
+			args.data.address.push(addressObj);
+		}
+
+		var addressbook = setAddress(args);
 	}
 
 	for (count in items) {
@@ -211,6 +234,7 @@ function setItems(record, items) {
 
 			record.setLineItemValue('item', key, counter, items[count][key]);
 		}
+
 		if (record.getFieldValue('ismultishipto') == 'T') {
 			var addrIndex = addressTextArray
 					.indexOf(md5(getAddressString(items[count])));
@@ -226,6 +250,13 @@ function createOrder(args) {
 
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
+
+	/*
+	 * if (order.hasOwnProperty('custbody_order_source_id')) { var isOrder =
+	 * checkDuplicates( order.custbody_order_source_id); if( isOrder != null ){
+	 * return( isOrder ); }
+	 *  }
+	 */
 
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
@@ -349,4 +380,47 @@ function createCustomer(args) {
 	}
 
 	return recordId;
+}
+
+function checkDuplicates(orderId) {
+
+	var filters = [];
+	var columns = [];
+
+	/* COLUMNS */
+
+	/* FILTERS */
+	filters.push(new nlobjSearchFilter("recordtype", null, "is", "salesorder"));
+	filters.push(new nlobjSearchFilter('custbody_order_source_id', null, 'is',
+			orderId));
+
+	var savedsearch = nlapiCreateSearch('transaction', filters, columns);
+	var results = runSearch(savedsearch);
+
+	var returnString = (results.length > 0) ? results[0]['id'] : null;
+	return JSON.stringify(returnString);
+}
+
+/**
+ * Proccess search
+ * 
+ * @param nlobjSearchResult
+ *            Object savedsearch
+ * @returns void
+ */
+function runSearch(savedsearch) {
+
+	var results = [];
+
+	var resultset = savedsearch.runSearch();
+	var searchid = 0;
+	do {
+		var resultslice = resultset.getResults(searchid, searchid + 1000);
+		for ( var rs in resultslice) {
+			results.push(resultslice[rs]);
+			searchid++;
+		}
+	} while (resultslice.length >= 1000);
+
+	return (results);
 }
