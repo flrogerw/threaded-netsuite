@@ -166,17 +166,18 @@ function setItems(record, items) {
 	// --- Set Address Book line items.
 	var counter = 0;
 
+	var addressIdArray = [];
+	var addressTextArray = [];
+
+	var args = {
+		"data" : {
+			"id" : record.getFieldValue('entity'),
+			"address" : []
+		}
+	};
+
 	if (record.getFieldValue('ismultishipto') == 'T') {
 
-		var addressIdArray = [];
-		var addressTextArray = [];
-
-		var args = {
-			"data" : {
-				"id" : record.getFieldValue('entity'),
-				"address" : []
-			}
-		};
 		for (count in items) {
 			var item = items[count];
 			var addressObj = {
@@ -208,17 +209,29 @@ function setItems(record, items) {
 		}
 
 	} else {
-		if (record.hasOwnProperty('shipaddress')) {
+
+		// Reverse Engineering for Address Elements from AddressText
+
+		var shipaddress = (record.getFieldValue('shipaddress') == null) ? null
+				: getAddressObj(record.getFieldValue('shipaddress'));
+
+		// nlapiLogExecution('DEBUG', 'addrtxt: ', JSON.stringify(
+		// shipAddressObj ) );
+
+		if (record.getFieldValue('shipaddress') != null) {
+
+			var shipAddressObj = getAddressObj(shipaddress);
+
 			var addressObj = {
-				"addrtext" : record.shipaddress,
+				"addrtext" : record.getFieldValue('shipaddress'),
 				"defaultshipping" : 'T'
 			};
 
 			args.data.address.push(addressObj);
 		}
-		if (record.hasOwnProperty('billaddress')) {
+		if (record.getFieldValue('billaddress') != null) {
 			var addressObj = {
-				"addrtext" : record.billaddress,
+				"addrtext" : record.getFieldValue('billaddress'),
 				"defaultbilling" : 'T'
 			};
 
@@ -254,8 +267,7 @@ function createOrder(args) {
 	/*
 	 * if (order.hasOwnProperty('custbody_order_source_id')) { var isOrder =
 	 * checkDuplicates( order.custbody_order_source_id); if( isOrder != null ){
-	 * return( isOrder ); }
-	 *  }
+	 * return( isOrder ); } }
 	 */
 
 	for ( var fieldname in order) {
