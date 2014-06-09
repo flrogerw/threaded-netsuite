@@ -5,7 +5,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	//public $customform = 107; // Standard Form
 	public $customform = 129; // POS Form
 	public $recordtype = "salesorder";
-
+	public $addressbook = array();
 	public $authcode;
 	public $billaddress;
 	public $ccapproved = true;
@@ -149,6 +149,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 		$aSalesOrder =  $this->_filter->optimizeValues( $this->_filter->getRecord() );
 		$aSalesOrder['item'] =  $this->item;
 		$aSalesOrder['giftcertificateitem'] =  $this->giftcertificateitem;
+		$aSalesOrder['addressbook'] =  $this->addressbook;
 		return( $aSalesOrder );
 	}
 

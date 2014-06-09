@@ -161,7 +161,7 @@ function setAddressBook(record, addressBook) {
 	}
 }
 
-function setItems(record, items) {
+function setItems(record, items, addressbook) {
 
 	// --- Set Address Book line items.
 	var counter = 0;
@@ -210,32 +210,41 @@ function setItems(record, items) {
 
 	} else {
 
-		// Reverse Engineering for Address Elements from AddressText
+		if (typeof (addressbook.shipping) != 'undefined') {
 
-		var shipaddress = (record.getFieldValue('shipaddress') == null) ? null
-				: getAddressObj(record.getFieldValue('shipaddress'));
-
-		// nlapiLogExecution('DEBUG', 'addrtxt: ', JSON.stringify(
-		// shipAddressObj ) );
-
-		if (record.getFieldValue('shipaddress') != null) {
-
-			var shipAddressObj = getAddressObj(shipaddress);
-
-			var addressObj = {
-				"addrtext" : record.getFieldValue('shipaddress'),
+			var shipAddressObj = {
+				"attention" : addressbook.shipping.attention,
+				"addressee" : addressbook.shipping.addressee,
+				"addr1" : addressbook.shipping.addr1,
+				"city" : addressbook.shipping.city,
+				"state" : addressbook.shipping.state,
+				"zip" : addressbook.shipping.zip,
+				"country" : addressbook.shipping.country,
+				"phone" : addressbook.shipping.phone,
 				"defaultshipping" : 'T'
 			};
 
-			args.data.address.push(addressObj);
+			args.data.address.push(shipAddressObj);
+
 		}
-		if (record.getFieldValue('billaddress') != null) {
-			var addressObj = {
-				"addrtext" : record.getFieldValue('billaddress'),
-				"defaultbilling" : 'T'
+
+		if (typeof (addressbook.billing) != 'undefined') {
+
+			var billAddressObj = {
+				"attention" : addressbook.billing.attention,
+				"addressee" : addressbook.billing.addressee,
+				"addr1" : addressbook.billing.addr1,
+				"city" : addressbook.billing.city,
+				"state" : addressbook.billing.state,
+				"zip" : addressbook.billing.zip,
+				"country" : addressbook.billing.country,
+				"phone" : addressbook.billing.phone,
+				"defaultshipping" : 'T'
+
 			};
 
-			args.data.address.push(addressObj);
+			args.data.address.push(billAddressObj);
+
 		}
 
 		var addressbook = setAddress(args);
@@ -263,17 +272,21 @@ function createOrder(args) {
 
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
-
+	var addressbook = (typeof order.addressbook === 'undefined') ? []
+			: order.addressbook;
 	/*
 	 * if (order.hasOwnProperty('custbody_order_source_id')) { var isOrder =
 	 * checkDuplicates( order.custbody_order_source_id); if( isOrder != null ){
 	 * return( isOrder ); } }
 	 */
 
+	// nlapiLogExecution('DEBUG', 'Addressbook: ',
+	// JSON.stringify(addressbook.shipping));
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
 			if (fieldname != 'recordtype' && fieldname != 'item'
-					&& fieldname != 'giftcertificateitem') {
+					&& fieldname != 'giftcertificateitem'
+					&& fieldname != 'addressbook') {
 				var value = order[fieldname];
 				if (value && typeof value != 'object') {
 					record.setFieldValue(fieldname, value);
@@ -286,7 +299,7 @@ function createOrder(args) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
 
-	setItems(record, order.item);
+	setItems(record, order.item, addressbook);
 
 	var isOk = nlapiSubmitRecord(record);
 	return isOk;

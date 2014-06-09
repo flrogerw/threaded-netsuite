@@ -52,6 +52,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 
 
 	protected $_aSanatizeFinal = array(
+			'addressbook'  => array('filter' => FILTER_SANITIZE_STRING),
 			'authcode' => array('filter' => FILTER_SANITIZE_STRING),
 			'billaddress' => array('filter' => FILTER_SANITIZE_STRING),
 			'ccapproved' => array('filter' => FILTER_VALIDATE_BOOLEAN),
