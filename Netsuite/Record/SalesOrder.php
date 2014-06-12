@@ -117,10 +117,22 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 		$this->_tmp_items_list = $aSalesOrder['item'];
 
 		try{
+
+			// Set Bill && Ship Address String
+			foreach( $this->addressbook as $address ){
+
+				$sAddressString = $this->getAddressString( $address );
+
+				if( $address['defaultshipping'] === true ){
+					$this->shipaddress = $sAddressString;
+				}else{
+					$this->billaddress = $sAddressString;
+				}
+			}
 				
 			// Create Item List
 			$this->item = $this->setItemList();
-				
+
 			// Create Gift Certificate List
 			$this->setGiftCertificates();
 
@@ -149,7 +161,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 		$aSalesOrder =  $this->_filter->optimizeValues( $this->_filter->getRecord() );
 		$aSalesOrder['item'] =  $this->item;
 		$aSalesOrder['giftcertificateitem'] =  $this->giftcertificateitem;
-		$aSalesOrder['addressbook'] =  $this->addressbook;
+		$aSalesOrder['addressbook'] = ( !empty( $this->addressbook ) )?$this->setAddressBook($this->addressbook): array();
 		return( $aSalesOrder );
 	}
 

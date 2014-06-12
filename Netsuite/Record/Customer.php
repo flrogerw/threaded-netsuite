@@ -2,7 +2,7 @@
 
 class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_Interface_INetsuite {
 
-	public $addressbook = array();
+	//public $addressbook = array();
 	public $addressBookEntry;
 	public $companyname;
 	public $customform = 16;
@@ -24,7 +24,7 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 	public $shipcomplete = false;
 
 
-	private $_tmp_addressbook = array();
+	//private $_tmp_addressbook = array();
 	protected $_source;
 
 	public function __construct( array $aCustomer ) {
@@ -52,7 +52,7 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 		foreach( $aCustomer as $key => $value ) {
 			$this->$key = $value;
 		}
-
+/*
 		$this->_tmp_addressbook = $aCustomer['addressbook'];
 
 		//$this->_setSources();
@@ -76,11 +76,11 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 		 }
 		 $this->phone = ( empty( $this->phone ) )? $this->addressbook['billing']['phone']: $this->phone;
 		}
-
+*/
 	}
 
 	protected function _setAddressEntries() {
-
+/*
 		$sFullName = $this->firstname . ' ' . $this->lastname;
 
 		foreach( $this->_tmp_addressbook as &$aEntry ) {
@@ -96,6 +96,7 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 				$aEntry['attention'] = ( isset( $sAttention ) )? $sAttention: $sFullName;
 			}
 		}
+		*/
 	}
 
 	protected function _validate( $aCustomer ) {
@@ -116,9 +117,9 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 	public function getCustomer() {
 
 		$aCustomer =  $this->_filter->optimizeValues( $this->_filter->getRecord() );
-		if( is_array( $this->addressbook ) ){
-			$aCustomer['addressbook'] =  $this->_filter->optimizeValues( array_values(  $this->addressbook) );
-		}
+		//if( is_array( $this->addressbook ) ){
+			//$aCustomer['addressbook'] =  $this->_filter->optimizeValues( array_values(  $this->addressbook) );
+		//}
 		return( $aCustomer );
 	}
 

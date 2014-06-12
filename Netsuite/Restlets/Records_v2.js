@@ -36,18 +36,6 @@ function Records(datain) {
 			return createOrder(args);
 			break;
 
-		case ('get_record'):
-			return getRecord(args);
-			break;
-
-		case ('get_addressbook'):
-			return getAddressbook(args);
-			break;
-
-		case ('set_address'):
-			return setAddress(args);
-			break;
-
 		default:
 			throw nlapiCreateError('Bad Verb', 'System does not understand: '
 					+ request_fields['method'].toLowerCase());
@@ -61,13 +49,16 @@ function Records(datain) {
 
 }
 
-function setAddress(args) {
+function setAddress(entity, addresses) {
 
 	/* Holds AddressTxt Hash for Comparison */
 	var addresshash = new Array();
 
+	/* Netsuite Record of Customer */
+	var record = nlapiLoadRecord('customer', entity);
+
 	/* Current Address Book of Customer */
-	var addressbook = getAddressbook(args);
+	var addressbook = getAddressbook(record);
 
 	/* Length of Customer's Current Address Book */
 	var addressbookCount = addressbook.length;
@@ -81,16 +72,13 @@ function setAddress(args) {
 	/* If True, Inserts new Record for Customer with Updated Address Book */
 	var addedNew = false;
 
-	/* Netsuite Record of Customer */
-	var record = nlapiLoadRecord('customer', args.data.id);
-
 	/* Build Array of Hashed AddrTxt Field for Comparison to Incoming PayLoad */
 	for ( var address in addressbook) {
 		addresshash.push(md5(addressbook[address]['text']));
 	}
 
-	for ( var i = 0; i < args.data.address.length; i++) {
-		var address = args.data.address[i];
+	for ( var i = 0; i < addresses.length; i++) {
+		var address = addresses[i];
 
 		if (addresshash.indexOf(md5(getAddressString(address))) == -1) {
 
@@ -110,12 +98,11 @@ function setAddress(args) {
 			var addrIndex = addresshash.indexOf(md5(getAddressString(address)))
 			returnAddrBook.push(addressbook[addrIndex]);
 		}
-
 	}
 
 	if (addedNew) {
 		nlapiSubmitRecord(record);
-		var record = nlapiLoadRecord('customer', args.data.id);
+		var record = nlapiLoadRecord('customer', entity);
 		for ( var i in newIndexes) {
 			address = new Object();
 			address.text = record.getLineItemValue('addressbook', 'addrtext',
@@ -129,9 +116,8 @@ function setAddress(args) {
 
 }
 
-function getAddressbook(args) {
+function getAddressbook(record) {
 
-	var record = nlapiLoadRecord('customer', args.data.id);
 	var addressbook = new Array();
 
 	for (i = 1; i <= record.getLineItemCount('addressbook'); i++) {
@@ -141,11 +127,6 @@ function getAddressbook(args) {
 		addressbook.push(address);
 	}
 	return (addressbook);
-}
-
-function getRecord(args) {
-	var record = nlapiLoadRecord(args.recordtype, args.id);
-	return record;
 }
 
 function setAddressBook(record, addressBook) {
@@ -161,20 +142,13 @@ function setAddressBook(record, addressBook) {
 	}
 }
 
-function setItems(record, items, addressbook) {
+function setItems(record, items) {
 
 	// --- Set Address Book line items.
 	var counter = 0;
-
 	var addressIdArray = [];
 	var addressTextArray = [];
-
-	var args = {
-		"data" : {
-			"id" : record.getFieldValue('entity'),
-			"address" : []
-		}
-	};
+	var entityAddressBook = [];
 
 	if (record.getFieldValue('ismultishipto') == 'T') {
 
@@ -185,21 +159,25 @@ function setItems(record, items, addressbook) {
 				"addressee" : item.addressee,
 				"addr1" : item.addr1,
 				"city" : item.city,
+				"defaultshipping" : 'F',
+				"defaultbilling" : 'F',
 				"state" : item.state,
 				"zip" : item.zip,
 				"country" : item.country,
-				"phone" : item.phone
+				"phone" : item.phone,
+				"isresidential" : (item.isresidential == null) ? 'T'
+						: item.isresidential
 			};
 
 			if (item.addr2 != null) {
 				addressObj.addr2 = item.addr2;
 			}
 
-			args.data.address.push(addressObj);
-
+			entityAddressBook.push(addressObj);
 		}
 
-		var addressbook = setAddress(args);
+		var addressbook = setAddress(record.getFieldValue('entity'),
+				entityAddressBook);
 
 		for (i in addressbook) {
 			var address = addressbook[i];
@@ -207,47 +185,6 @@ function setItems(record, items, addressbook) {
 			addressTextArray.push(md5(address.text));
 
 		}
-
-	} else {
-
-		if (typeof (addressbook.shipping) != 'undefined') {
-
-			var shipAddressObj = {
-				"attention" : addressbook.shipping.attention,
-				"addressee" : addressbook.shipping.addressee,
-				"addr1" : addressbook.shipping.addr1,
-				"city" : addressbook.shipping.city,
-				"state" : addressbook.shipping.state,
-				"zip" : addressbook.shipping.zip,
-				"country" : addressbook.shipping.country,
-				"phone" : addressbook.shipping.phone,
-				"defaultshipping" : 'T'
-			};
-
-			args.data.address.push(shipAddressObj);
-
-		}
-
-		if (typeof (addressbook.billing) != 'undefined') {
-
-			var billAddressObj = {
-				"attention" : addressbook.billing.attention,
-				"addressee" : addressbook.billing.addressee,
-				"addr1" : addressbook.billing.addr1,
-				"city" : addressbook.billing.city,
-				"state" : addressbook.billing.state,
-				"zip" : addressbook.billing.zip,
-				"country" : addressbook.billing.country,
-				"phone" : addressbook.billing.phone,
-				"defaultshipping" : 'T'
-
-			};
-
-			args.data.address.push(billAddressObj);
-
-		}
-
-		var addressbook = setAddress(args);
 	}
 
 	for (count in items) {
@@ -262,8 +199,7 @@ function setItems(record, items, addressbook) {
 					.indexOf(md5(getAddressString(items[count])));
 			record.setLineItemValue('item', 'shipaddress', counter,
 					addressIdArray[addrIndex]);
-			nlapiLogExecution('DEBUG', 'Set Ship Address To: ',
-					addressIdArray[addrIndex]);
+
 		}
 	}
 }
@@ -272,16 +208,17 @@ function createOrder(args) {
 
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
-	var addressbook = (typeof order.addressbook === 'undefined') ? []
-			: order.addressbook;
+
 	/*
 	 * if (order.hasOwnProperty('custbody_order_source_id')) { var isOrder =
 	 * checkDuplicates( order.custbody_order_source_id); if( isOrder != null ){
 	 * return( isOrder ); } }
 	 */
 
-	// nlapiLogExecution('DEBUG', 'Addressbook: ',
-	// JSON.stringify(addressbook.shipping));
+	if (typeof order.addressbook !== 'undefined') {
+		setAddress(order.entity, order.addressbook);
+	}
+
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
 			if (fieldname != 'recordtype' && fieldname != 'item'
@@ -299,7 +236,7 @@ function createOrder(args) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
 
-	setItems(record, order.item, addressbook);
+	setItems(record, order.item);
 
 	var isOk = nlapiSubmitRecord(record);
 	return isOk;
@@ -368,7 +305,6 @@ function createContact(args, contactCount) {
 	record.setFieldValue('entityid', contact.firstname + ' ' + contact.lastname
 			+ entityid);
 
-	// setAddressBook(record, contact.addressbook);
 	var recordId = nlapiSubmitRecord(record);
 	return recordId;
 
@@ -394,8 +330,6 @@ function createCustomer(args) {
 			}
 		}
 	}
-
-	setAddressBook(record, customer.addressbook);
 
 	var recordId = nlapiSubmitRecord(record);
 

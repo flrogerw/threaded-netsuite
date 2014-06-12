@@ -11,6 +11,7 @@ function getAddressString(address) {
 	return (addressString.join('\n'))
 }
 
+/**
 function getAddressObj(addressText) {
 
 	// Reverse Engineering for Address Elements from AddressText
@@ -41,6 +42,7 @@ function getAddressObj(addressText) {
 	return (addrObj);
 
 }
+*/
 
 function encode64(input) {
 	input = escape(input);

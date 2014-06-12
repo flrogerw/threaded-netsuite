@@ -36,9 +36,9 @@ class Netsuite_Record_Address extends Netsuite_Record_Base implements Netsuite_I
 	public $zip;
 
 	private $_type;
-	private $_attention1 = null;
-	private $_attention2 = null;
-	private $_companyname = null;
+	//private $_attention1 = null;
+	//private $_attention2 = null;
+	//private $_companyname = null;
 
 	public function __construct( array $aAddress, $sType = null ) {
 
@@ -86,7 +86,7 @@ class Netsuite_Record_Address extends Netsuite_Record_Base implements Netsuite_I
 				
 			$this->$key = $value;
 		}
-		
+		/*
 		// Set Attention and Addressee Fields from Line Item Address
 		if( $this->_attention1 !== null ){
 			$this->attention = $this->_attention1 . ' ' . $this->_attention2;			
@@ -108,6 +108,7 @@ class Netsuite_Record_Address extends Netsuite_Record_Base implements Netsuite_I
 				$this->defaultshipping = true;
 				break;
 		}
+		*/
 		
 		if( $this->phone == ''){
 			$this->phone = '123-123-1234';

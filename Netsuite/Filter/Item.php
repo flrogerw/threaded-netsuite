@@ -51,6 +51,8 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 			'giftcertrecipientname' => array('filter' => FILTER_SANITIZE_STRING),
 			'isclosed' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'isestimate' => array('filter' => FILTER_VALIDATE_BOOLEAN),
+			'isresidential' => array('filter' => FILTER_VALIDATE_BOOLEAN,
+					'flags'  => FILTER_NULL_ON_FAILURE),
 			'istaxable' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'item' => array('filter' => FILTER_VALIDATE_INT),
 			'location'  => array('filter' => FILTER_SANITIZE_STRING),

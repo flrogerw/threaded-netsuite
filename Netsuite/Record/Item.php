@@ -21,6 +21,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 	public $giftcertrecipientemail;
 	public $giftcertrecipientname;
 	public $isclosed = false;
+	public $isresidential = true;
 	public $isestimate = false;
 	public $istaxable = true;
 	public $item;
