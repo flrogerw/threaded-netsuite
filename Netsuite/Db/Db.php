@@ -53,7 +53,7 @@ final class Netsuite_Db_Db extends PDO
 			$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		}catch( Exception $e ) {
-			//Netsuite_Db_Model::logError( $e );
+			echo( $e->getMessage() );
 		}
 	}
 
