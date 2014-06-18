@@ -26,9 +26,9 @@ class Thread_Server {
 	 */
 	protected function _hasDuplicates(){
 
-		$aCurrentOrders = [];
-		$aSetToDuplicate = [];
-		$aNewOrders = [];
+		$aCurrentOrders = array();
+		$aSetToDuplicate = array();
+		$aNewOrders = array();
 
 		array_walk( $this->orders, function( $aOrder, $iKey ) use( &$aCurrentOrders){
 			$aCurrentOrders[$aOrder['order_activa_id']] = $aOrder['queue_id'];
