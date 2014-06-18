@@ -109,27 +109,30 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 	protected function _setValues( array $aSalesOrder ) {
 
-		foreach( $aSalesOrder as $key => $value ) {
-			$this->$key = $value;
-		}
-
-		$this->entity = $this->_customer->entityid;
-		$this->_tmp_items_list = $aSalesOrder['item'];
-
 		try{
+			foreach( $aSalesOrder as $key => $value ) {
+				$this->$key = $value;
+			}
+
+			$this->entity = $this->_customer->entityid;
+			$this->_tmp_items_list = $aSalesOrder['item'];
+
+
 
 			// Set Bill && Ship Address String
-			foreach( $this->addressbook as $address ){
+			if( !empty( $this->addressbook ) ){
+				
+				foreach( $this->addressbook as $address ){
 
-				$sAddressString = $this->getAddressString( $address );
+					$sAddressString = $this->getAddressString( $address );
 
-				if( $address['defaultshipping'] === true ){
-					$this->shipaddress = $sAddressString;
-				}else{
-					$this->billaddress = $sAddressString;
+					if( $address['defaultshipping'] === true ){
+						$this->shipaddress = $sAddressString;
+					}else{
+						$this->billaddress = $sAddressString;
+					}
 				}
 			}
-				
 			// Create Item List
 			$this->item = $this->setItemList();
 
