@@ -86,21 +86,42 @@ class Netsuite_Netsuite extends Stackable {
 			}
 			
 			
-			if( empty( $customer->entityid )  ){
-				$results = $this->_process('customer', $customer );
+			switch( true ){
 				
-				if( $results['success'] === true ){
-					$customer->entityid = $results['netsuite']['record_id'];
-					$model->insertCustomer( $customer->custentity_customer_source_id, $customer->entityid );
-					$activa->updateCustomer( $customer->custentity_customer_source_id, $customer->entityid );
-				}
-				$this->worker->addData( $results );
-			} else {
-				//$results['netsuite']['record_id'] = $customer->entityid = $mInternalId;
-				$results['success'] = true;
-				$results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
-				$this->worker->addData( $results );
+				case( $customer->custentity_customer_source_id == 'bongo' ):
+					$results = $this->_process('bongocontact', $customer );
+						
+					if( $results['success'] === true ){
+						//$customer->entityid = $results['netsuite']['record_id'];
+						$results['message'] = 'Added Contact to Bongo with Id: ' . $customer->entityid;
+						$results['json'] = json_encode( $this->_order['customer'] );
+					}
+					$this->worker->addData( $results );
+					break;
+				
+				case( empty( $customer->entityid ) ):
+					
+					$results = $this->_process('customer', $customer );
+					
+					if( $results['success'] === true ){
+						$customer->entityid = $results['netsuite']['record_id'];
+						$model->insertCustomer( $customer->custentity_customer_source_id, $customer->entityid );
+						$activa->updateCustomer( $customer->custentity_customer_source_id, $customer->entityid );
+					}
+					$this->worker->addData( $results );
+					break;				
+					
+				default:
+					//$results['netsuite']['record_id'] = $customer->entityid = $mInternalId;
+					$results['success'] = true;
+					$results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
+					$this->worker->addData( $results );
+					break;
+				
+				
 			}
+			
+			
 
 
 		// updateAddressBook( $customer );  add this functionality
@@ -143,7 +164,7 @@ class Netsuite_Netsuite extends Stackable {
 				':customer_json' => $aResults[1]['json'],
 				':order_status' => $sOrderStatus,
 				':order_id' => $aResults[2]['netsuite']['record_id'],
-				':order_warnings' => $aResults[2]['warn'],
+				':order_warnings' => ( is_array( $aResults[2]['warn'] ) )?implode( ',',$aResults[2]['warn']):$aResults[2]['warn'],			
 				':order_errors' => $aResults[2]['error'],
 				':order_json' => $this->_maskCcNumber( $aResults[2]['json'] )
 		);

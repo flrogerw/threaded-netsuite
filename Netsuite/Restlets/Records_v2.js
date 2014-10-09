@@ -24,6 +24,10 @@ function Records(datain) {
 
 		switch (request_fields['method'].toLowerCase()) {
 
+		case ('bongocontact'):
+			return createBongoContact(args);
+			break;
+
 		case ('customer'):
 			return createCustomer(args);
 			break;
@@ -78,8 +82,8 @@ function setAddress(entity, addresses) {
 	}
 
 	for ( var i = 0; i < addresses.length; i++) {
-		var address = addresses[i];
 
+		var address = addresses[i];
 		if (addresshash.indexOf(md5(getAddressString(address))) == -1) {
 
 			addressbookCount++;
@@ -95,13 +99,26 @@ function setAddress(entity, addresses) {
 			addresshash.push(md5(getAddressString(address)));
 
 		} else {
-			var addrIndex = addresshash.indexOf(md5(getAddressString(address)))
-			returnAddrBook.push(addressbook[addrIndex]);
+			var addrIndex = addresshash.indexOf(md5(getAddressString(address)));
+			var defaultshipping = (address.defaultshipping != null) ? address.defaultshipping
+					: 'F';
+			var defaultbilling = (address.defaultbilling != null) ? address.defaultbilling
+					: 'F';
+
+			record.setLineItemValue('addressbook', 'defaultshipping',
+					(addrIndex + 1), defaultshipping);
+			record.setLineItemValue('addressbook', 'defaultbilling',
+					(addrIndex + 1), defaultbilling);
+
+			if (typeof addressbook[addrIndex] === 'object') {
+				returnAddrBook.push(addressbook[addrIndex]);
+			}
 		}
 	}
 
+	nlapiSubmitRecord(record);
+
 	if (addedNew) {
-		nlapiSubmitRecord(record);
 		var record = nlapiLoadRecord('customer', entity);
 		for ( var i in newIndexes) {
 			address = new Object();
@@ -113,7 +130,7 @@ function setAddress(entity, addresses) {
 		}
 	}
 	return (returnAddrBook);
-
+	// nlapiLogExecution('DEBUG', 'xxxxxx ', JSON.stringify( address ) );
 }
 
 function getAddressbook(record) {
@@ -130,6 +147,7 @@ function getAddressbook(record) {
 }
 
 function setAddressBook(record, addressBook) {
+
 	// --- Set Address Book line items.
 	var counter = 0;
 
@@ -175,16 +193,36 @@ function setItems(record, items) {
 
 			entityAddressBook.push(addressObj);
 		}
+	}
 
-		var addressbook = setAddress(record.getFieldValue('entity'),
-				entityAddressBook);
+	if (record.getFieldValue('shipaddress') != null
+			&& record.getFieldValue('billaddress') != null
+			&& md5(record.getFieldValue('billaddress')) == md5(record
+					.getFieldValue('shipaddress'))) {
+		entityAddressBook.push(getAddressObj(record
+				.getFieldValue('shipaddress'), true, true));
+	}
 
-		for (i in addressbook) {
-			var address = addressbook[i];
-			addressIdArray.push(address.id);
-			addressTextArray.push(md5(address.text));
+	else {
 
+		if (record.getFieldValue('shipaddress') != null) {
+			entityAddressBook.push(getAddressObj(record
+					.getFieldValue('shipaddress'), false, true));
 		}
+		if (record.getFieldValue('billaddress') != null) {
+			entityAddressBook.push(getAddressObj(record
+					.getFieldValue('billaddress'), true, false));
+		}
+	}
+
+	var addressbook = setAddress(record.getFieldValue('entity'),
+			entityAddressBook);
+
+	for (i in addressbook) {
+		var address = addressbook[i];
+		addressIdArray.push(address.id);
+		addressTextArray.push(md5(address.text));
+
 	}
 
 	for (count in items) {
@@ -211,14 +249,12 @@ function createOrder(args) {
 
 	/*
 	 * if (order.hasOwnProperty('custbody_order_source_id')) { var isOrder =
-	 * checkDuplicates( order.custbody_order_source_id); if( isOrder != null ){
-	 * return( isOrder ); } }
+	 * checkDuplicates(order.custbody_order_source_id); if (isOrder != null) {
+	 * return (isOrder); } }
+	 * 
+	 * if (typeof order.addressbook !== 'undefined') { setAddress(order.entity,
+	 * order.addressbook); }
 	 */
-
-	if (typeof order.addressbook !== 'undefined') {
-		setAddress(order.entity, order.addressbook);
-	}
-
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
 			if (fieldname != 'recordtype' && fieldname != 'item'
@@ -284,6 +320,34 @@ function setGiftCertificates(record, gcDataArray) {
 	// .stringify(certCodeResults));
 }
 
+function createBongoContact(args) {
+
+	var record = nlapiCreateRecord('contact');
+	var contact = JSON.parse(args.data);
+	;
+	for ( var fieldname in contact) {
+		if (contact.hasOwnProperty(fieldname)) {
+			if (fieldname != 'recordtype' && fieldname != 'id'
+					&& fieldname != 'addressbook') {
+				var value = contact[fieldname];
+				if (value && typeof value != 'object') {
+					record.setFieldValue(fieldname, value);
+				}
+			}
+		}
+	}
+
+	var entityid = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+	record.setFieldValue('entityid', entityid + ' ' + contact.firstname + ' '
+			+ contact.lastname + ' - ' + contact.email);
+
+	var recordId = nlapiSubmitRecord(record);
+
+	nlapiAttachRecord('contact', recordId, 'customer', contact.entityid, null)
+
+	return recordId;
+}
+
 function createContact(args, contactCount) {
 
 	var record = nlapiCreateRecord('contact');
@@ -301,9 +365,9 @@ function createContact(args, contactCount) {
 		}
 	}
 
-	var entityid = (contactCount > 0) ? ' -00' + (contactCount + 1) : '';
-	record.setFieldValue('entityid', contact.firstname + ' ' + contact.lastname
-			+ entityid);
+	var entityid = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+	record.setFieldValue('entityid', entityid + ' ' + contact.firstname + ' '
+			+ contact.lastname + ' - ' + contact.email);
 
 	var recordId = nlapiSubmitRecord(record);
 	return recordId;

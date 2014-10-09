@@ -37,6 +37,7 @@ class Netsuite_Filter_Customer extends Netsuite_Filter_Base implements Netsuite_
 						'flags'  => FILTER_NULL_ON_FAILURE),
 				'email' => array('filter' => FILTER_CALLBACK,
 						'options' => 'self::validateEmail'),
+				'entityid' => array('filter' => FILTER_SANITIZE_STRING),
 				'entitystatus' => array('filter' => FILTER_VALIDATE_INT),
 				'firstname' => array('filter' => FILTER_SANITIZE_STRING),
 				'globalsubscriptionstatus' => array('filter' => FILTER_VALIDATE_INT),

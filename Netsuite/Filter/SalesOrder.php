@@ -26,7 +26,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'handlingcost',
 			'ismultishipto',
 			//'otherrefnum',
-			'paymentmethod',
+			//'paymentmethod',
 			'recordtype',
 			//'shipaddress',
 			'shipdate',
