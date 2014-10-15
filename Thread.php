@@ -7,6 +7,7 @@ try{
 	// See if Process is Already Running And Netsuite is Alive
 	$pid = new Netsuite_Pid( '/tmp', basename( __FILE__ ) );
 
+
 	switch( true){
 
 		case( $pid->already_running ):
@@ -23,11 +24,11 @@ try{
 	}
 
 }catch( Exception $e ){
-	
+
 	if( DEBUG ){
 		echo( $e->getMessage() . "\n" );
 	}
-	
+
 	Netsuite_Db_Model::logError( $e );
 }
 
@@ -49,7 +50,7 @@ function processOrders(){
 			//Netsuite_Db_Model::resetStalledOrders();
 			return;
 		}
-			
+
 	}catch( Exception $e ){
 		Netsuite_Db_Model::logError( $e );
 	}
