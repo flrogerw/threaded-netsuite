@@ -14,7 +14,7 @@ try{
 			break;
 
 		default:
-			//processPosOrders();
+			processPosOrders();
 			break;
 	}
 
@@ -25,4 +25,11 @@ try{
 	}
 
 	Netsuite_Db_Model::logError( $e );
+}
+
+function processPosOrders(){
+	
+	$call = new LivePos_Job_GetRecord();
+	$call->sendAuth();
+	echo( $call->response );
 }
