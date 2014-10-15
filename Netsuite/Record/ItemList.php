@@ -19,11 +19,11 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @access private
 	*/
 	private $_itemListEntries = array();
-	
+
 	/**
 	 * @var boolean
 	 * @access private
-	 */
+	*/
 	private $_ismultishipto;
 
 	/**
@@ -31,7 +31,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	 * @var string
 	 * @access protected
 	 *
-	*/
+	 */
 	protected $_activa_id;
 
 	/**

@@ -21,15 +21,15 @@ final class Netsuite_Db_Model
 	public function __construct() {
 		$this->_dbHandle = Netsuite_Db_Db::getInstance();
 	}
-	
-/**
- * Resets Stalled orders from Working to Pending 1 Time
- * 
- * @return void
- * @throws Exception
- */
+
+	/**
+	 * Resets Stalled orders from Working to Pending 1 Time
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
 	public static function resetStalledOrders(){
-		
+
 		try{
 			$connection = Netsuite_Db_Db::getInstance();
 			$connection->exec( Netsuite_Db_Query::getQuery( 'RESET_STALLED_ORDERS' ) );
@@ -39,7 +39,7 @@ final class Netsuite_Db_Model
 			throw new Exception( 'Could NOT ReSet Stalled Orders in the DB' );
 		}
 	}
-	
+
 	/**
 	 * Set Netsuite Login Information and NUmber of Orders Queued
 	 *
@@ -49,78 +49,78 @@ final class Netsuite_Db_Model
 	 * @throws Exception
 	 */
 	public static function setPoolQueueLog( $iOrdersRun ){
-	
+
 		try{
 			$connection = Netsuite_Db_Db::getInstance();
 			$sth = $connection->prepare( Netsuite_Db_Query::getQuery( 'POOL_QUEUE_LOG', NETSUITE_COMPANY ) );
-	
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-			
+
 
 			$sth->execute(  array( ':orders_run' => (int) $iOrdersRun, ':netsuite_id' => NETSUITE_AUTH_EMAIL ) );
 			return( true );
-	
-	
+
+
 		} catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Set Pool Queue Log in the DB' );
 		}
 	}
-	
-	
+
+
 	/**
 	 * Returns Internal ID for Tax Code
 	 *
 	 * @param int $sCusterId - Activa Customer Id
 	 */
 	public function getTaxCode( $iLocationId ) {
-	
+
 		try{
-	
+
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'GET_TAX_CODE', NETSUITE_COMPANY ) );
-	
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-	
+
 			$sth->execute( array(  $iLocationId ) );
 			$this->_dbResults = $sth->fetchColumn();
 			return( $this->_dbResults );
-	
+
 		}catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Get TaxCode From the DB' );
 		}
 	}
-	
-	
-	
+
+
+
 	public function getStoreAddress( $iLocationId ){
-	
+
 		try{
-	
+
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'GET_STORE_ADDRESS' ) );
-	
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-	
+
 			$sth->execute( array( $iLocationId ) );
 			$this->_dbResults = $sth->fetch(PDO::FETCH_ASSOC);
 			return( $this->_dbResults );
-	
+
 		}catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Get Store Address From DB' );
 		}
-	
+
 	}
-	
-	
+
+
 	/**
-	 * Looks at Process Log to See if Any of the Current Pending Orders 
+	 * Looks at Process Log to See if Any of the Current Pending Orders
 	 * Have Already Been Processed.
 	 *
 	 * @param array $aNewOrders - Pending Orders to Be Processed
@@ -129,33 +129,33 @@ final class Netsuite_Db_Model
 	 * @throws Exception
 	 */
 	public function hasBeenProcessed( array $aNewOrders ){
-	
+
 		try{
-	
+
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'IS_ORDER_PROCESSED', null, count( $aNewOrders ) ) );
-			
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-	
+
 			$aBindArgs = array();
-	
+
 			array_walk( $aNewOrders, function( $aNewOrders, $iKey ) use( &$aBindArgs){
 				$aBindArgs[':arg' . $iKey] = $aNewOrders;
 			});
-					
+
 				$sth->execute( $aBindArgs  );
 				$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
 				$aFlattenedResults =  iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($this->_dbResults)), false);
 				return( $aFlattenedResults );
-	
+
 		} catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Read Processed Orders From the DB' );
 		}
 	}
-	
-	
+
+
 	/**
 	 * Set Duplicate Orders to a Status of Duplicate
 	 *
@@ -165,31 +165,31 @@ final class Netsuite_Db_Model
 	 * @throws Exception
 	 */
 	public function setOrdersDuplicate( $aOrders ){
-	
+
 		try{
-	
+
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'SET_ORDER_DUPLICATE', null, count( $aOrders ) ) );
-	
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-	
+
 			$aBindArgs = array( ':order_complete_date' => date( "Y-m-d H:i:s" ) );
-	
+
 			array_walk( $aOrders, function( $aOrder, $iKey ) use( &$aBindArgs){
 				$aBindArgs[':arg' . $iKey] = (int)$aOrder;
 			});
-					
+
 				$sth->execute( $aBindArgs  );
 				return( true );
-	
+
 		} catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Set Orders to Working Status in the DB' );
 		}
 	}
-	
-	
+
+
 	/**
 	 * Set Current Batches Orders to a Status of Working
 	 *
@@ -199,7 +199,7 @@ final class Netsuite_Db_Model
 	 * @throws Exception
 	 */
 	public function setOrderWorking( $aOrders ){
-		
+
 		try{
 
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'SET_ORDER_WORKING', null, count( $aOrders ) ) );
@@ -209,11 +209,11 @@ final class Netsuite_Db_Model
 			}
 
 			$aBindArgs = array( ':order_working_date' => date( "Y-m-d H:i:s" ) );
-				
+
 			array_walk( $aOrders, function( $aOrder, $iKey ) use( &$aBindArgs){
 				$aBindArgs[':arg' . $iKey] = (int)$aOrder['queue_id'];
 			});
-					
+
 				$sth->execute( $aBindArgs  );
 				return( true );
 
@@ -425,6 +425,7 @@ final class Netsuite_Db_Model
 	 */
 	public function updateOrderQueue( $iQueueId, $sStatus ) {
 
+		date_default_timezone_set("America/New_York");
 		try{
 
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'UPDATE_ORDER_QUEUE' ) );
@@ -533,28 +534,28 @@ final class Netsuite_Db_Model
 
 	public function getExceptionItems() {
 		try{
-	
+
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'GET_EXCEPTION_ITEMS', NETSUITE_COMPANY ) );
-	
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-	
+
 			$sth->execute( array( NETSUITE_COMPANY ) );
 			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
-	
+
 			return( array_combine( array_column( $this->_dbResults, 'sku') , array_column( $this->_dbResults, 'sku_location') ) );
 			//return( $this->_dbResults );
-	
+
 		}catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Get Item Xref Information From DB' );
 		}
-	
+
 	}
-	
-	
-	
+
+
+
 	public function getItem( $sType, $sSearch, $sLocation = 'corporate' ) {
 		try{
 
@@ -586,7 +587,7 @@ final class Netsuite_Db_Model
 	 */
 	public function insertCustomer( $sXrefValue, $iInternalId )
 	{
-		
+
 		try{
 
 			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'INSERT_CUSTOMER' ) );
@@ -668,8 +669,8 @@ final class Netsuite_Db_Model
 			var_dump($e);
 		}
 	}
-	
+
 	private function _arrayOfArrays( $sSku, $sLocation ){
-		
+
 	}
 }

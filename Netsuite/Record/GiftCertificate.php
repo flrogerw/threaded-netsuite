@@ -61,6 +61,5 @@ class Netsuite_Record_GiftCertificate extends Netsuite_Record_Base implements Ne
 	public function getJSON() {
 		return( json_encode( $this->getItem() ) );
 	}
-
-
+	
 }

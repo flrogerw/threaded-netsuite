@@ -67,12 +67,12 @@ class Netsuite_Record_Contact extends Netsuite_Record_Base implements Netsuite_I
 	protected function _setValues( array $aContact ) {
 
 		//unset( $aContact['custentity_fotomail'], $aContact['custentity_customer_source_id'] );
-		
+
 		foreach( $aContact as $key => $value ) {
 			$this->$key = $value;
 		}
-/*
-		$this->_tmp_addressbook = $aContact['addressbook'];
+		/*
+		 $this->_tmp_addressbook = $aContact['addressbook'];
 
 		//$this->_setSources();
 
@@ -82,24 +82,24 @@ class Netsuite_Record_Contact extends Netsuite_Record_Base implements Netsuite_I
 		// See if address are the same
 		if( $this->addressbook != null ){
 
-			$iAddressIntersect =  array_intersect( $this->addressbook['billing'],  $this->addressbook['shipping'] );
+		$iAddressIntersect =  array_intersect( $this->addressbook['billing'],  $this->addressbook['shipping'] );
 
-			if( sizeof( $iAddressIntersect ) == sizeof( $this->addressbook['billing'] ) ) {
-				unset( $this->addressbook['shipping'] );
-				$this->addressbook['billing']['defaultshipping'] = true;
-				$this->addressbook['billing']['defaultbilling'] = true;
-			}
-			
-			$this->phone = ( !empty( $this->addressbook['billing']['phone'] ) )? $this->addressbook['billing']['phone']: null;
+		if( sizeof( $iAddressIntersect ) == sizeof( $this->addressbook['billing'] ) ) {
+		unset( $this->addressbook['shipping'] );
+		$this->addressbook['billing']['defaultshipping'] = true;
+		$this->addressbook['billing']['defaultbilling'] = true;
 		}
-		
-	*/	
+
+		$this->phone = ( !empty( $this->addressbook['billing']['phone'] ) )? $this->addressbook['billing']['phone']: null;
+		}
+
+		*/
 	}
 
 	protected function _validate( $aContact ) {
 
 		$this->_filter = Netsuite_Filter::factory()->contact( $aContact );
-			
+
 		if( !$this->_filter->isOk() ) {
 
 			$this->_forwardErrors( get_class() );

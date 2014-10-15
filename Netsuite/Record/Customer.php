@@ -52,8 +52,8 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 		foreach( $aCustomer as $key => $value ) {
 			$this->$key = $value;
 		}
-/*
-		$this->_tmp_addressbook = $aCustomer['addressbook'];
+		/*
+		 $this->_tmp_addressbook = $aCustomer['addressbook'];
 
 		//$this->_setSources();
 
@@ -64,37 +64,37 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 		// See if address are the same
 		if( $this->addressbook != null ){
 
-			if( is_array( $this->addressbook['billing'] ) && is_array( $this->addressbook['shipping'] ) ){
-				
-				$iAddressIntersect =  array_intersect( $this->addressbook['billing'],  $this->addressbook['shipping'] );
-				
-				if( sizeof( $iAddressIntersect ) == sizeof( $this->addressbook['billing'] ) ) {
-					unset( $this->addressbook['shipping'] );
-					$this->addressbook['billing']['defaultshipping'] = true;
-					$this->addressbook['billing']['defaultbilling'] = true;
-				}			
-		 }
-		 $this->phone = ( empty( $this->phone ) )? $this->addressbook['billing']['phone']: $this->phone;
+		if( is_array( $this->addressbook['billing'] ) && is_array( $this->addressbook['shipping'] ) ){
+
+		$iAddressIntersect =  array_intersect( $this->addressbook['billing'],  $this->addressbook['shipping'] );
+
+		if( sizeof( $iAddressIntersect ) == sizeof( $this->addressbook['billing'] ) ) {
+		unset( $this->addressbook['shipping'] );
+		$this->addressbook['billing']['defaultshipping'] = true;
+		$this->addressbook['billing']['defaultbilling'] = true;
 		}
-*/
+		}
+		$this->phone = ( empty( $this->phone ) )? $this->addressbook['billing']['phone']: $this->phone;
+		}
+		*/
 	}
 
 	protected function _setAddressEntries() {
-/*
-		$sFullName = $this->firstname . ' ' . $this->lastname;
+		/*
+		 $sFullName = $this->firstname . ' ' . $this->lastname;
 
 		foreach( $this->_tmp_addressbook as &$aEntry ) {
 
-			$sAddressee = $aEntry['addressee'];
-			$sAttention = $aEntry['attention'];
+		$sAddressee = $aEntry['addressee'];
+		$sAttention = $aEntry['attention'];
 
-			if( $this->isperson === true ){
-				$aEntry['addressee'] = ( isset( $sAddressee ) )? $sAddressee: $sFullName;
-				$aEntry['attention'] = ( isset( $sAttention ) )? $sAttention: $sFullName;
-			} else {
-				$aEntry['addressee'] = ( isset( $sAddressee ) )? $sAddressee: $this->companyname;
-				$aEntry['attention'] = ( isset( $sAttention ) )? $sAttention: $sFullName;
-			}
+		if( $this->isperson === true ){
+		$aEntry['addressee'] = ( isset( $sAddressee ) )? $sAddressee: $sFullName;
+		$aEntry['attention'] = ( isset( $sAttention ) )? $sAttention: $sFullName;
+		} else {
+		$aEntry['addressee'] = ( isset( $sAddressee ) )? $sAddressee: $this->companyname;
+		$aEntry['attention'] = ( isset( $sAttention ) )? $sAttention: $sFullName;
+		}
 		}
 		*/
 	}
@@ -118,7 +118,7 @@ class Netsuite_Record_Customer extends Netsuite_Record_Base implements Netsuite_
 
 		$aCustomer =  $this->_filter->optimizeValues( $this->_filter->getRecord() );
 		//if( is_array( $this->addressbook ) ){
-			//$aCustomer['addressbook'] =  $this->_filter->optimizeValues( array_values(  $this->addressbook) );
+		//$aCustomer['addressbook'] =  $this->_filter->optimizeValues( array_values(  $this->addressbook) );
 		//}
 		return( $aCustomer );
 	}

@@ -16,33 +16,34 @@ class Netsuite_Record_Base{
 	public function __construct(){
 
 	}
-	public function run(){}
+	public function run(){
+	}
 
 	public function send() {
 
-		
-			$oClient = new SocketServer_Client();
 
-			if( $oClient->isOk() ) {
-				if( $oClient->send( $this->getJSON() )) {
-					$mReturn = $oClient->response;
-				} else {
-					self::logError( $oClient->error );
-				}
+		$oClient = new SocketServer_Client();
+
+		if( $oClient->isOk() ) {
+			if( $oClient->send( $this->getJSON() )) {
+				$mReturn = $oClient->response;
+			} else {
+				self::logError( $oClient->error );
 			}
+		}
 
-			$mReturn = ( strlen( $mReturn ) > 20  )? json_decode( $mReturn ): $mReturn;
-			// Call ONLY after all transactions are complete
-			$oClient->close();
-			return( $mReturn );
-		
+		$mReturn = ( strlen( $mReturn ) > 20  )? json_decode( $mReturn ): $mReturn;
+		// Call ONLY after all transactions are complete
+		$oClient->close();
+		return( $mReturn );
+
 	}
-	
+
 	public function sendLocal() {
-	
-	
+
+
 		$oClient = new SocketServer_Client(true);
-		
+
 		if( $oClient->isOk() ) {
 			if( $oClient->sendLocal( $this->recordtype, $this->getJSON() )) {
 				$mReturn = $oClient->response;
@@ -54,10 +55,10 @@ class Netsuite_Record_Base{
 				self::logError( $oClient->error );
 			}
 		}
-	
+
 		$mReturn = ( strlen( $mReturn ) > 20  )? json_decode( $mReturn ): $mReturn;
 		return( $mReturn );
-	
+
 	}
 
 	public function getFields()
@@ -78,7 +79,7 @@ class Netsuite_Record_Base{
 
 		$oDb = new Netsuite_Db_Model();
 		$aSources = $oDb->getSources( $this->_source );
-		
+
 		switch( $this->recordtype ) {
 
 			case( 'customer' ):
@@ -148,12 +149,12 @@ class Netsuite_Record_Base{
 		if( empty( $this->_filter->getErrors() ) ){
 			return;
 		}
-			
+
 		foreach( $this->_filter->getErrors() as $sError ){
 			$sRecordString = '';
 			if( $iRecord > 0 ) {
 				$sRecordString = ' in Record ' . $iRecord;
-			}			
+			}
 			self::logError( "$sClass: $sError" . $sRecordString );
 		}
 	}
@@ -220,7 +221,7 @@ class Netsuite_Record_Base{
 	}
 
 	public function setAddressBook( array $aAddressBookEntries, $bIsResidential = true  ) {
-		
+
 		$oAddressbook = new Netsuite_Record_AddressBook(  $aAddressBookEntries, $bIsResidential );
 
 		if( !$oAddressbook->isOk() ) {

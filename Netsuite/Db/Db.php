@@ -1,25 +1,25 @@
 <?php
 /**
  * Db
-*
-* @package Netsuite
-* @subpackage Database
-* @author gWilli
-* @version 1.0
-* @copyright 2012
-* @name Db
-*/
+ *
+ * @package Netsuite
+ * @subpackage Database
+ * @author gWilli
+ * @version 1.0
+ * @copyright 2012
+ * @name Db
+ */
 /**
  * Netsuite Database Handle
-*
-* Creates Netsuite Singleton DataBase Object
-*
-* @uses Configure
-* @uses PDO
-* @package Netsuite
-* @subpackage Database
-* @final Can NOT Extend
-*/
+ *
+ * Creates Netsuite Singleton DataBase Object
+ *
+ * @uses Configure
+ * @uses PDO
+ * @package Netsuite
+ * @subpackage Database
+ * @final Can NOT Extend
+ */
 final class Netsuite_Db_Db extends PDO
 {
 
@@ -30,12 +30,12 @@ final class Netsuite_Db_Db extends PDO
 	 */
 	protected static $_instance = null;
 
-	
+
 	/**
 	 * Singleton pattern implementation makes "clone" unavailable
 	 * @access protected
 	 * @return void
-	*/
+	 */
 	protected function __clone()
 	{
 	}
@@ -47,7 +47,7 @@ final class Netsuite_Db_Db extends PDO
 	 */
 	public function __construct()
 	{
-	try{
+		try{
 			$dsn = 'mysql:host=' . SYSTEM_DB_HOST . ';dbname=' . SYSTEM_DB_DATABASE;
 			parent::__construct( $dsn, SYSTEM_DB_USER, SYSTEM_DB_PASS );
 			$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

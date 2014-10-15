@@ -22,37 +22,39 @@ final class Netsuite_Job_SetRecord {
 
 	public function setAuthHeader( $iContentLength = 0 ) {
 
-	$aAuth = array(
-			'nlauth_account'=> NETSUITE_AUTH_ACCOUNT,
-			'nlauth_email'=> NETSUITE_AUTH_EMAIL,
-			'nlauth_signature'=> NETSUITE_AUTH_SIGNATURE );
+		$aAuth = array(
+				'nlauth_account'=> NETSUITE_AUTH_ACCOUNT,
+				'nlauth_email'=> NETSUITE_AUTH_EMAIL,
+				'nlauth_signature'=> NETSUITE_AUTH_SIGNATURE );
 
-	$auth_header = array(
-			'Content-length: '. $iContentLength,
-			'Content-type: application/json',
-			'User-Agent-x: SuiteScript-Call',
-			'Authorization: NLAuth ' . http_build_query( $aAuth, '', ',' ));
-	
-	return( $auth_header );
-}
+		$auth_header = array(
+				'Content-length: '. $iContentLength,
+				'Content-type: application/json',
+				'User-Agent-x: SuiteScript-Call',
+				'Authorization: NLAuth ' . http_build_query( $aAuth, '', ',' ));
+
+		return( $auth_header );
+	}
 
 	protected function _send(){
-		
+
 		$rest_args = array(
 				'method' => $this->_recordType,
 				'rq' => base64_encode( $this->_data )
 		);
-		
+
+
 		$sPayload = ( json_encode( $rest_args ) );
-		
+
+
 		$options = array(
-			CURLOPT_URL => NETSUITE_POST_ORDER,
-			CURLOPT_TIMEOUT => 30,
-			CURLOPT_POST => 1,
-			CURLOPT_CUSTOMREQUEST => "POST",
-			CURLOPT_POSTFIELDS => $sPayload,
-			CURLOPT_HTTPHEADER => $this->setAuthHeader( strlen($sPayload) ),
-			CURLOPT_RETURNTRANSFER => true );
+				CURLOPT_URL => NETSUITE_POST_ORDER,
+				CURLOPT_TIMEOUT => 30,
+				CURLOPT_POST => 1,
+				CURLOPT_CUSTOMREQUEST => "POST",
+				CURLOPT_POSTFIELDS => $sPayload,
+				CURLOPT_HTTPHEADER => $this->setAuthHeader( strlen($sPayload) ),
+				CURLOPT_RETURNTRANSFER => true );
 
 		$cURL = curl_init();
 		curl_setopt_array( $cURL, $options );
@@ -74,7 +76,7 @@ final class Netsuite_Job_SetRecord {
 	}
 
 	public static function isAlive() {
-		
+
 		$options = array(
 				CURLOPT_URL => NETSUITE_ISALIVE,
 				CURLOPT_TIMEOUT => 10,
@@ -86,14 +88,14 @@ final class Netsuite_Job_SetRecord {
 		for( $i=0; $i<3; $i++ ) {
 
 			$curl_result = curl_exec( $cURL );
-		
+
 			if ( curl_errno( $cURL ) == 0 && $curl_result == 1) {
 				curl_close( $cURL );
 				return( true );
 			}
 		}
-		
-		
+
+
 		curl_close($cURL);
 		return( false );
 	}

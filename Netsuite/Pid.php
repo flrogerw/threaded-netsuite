@@ -24,31 +24,31 @@ final class Netsuite_Pid {
 
 	/**
 	 * Name of the PID file
-	 * 
+	 *
 	 * @access protected
 	 * @var string
 	 */
 	protected $filename;
-	
+
 	/**
 	 * Process ID
-	 * 
+	 *
 	 * @access protected
 	 * @var int
 	 */
 	protected $_pid;
-	
+
 	/**
 	 * Name of Process
-	 * 
+	 *
 	 * @access protected
 	 * @var string
 	 */
 	protected $_processName;
-	
+
 	/**
 	 * Is the Process Already Running
-	 * 
+	 *
 	 * @access public
 	 * @var boolean
 	 */
@@ -56,7 +56,7 @@ final class Netsuite_Pid {
 
 	/**
 	 * Class Constructor
-	 * 
+	 *
 	 * @param string $directory - Where the PID file is written
 	 * @param string $processName - Name of the running process
 	 * @throws Exception
@@ -67,14 +67,14 @@ final class Netsuite_Pid {
 		$this->filename = $directory . '/' . basename($_SERVER['PHP_SELF']) . '.pid';
 
 		if(is_writable($this->filename) || is_writable($directory)) {
-				
+
 			if(file_exists($this->filename)) {
 				$this->_pid = (int)trim(file_get_contents($this->filename));
 				if( posix_kill( $this->_pid, 0 ) && $this->_validatePid() ) {
 					$this->already_running = true;
 				}
 			}
-				
+
 		}
 		else {
 			throw new Exception("Cannot write to pid file '$this->filename'");
@@ -89,7 +89,7 @@ final class Netsuite_Pid {
 
 	/**
 	 * Removes Extinct PID files that May Have Been Left Behind After an UnGraceful Exit
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _removeZombie(){
@@ -100,7 +100,7 @@ final class Netsuite_Pid {
 
 	/**
 	 * Checks the Server for the Exsistance of the PID and That it is Assigned to the Current Running Process
-	 * 
+	 *
 	 * @access protected
 	 * @return boolean
 	 */
@@ -117,7 +117,7 @@ final class Netsuite_Pid {
 
 	/**
 	 * Overrides Magic Method __destruct and Removes the Current PID File.
-	 * 
+	 *
 	 * @access public
 	 * @return void
 	 */
@@ -126,5 +126,5 @@ final class Netsuite_Pid {
 		if(!$this->already_running && file_exists($this->filename) && is_writeable($this->filename)) {
 			unlink($this->filename);
 		}
-	}		
+	}
 }

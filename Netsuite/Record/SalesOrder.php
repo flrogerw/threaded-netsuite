@@ -51,7 +51,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $shipaddress;
 	public $shipcomplete = false;
 	public $shipdate;
-	//public $shipmethod;
+	public $shipmethod;
 	public $shippingcost = 0;
 	public $taxrate;
 	public $taxtotal = 0;
@@ -110,6 +110,11 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	protected function _setValues( array $aSalesOrder ) {
 
 		try{
+
+			if( $aSalesOrder['ismultishipto'] === true  ){
+				unset( $aSalesOrder['shippingcost']  );
+			}
+
 			foreach( $aSalesOrder as $key => $value ) {
 				$this->$key = $value;
 			}
@@ -118,10 +123,9 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			$this->_tmp_items_list = $aSalesOrder['item'];
 
 
-
 			// Set Bill && Ship Address String
 			if( !empty( $this->addressbook ) ){
-				
+
 				foreach( $this->addressbook as $address ){
 
 					$sAddressString = $this->getAddressString( $address );
@@ -184,7 +188,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 		foreach( $this->giftcertificateitem as $aCert ){
 			$oCert = Netsuite_Record::factory()->giftCertificate( $aCert );
 			if( !$oCert->isOk() ) {
-					
+
 				$aErrors = $oCert->getErrors();
 				$this->logError( 'Could NOT Create Gift Certificate( '. sizeof( $aErrors ) .' Errors): ' .  implode( ', ', $aErrors ) );
 				return;
@@ -205,6 +209,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			return;
 		}
 
+		$this->shipmethod = $this->_tmp_items_list[0]['shipmethod'];
 		return( $oItemList->getItemList() );
 	}
 }

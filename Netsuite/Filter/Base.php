@@ -12,7 +12,7 @@
  */
 class Netsuite_Filter_Base{
 
-	
+
 	protected  $_hasErrors = false;
 	protected  $_errors = array('Critical', 'Warning');
 	protected $_warnings;
@@ -29,8 +29,9 @@ class Netsuite_Filter_Base{
 			'phone',
 			'custcol162'
 	);
-	
-	public function run(){}
+
+	public function run(){
+	}
 
 	const PHONE_REGEXP = '/^\s*([\(]?)\[?\s*\d{3}\s*\]?[\)]?\s*[\-]?[\.]?\s*\d{3}\s*[\-]?[\.]?\s*\d{4}$/';
 	const EMAIL_REGEXP = '/[A-z0-9._%+-]+@(?:[A-z0-9-]+\.)+[A-z]{2,4}/';
@@ -57,17 +58,17 @@ class Netsuite_Filter_Base{
 
 			switch( true ) {
 
-				
-						
+
+
 				case( is_array( $mValue ) ):
 
 					$mValue = self::optimizeValues( $mValue );
 					$aData[$sKey] = $mValue;
 					break;
-					
-					case( in_array( $sKey, self::$_noOptimize ) ):
+
+				case( in_array( $sKey, self::$_noOptimize ) ):
 					$aData[$sKey] = $mValue;
-						break;
+					break;
 
 				case( is_bool( $mValue ) ):
 
@@ -84,13 +85,13 @@ class Netsuite_Filter_Base{
 							break;
 					}
 					break;
-						
+
 				case( is_null( $mValue ) || strlen( $mValue ) < 1 ):
-						
+
 					unset( $aData[$sKey] );
 					break;
 			}
-		}		
+		}
 		return( $aData );
 	}
 
@@ -129,7 +130,7 @@ class Netsuite_Filter_Base{
 	 *
 	 */
 	protected function _sanatize() {
-		
+
 		$this->_record = filter_var_array( $this->_record, $this->_aSanatizeFinal );
 
 	}

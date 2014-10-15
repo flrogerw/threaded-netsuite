@@ -17,7 +17,7 @@ class Netsuite_Filter {
 	public function customer(  array $aCustomer ) {
 		return( new Netsuite_Filter_Customer( $aCustomer ) );
 	}
-	
+
 	public function contact(  array $aContact ) {
 		return( new Netsuite_Filter_Contact( $aContact ) );
 	}
@@ -29,7 +29,7 @@ class Netsuite_Filter {
 	public function item(  array $aItemArray ) {
 		return( new Netsuite_Filter_Item( $aItemArray ) );
 	}
-	
+
 	public function giftCertificate(  array $aGcArray ) {
 		return( new Netsuite_Filter_GiftCertificate( $aGcArray ) );
 	}

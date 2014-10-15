@@ -1,6 +1,6 @@
 <?php
 /**
- * Address 
+ * Address
  *
  * @author gWilli
  * @version 1.0
@@ -45,9 +45,9 @@ class Netsuite_Record_Address extends Netsuite_Record_Base implements Netsuite_I
 		try{
 			$aAddress = ( array_merge( $this->getFields(), $aAddress ) );
 			$this->_type = $sType;
-				
+
 			$this->_setValues( $aAddress );
-				
+
 			if( !$this->_validate( $this->getFields() ) ) {
 
 				return;
@@ -66,60 +66,60 @@ class Netsuite_Record_Address extends Netsuite_Record_Base implements Netsuite_I
 		$this->_filter = Netsuite_Filter::factory()->address( $aAddress );
 
 		if(!$this->_filter->isOk()){
-				
+
 			$this->_forwardErrors( get_class() );
 			$this->_forwardWarnings( get_class() );
-				
+
 			return( false );
 		}
 
 		return( true );
 	}
-/**
- * 
- * @access protected
- * @param array $aAddress
- */
+	/**
+	 *
+	 * @access protected
+	 * @param array $aAddress
+	 */
 	protected function _setValues( array $aAddress ) {
 
 		foreach( $aAddress as $key => $value ) {
-				
+
 			$this->$key = $value;
 		}
 		/*
-		// Set Attention and Addressee Fields from Line Item Address
+		 // Set Attention and Addressee Fields from Line Item Address
 		if( $this->_attention1 !== null ){
-			$this->attention = $this->_attention1 . ' ' . $this->_attention2;			
+		$this->attention = $this->_attention1 . ' ' . $this->_attention2;
 		}
-				
+
 		if( $this->_companyname != null ){
-			$this->addressee =  $this->_companyname;
-			$this->isresidential = false;
+		$this->addressee =  $this->_companyname;
+		$this->isresidential = false;
 		} else {
-			$this->addressee = $this->attention;
+		$this->addressee = $this->attention;
 		}
-		
+
 		switch( true ){
-			
-			case($this->_type == 'billing'):
-				$this->defaultbilling = true;
-				break;
-			case($this->_type == 'shipping'):
-				$this->defaultshipping = true;
-				break;
+
+		case($this->_type == 'billing'):
+		$this->defaultbilling = true;
+		break;
+		case($this->_type == 'shipping'):
+		$this->defaultshipping = true;
+		break;
 		}
 		*/
-		
+
 		if( $this->phone == ''){
 			$this->phone = '123-123-1234';
 		}
 	}
 
-/**
- * 
- * @access public
- * @return array
- */
+	/**
+	 *
+	 * @access public
+	 * @return array
+	 */
 	public function getAddress() {
 		return( $this->_filter->optimizeValues( $this->_filter->getRecord() ) );
 	}

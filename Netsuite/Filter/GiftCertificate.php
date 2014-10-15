@@ -13,7 +13,7 @@
 class Netsuite_Filter_GiftCertificate extends Netsuite_Filter_Base implements Netsuite_Interface_IFilter
 {
 	protected $_requiredFields = array(
-			
+
 			'giftcertcode',
 	);
 

@@ -3,20 +3,20 @@
  *
  * @example
  * $args = array(
- *		'label' =>,
- *		'attention' =>,
- *		'addressee' => ,
- *		'addr1' => , 		//Required
- *		'addr2' => ,
- *		'addr3' => ,
- *		'city' => , 		//Required
- *		'state' => , 		//Required
- *		'zip' => , 			//Required
- *		'country' => ,		//Required
- *		'phone' => ,
- *		'isresidential' => ,
- *		'defaultbilling' => ,
- *		'defaultshipping' => )
+ *              'label' =>,
+ *              'attention' =>,
+ *              'addressee' => ,
+ *              'addr1' => ,            //Required
+ *              'addr2' => ,
+ *              'addr3' => ,
+ *              'city' => ,             //Required
+ *              'state' => ,            //Required
+ *              'zip' => ,                      //Required
+ *              'country' => ,          //Required
+ *              'phone' => ,
+ *              'isresidential' => ,
+ *              'defaultbilling' => ,
+ *              'defaultshipping' => )
  */
 class Netsuite_Record_AddressBook extends Netsuite_Record_Base implements Netsuite_Interface_INetsuite {
 
@@ -98,84 +98,84 @@ class Netsuite_Record_AddressBook extends Netsuite_Record_Base implements Netsui
 		return( json_encode( $this->_addressBookEntries ) );
 	}
 
-	
-	
+
+
 	/**
 	 * Set Netsuite Address Book Entries for the Defined Customer
 	 *
 	 * @param int $iEntityId
 	 * @return mixed int|object
-	 
-	public function setAddressBookEntry( $iEntityId, $aAddresses ){
 
-		$aAddresses = ( is_array( $aAddresses ) )? $aAddresses: array( $aAddresses );
+	 public function setAddressBookEntry( $iEntityId, $aAddresses ){
 
-		foreach( $aAddresses as $aAddress ){
-			$aAddressBookEntry = ( $aAddress instanceof Netsuite_Record_Address )? $aAddress: new Netsuite_Record_Address( $aAddress );
-			$aAddressBook[] = $aAddressBookEntry->getAddress();
-		}
+	 $aAddresses = ( is_array( $aAddresses ) )? $aAddresses: array( $aAddresses );
 
-		$job = new Netsuite_Job_SetRecord( 'set_address', array('id'=>$iEntityId, 'address' => $aAddressBook ) );
-		return( $job->response );
-	}
-*/
+	 foreach( $aAddresses as $aAddress ){
+	 $aAddressBookEntry = ( $aAddress instanceof Netsuite_Record_Address )? $aAddress: new Netsuite_Record_Address( $aAddress );
+	 $aAddressBook[] = $aAddressBookEntry->getAddress();
+	 }
+
+	 $job = new Netsuite_Job_SetRecord( 'set_address', array('id'=>$iEntityId, 'address' => $aAddressBook ) );
+	 return( $job->response );
+	 }
+	 */
 	/**
 	 * Get Netsuite Address Book Entries for the Defined Customer
 	 *
 	 * @param int $iEntityId
 	 * @return array
-	 
-	protected function _getNetsuiteAddressBook( $iEntityId ){
 
-		$job = new Netsuite_Job_SetRecord( 'get_addressbook', array('id' => $iEntityId ) );
-		return( json_decode( $job->response ) );
-	}
-*/
+	 protected function _getNetsuiteAddressBook( $iEntityId ){
+
+	 $job = new Netsuite_Job_SetRecord( 'get_addressbook', array('id' => $iEntityId ) );
+	 return( json_decode( $job->response ) );
+	 }
+	 */
 
 	/**
 	 * Checks System DataBase for Existence of the Current Address
 	 *
 	 * @return mixed int|bool
-	 
-	public function getAddress( $sActivaId, array $aAddress ){
 
-		$sAddress = $this->getAddressString( $aAddress );
+	 public function getAddress( $sActivaId, array $aAddress ){
 
-		$iInternalId = $this->_model->getAddress( $sActivaId, $sAddress );
-		return ( $iInternalId );
-	}
-	
-	/**
+	 $sAddress = $this->getAddressString( $aAddress );
+
+	 $iInternalId = $this->_model->getAddress( $sActivaId, $sAddress );
+	 return ( $iInternalId );
+	 }
+
+	 /**
 	 * Syncs Netsuite Customer Address Book with Activa Address Book
 	 *
 	 * @param int $iNetsuiteId
 	 * @param string $sActivaId
 	 * @return void
-	
 
-	public function updateSystemAddressBook( $iNetsuiteId, $sActivaId ) {
 
-		$aAddressBook = $this->_getNetsuiteAddressBook( $iNetsuiteId );
-		$aActivaAddressBook = $this->_model->getActivaAddresses( $sActivaId );
-		$aActivaAddressBook = ( is_array( $aActivaAddressBook ) )? $aActivaAddressBook: array( $aActivaAddressBook );
+	 public function updateSystemAddressBook( $iNetsuiteId, $sActivaId ) {
 
-		foreach( $aAddressBook as $sAddressBookEntry ){
+	 $aAddressBook = $this->_getNetsuiteAddressBook( $iNetsuiteId );
+	 $aActivaAddressBook = $this->_model->getActivaAddresses( $sActivaId );
+	 $aActivaAddressBook = ( is_array( $aActivaAddressBook ) )? $aActivaAddressBook: array( $aActivaAddressBook );
 
-			if( !in_array( md5(strtolower( $sAddressBookEntry->text )), $aActivaAddressBook ) ){
-				$this->setSystemAddress( $sActivaId, $sAddressBookEntry->id, $sAddressBookEntry->text );
-			}
-		}
-	}
- */
+	 foreach( $aAddressBook as $sAddressBookEntry ){
+
+	 if( !in_array( md5(strtolower( $sAddressBookEntry->text )), $aActivaAddressBook ) ){
+	 $this->setSystemAddress( $sActivaId, $sAddressBookEntry->id, $sAddressBookEntry->text );
+	 }
+	 }
+	 }
+	 */
 
 	/**
 	 * Insert New Address for Customer
 	 *
-	
-	public function setSystemAddress( $sActivaId, $iNetsuiteId, $mAddress ){
-		$sAddress = ( is_array( $mAddress ) )? $this->getAddressString( $mAddress ): $mAddress;
-		$this->_model->setAddress( $sActivaId, $iNetsuiteId, $sAddress );
-	}
 
- */
+	 public function setSystemAddress( $sActivaId, $iNetsuiteId, $mAddress ){
+	 $sAddress = ( is_array( $mAddress ) )? $this->getAddressString( $mAddress ): $mAddress;
+	 $this->_model->setAddress( $sActivaId, $iNetsuiteId, $sAddress );
+	 }
+
+	 */
 }

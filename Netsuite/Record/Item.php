@@ -70,10 +70,10 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		foreach( $aItem as $key => $value ) {
 			$this->$key = $value;
 		}
-		
+
 		//Set Amount
 		$this->amount = $this->quantity * $this->rate;
-				
+
 		$oModel = new Netsuite_Db_Model();
 
 		// Set Activa Customer Id
@@ -112,9 +112,9 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 				'istaxable' => false,
 				'price' => -1
 		);
-		
+
 		if( $ismultishipto ){
-			
+
 			$aAddress = array(
 					'attention' => $this->attention,
 					'addressee' => $this->addressee,
@@ -127,7 +127,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 					'country' => $this->country,
 					'phone' => $this->phone,
 			);
-			
+
 			$aDiscountItem = array_merge( $aDiscountItem, $aAddress );
 		}
 

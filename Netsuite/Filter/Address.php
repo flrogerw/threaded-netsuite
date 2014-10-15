@@ -12,11 +12,11 @@
  */
 class Netsuite_Filter_Address extends Netsuite_Filter_Base implements Netsuite_Interface_IFilter
 {
-	
-	protected $_aSanatizeFinal = array();	
+
+	protected $_aSanatizeFinal = array();
 	protected  $_requiredFields = array();
-	
-	
+
+
 	public function __construct( array $aAddress )
 	{
 		$this->_requiredFields = array(
@@ -28,9 +28,9 @@ class Netsuite_Filter_Address extends Netsuite_Filter_Base implements Netsuite_I
 				'state',
 				'zip',
 		);
-		
+
 		$this->_aSanatizeFinal = array(
-					
+
 				'addressee' => array('filter' => FILTER_SANITIZE_STRING),
 				'addr1' => array('filter' => FILTER_SANITIZE_STRING),
 				'addr2' => array('filter' => FILTER_SANITIZE_STRING),
@@ -51,13 +51,13 @@ class Netsuite_Filter_Address extends Netsuite_Filter_Base implements Netsuite_I
 				'state' => array('filter' => FILTER_SANITIZE_STRING),
 				'zip' => array('filter' => FILTER_SANITIZE_STRING),
 		);
-		
-		
+
+
 		try{
 			$this->_logic( $aAddress );
 			$this->_sanatize();
 			$this->_required();
-					
+
 		} catch( Exception $e ) {
 			return;
 		}
