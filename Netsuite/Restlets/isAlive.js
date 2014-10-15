@@ -1,5 +1,6 @@
 /* Simple Script to Test if the Server is Responding */
 
 function isAlive(){
-return 1;
+var xxx = 1;
+return xxx;
 }

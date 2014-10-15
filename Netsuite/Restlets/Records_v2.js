@@ -130,7 +130,7 @@ function setAddress(entity, addresses) {
 		}
 	}
 	return (returnAddrBook);
-	// nlapiLogExecution('DEBUG', 'xxxxxx ', JSON.stringify( address ) );
+
 }
 
 function getAddressbook(record) {
@@ -215,6 +215,9 @@ function setItems(record, items) {
 		}
 	}
 
+	// nlapiLogExecution('DEBUG', 'NotMultiShip - Ship Address: ',
+	// record.getFieldValue('shipaddress'));
+
 	var addressbook = setAddress(record.getFieldValue('entity'),
 			entityAddressBook);
 
@@ -233,6 +236,8 @@ function setItems(record, items) {
 		}
 
 		if (record.getFieldValue('ismultishipto') == 'T') {
+			// record.setFieldValue('shippingcost', '');
+
 			var addrIndex = addressTextArray
 					.indexOf(md5(getAddressString(items[count])));
 			record.setLineItemValue('item', 'shipaddress', counter,
@@ -344,7 +349,6 @@ function createBongoContact(args) {
 	var recordId = nlapiSubmitRecord(record);
 
 	nlapiAttachRecord('contact', recordId, 'customer', contact.entityid, null)
-
 	return recordId;
 }
 
@@ -368,7 +372,6 @@ function createContact(args, contactCount) {
 	var entityid = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
 	record.setFieldValue('entityid', entityid + ' ' + contact.firstname + ' '
 			+ contact.lastname + ' - ' + contact.email);
-
 	var recordId = nlapiSubmitRecord(record);
 	return recordId;
 

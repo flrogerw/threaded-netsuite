@@ -11,8 +11,7 @@ function getAddressString(address) {
 	return (addressString.join('\n'))
 }
 
-/**
-function getAddressObj(addressText) {
+function getAddressObj(addressText, defaultBill, defaultShip) {
 
 	// Reverse Engineering for Address Elements from AddressText
 	var addrObj = {};
@@ -26,9 +25,12 @@ function getAddressObj(addressText) {
 	addrObj.city = cityStateZip.join(' ');
 
 	// Check for Addr3
-
-	if (addArray.length == 5) {
+	if (addArray.length == 6) {
 		addrObj.addr3 = addArray.pop();
+	}
+	// Check for Addr2
+	if (addArray.length == 5) {
+		addrObj.addr2 = addArray.pop();
 	}
 
 	// Finish Populating Address Object
@@ -39,10 +41,16 @@ function getAddressObj(addressText) {
 	addrObj.attention = addArray.join(' ');
 	addrObj.addresstxt = addressText;
 
+	if (defaultBill === true) {
+		addrObj.defaultbilling = 'T';
+	}
+	if (defaultShip === true) {
+		addrObj.defaultshipping = 'T';
+	}
+
 	return (addrObj);
 
 }
-*/
 
 function encode64(input) {
 	input = escape(input);
