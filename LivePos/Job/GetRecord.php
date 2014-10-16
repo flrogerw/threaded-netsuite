@@ -19,8 +19,8 @@ final class LivePos_Job_GetRecord {
 	public function setAuthHeader( $iContentLength = 0 ) {
 
 		$auth_header = array(
-				'APIApplicationKey'=> LIVEPOS_API_KEY,
-				'APIApplicationID'=> LIVEPOS_API_ID,
+				'APIApplicationKey: ' . LIVEPOS_API_KEY,
+				'APIApplicationID: ' . LIVEPOS_API_ID,
 				'Content-length: '. $iContentLength,
 				'Content-Type: application/json',
 				'Accept: */*');
