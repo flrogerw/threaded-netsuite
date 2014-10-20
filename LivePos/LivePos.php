@@ -41,7 +41,26 @@ class LivePos_LivePos extends Stackable {
 				$this->worker->addData( $call->getResponse() );
 			}
 
-			//$this->_logResults();
+			$this->_logResults();
 	}
+	
+	protected function _logResults() {
+	
+		$model = new LivePos_Db_Model();
+		$sSystemError = '';
+	
+		$aResults = $this->worker->getData();
+	
+		$aUpdateData = array(
+				':receipt_id' => $aResults[0],
+				':response_code' => $aResults[1],
+				':receipt_string' => $aResults[3],
+				':error_message' => $aResults[2],
+		);
+	
+		$model->insertReceipt( $aUpdateData );
+
+	}
+	
 
 }

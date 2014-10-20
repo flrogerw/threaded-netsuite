@@ -649,7 +649,7 @@ final class Netsuite_Db_Model
 	 */
 	public static function logError( $exception )
 	{
-		var_dump($exception);
+
 		try{
 
 			$connection = Netsuite_Db_Db::getInstance();
