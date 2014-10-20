@@ -41,7 +41,6 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 			'custcol_produce_in_store' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custcol_store_pickup' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custcol162' => array('filter' => FILTER_SANITIZE_STRING),
-			'custitem_fulfilled_by' => array('filter' => FILTER_VALIDATE_INT), 
 			'description' => array('filter' => FILTER_SANITIZE_STRING),
 			'discountitem' => array('filter' => FILTER_VALIDATE_INT),
 			'discounttotal' => array('filter' => FILTER_VALIDATE_FLOAT),
