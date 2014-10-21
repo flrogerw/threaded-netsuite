@@ -37,7 +37,8 @@ class Thread_Worker extends Worker {
 	}
 	
 	public function addData($data){
-		$this->data = array_merge($this->data, array($data));
+		//$this->data = array_merge($this->data, array($data));
+		$this->data = ( is_array($data) )? array_merge($this->data, $data): array_merge($this->data, array($data));
 	}
 	
 	public function getData(){

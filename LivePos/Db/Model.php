@@ -21,9 +21,34 @@ final class LivePos_Db_Model
 	public function __construct() {
 		$this->_dbHandle = Netsuite_Db_Db::getInstance();
 	}
+	
+	/**
+	 * 
+	 * 
+	 */
+	public function skuToNsId( $sSku ){
+		
+		try{
+		
+			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'SKU_TO_NSID' ) );
+		
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+		
+			$sth->execute( array( $sSku ) );
+			$dbResults = $sth->fetch(PDO::FETCH_ASSOC);
+			return( $dbResults );
+		
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get NetSuite Id for Sku From DB' );
+		}
+		
+	}
 
 	/**
-	 * Enters New Customer Into Database
+	 * Enters New Receipt Into Database
 	 *
 	 * @param array $aReceiptData
 	 * @access public
