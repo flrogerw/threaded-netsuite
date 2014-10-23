@@ -89,6 +89,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'leadsource' => array('filter' => FILTER_VALIDATE_INT ),
 			'location'  => array('filter' => FILTER_VALIDATE_INT ),
 			'otherrefnum' => array('filter' => FILTER_SANITIZE_STRING ),
+			'orderstatus' => array('filter' => FILTER_SANITIZE_STRING ),
 			'paymentmethod' => array('filter' => FILTER_VALIDATE_INT ),
 			'pnrefnum' => array('filter' => FILTER_SANITIZE_STRING ),
 			'recordtype' => array('filter' => FILTER_VALIDATE_REGEXP,

@@ -61,10 +61,15 @@ class LivePos_Maps_Map {
 	public function getJson(){
 
 		switch( get_class($this) ){
-				
+
 			case('LivePos_Maps_Order'):
 				return( json_encode( array('order' => $this->getPublicVars() ) ) );
 				break;
+
+			case('LivePos_Maps_Customer'):
+				return( json_encode( array('customer' => $this->getPublicVars() ) ) );
+				break;
+
 			default:
 				return( json_encode( $this->getPublicVars() ) );
 				break;

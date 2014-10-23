@@ -42,7 +42,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $leadsource;
 	public $location;
 	public $message;
-	//public $orderstatus;
+	public $orderstatus;
 	public $otherrefnum;
 	public $paymentmethod;
 	public $pnrefnum;

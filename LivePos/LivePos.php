@@ -40,10 +40,11 @@ class LivePos_LivePos extends Stackable {
 						$aOrderData = json_decode( $aResponse['data'], true );
 
 						$order = LivePos_Maps_MapFactory::create( 'order', $aOrderData, $this->_locationData );
+						$customer = LivePos_Maps_MapFactory::create( 'customer', $aOrderData, $this->_locationData );
 						$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'] );
 						$order->addItems( $items->getItems() );
-						//echo($order->getJson() . "\n");
-						echo( Netsuite_Crypt::encrypt( $order->getJson() ) . "\n" );
+						
+						echo( $this->_getEncryptedJson( $customer, $order ) . "\n" );
 					}
 
 					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
@@ -58,11 +59,16 @@ class LivePos_LivePos extends Stackable {
 				$this->worker->addData( array('error' => $e->getMessage()) );
 			}
 
-
 			$this->_logReceipt();
 	}
 
-
+	
+	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
+		
+		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
+		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
+	}
+	
 	protected function _logReceipt() {
 
 		$model = new LivePos_Db_Model();
