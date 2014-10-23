@@ -16,6 +16,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $item;
 	public $leadsource;
 	public $location;
+	public $orderstatus = 'B';
 	public $otherrefnum;
 	public $paymentmethod;
 	public $pnrefnum;
@@ -33,7 +34,6 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			//'strFNUMBER' => 'custbody_order_source_id',
 			'dtTransactionDate' => 'trandate',
 			//'OrderStatus',
-			//'CustomerID' => 'entity',
 			'dblTax1' => 'taxtotal',
 			//'OrderDiscountAmount',
 			'dblGrandTotal' => 'total',

@@ -30,11 +30,11 @@ class LivePos_Maps_Map {
 
 			foreach( $aData as $sKey=>$mValue ){
 					
-				//echo( "KEY: $sKey => $mValue\n" );
+				echo( "KEY: $sKey => $mValue\n" );
 				switch( true ){
 
-					case( is_array( $aData[$sKey] && empty( $aData[$sKey] ) ) ):
-					case( $aData[$sKey] == null ):
+					case( is_array( $mValue && empty( $mValue ) ) ):
+					case( $mValue == null ):
 						continue;
 						break;
 
@@ -55,11 +55,20 @@ class LivePos_Maps_Map {
 	public function getPublicVars(){
 
 		$publicVars = create_function('$obj', 'return get_object_vars($obj);');
-		return $publicVars($this);
+		return array_filter($publicVars($this));
 	}
 
 	public function getJson(){
 
-		return( json_encode( $this->getPublicVars() ) );
+		switch( get_class($this) ){
+				
+			case('LivePos_Maps_Order'):
+				return( json_encode( array('order' => $this->getPublicVars() ) ) );
+				break;
+			default:
+				return( json_encode( $this->getPublicVars() ) );
+				break;
+		}
+			
 	}
 }
