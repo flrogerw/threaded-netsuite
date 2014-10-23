@@ -7,7 +7,6 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $ccname;
 	public $ccnumber;
 	public $ccprocessor = 1;
-	public $shipcountry = 'US';
 	public $custbody_order_source;
 	public $custbody_order_source_id = "FTEST";
 	public $custbody_source_code;
@@ -23,6 +22,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $pnrefnum;
 	public $recordtype = "salesorder";
 	public $shipaddress;
+	public $shipmethod = 10;
 	public $shipdate;
 	public $taxtotal;
 	public $total;

@@ -9,7 +9,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 	public $attention;
 	public $city;
 	public $custcol_image_url;
-	public $custcol_page_count_formattedValue;
+	public $custcol_page_count;
 	public $custcol_produce_in_store = false;
 	public $custcol_store_pickup = false;	
 	public $custcol162 = null;

@@ -39,13 +39,23 @@ class LivePos_LivePos extends Stackable {
 
 						$aOrderData = json_decode( $aResponse['data'], true );
 
-						$order = LivePos_Maps_MapFactory::create( 'order', $aOrderData, $this->_locationData );
-						$customer = LivePos_Maps_MapFactory::create( 'customer', $aOrderData, $this->_locationData );
-						$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'] );
-						$order->addItems( $items->getItems() );
-						
-						//echo( $order->getJson() );
-						echo( $this->_getEncryptedJson( $customer, $order ) . "\n" );
+						switch( $aOrderData[0]['strTransactionTypeLabel'] ){
+
+							case( 'SALE'):
+								
+								$order = LivePos_Maps_MapFactory::create( 'order', $aOrderData, $this->_locationData );
+								$customer = LivePos_Maps_MapFactory::create( 'customer', $aOrderData, $this->_locationData );
+								$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'] );
+								$order->addItems( $items->getItems() );
+								//echo( $order->getJson() );
+								echo( $this->_getEncryptedJson( $customer, $order ) . "\n" );
+								break;
+								
+							default:
+								
+								$this->_errors[] = 'Did Not Recognize Transaction Type: ' . $aOrderData['strTransactionTypeLabel'];
+								break;
+						}
 					}
 
 					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
@@ -57,20 +67,21 @@ class LivePos_LivePos extends Stackable {
 				$this->worker->addData( array('receiptId' => $this->_receiptId) );
 				$this->worker->addData( array('code' => $aResponse['code'] ));
 				$this->worker->addData( array('data' => $call->getResponse()) );
-				$this->worker->addData( array('error' => $e->getMessage()) );
+				$this->_errors[] = $e->getMessage();
+				$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
 			}
 
 			$this->_logReceipt();
 	}
 
-	
+
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
-		
+
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
 		//return( json_encode( $aToEncrypt ) );
 		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
-	
+
 	protected function _logReceipt() {
 
 		$model = new LivePos_Db_Model();

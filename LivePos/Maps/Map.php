@@ -30,7 +30,7 @@ class LivePos_Maps_Map {
 
 			foreach( $aData as $sKey=>$mValue ){
 					
-				echo( "KEY: $sKey => $mValue\n" );
+				//echo( "KEY: $sKey => $mValue\n" );
 				switch( true ){
 
 					case( is_array( $mValue && empty( $mValue ) ) ):
@@ -52,6 +52,52 @@ class LivePos_Maps_Map {
 	}
 
 
+	private function _getAddressArray( $sAddressText, $bDefaultBill, $bDefaultShip) {
+	
+		// Reverse Engineering for Address Elements from AddressText
+		(array) $aAddressData = explode("\n", $sAddressText);
+		/*
+		var addrObj = {};
+		var addArray = addressText.split("\n");
+	
+		// Split last element to get zip, state, city
+		var cityStateZip = addArray.pop().split(' ');
+	
+		addrObj.zip = cityStateZip.pop();
+		addrObj.state = cityStateZip.pop();
+		addrObj.city = cityStateZip.join(' ');
+	
+		// Check for Addr3
+		if (addArray.length == 6) {
+			addrObj.addr3 = addArray.pop();
+		}
+		// Check for Addr2
+		if (addArray.length == 5) {
+			addrObj.addr2 = addArray.pop();
+		}
+	
+		// Finish Populating Address Object
+	
+		addrObj.addr2 = addArray.pop();
+		addrObj.addr1 = addArray.pop();
+		addrObj.addressee = addArray.pop();
+		addrObj.attention = addArray.join(' ');
+		addrObj.addresstxt = addressText;
+	
+		if (defaultBill === true) {
+			addrObj.defaultbilling = 'T';
+		}
+		if (defaultShip === true) {
+			addrObj.defaultshipping = 'T';
+		}
+	
+	*/
+		return ( $aAddressData );
+	
+	}
+	
+	
+	
 	public function getPublicVars(){
 
 		$publicVars = create_function('$obj', 'return get_object_vars($obj);');
