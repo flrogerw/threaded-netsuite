@@ -44,6 +44,7 @@ class LivePos_LivePos extends Stackable {
 						$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'] );
 						$order->addItems( $items->getItems() );
 						
+						//echo( $order->getJson() );
 						echo( $this->_getEncryptedJson( $customer, $order ) . "\n" );
 					}
 
@@ -66,6 +67,7 @@ class LivePos_LivePos extends Stackable {
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
 		
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
+		//return( json_encode( $aToEncrypt ) );
 		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 	

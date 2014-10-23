@@ -7,6 +7,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $ccname;
 	public $ccnumber;
 	public $ccprocessor = 1;
+	public $shipcountry = 'US';
 	public $custbody_order_source;
 	public $custbody_order_source_id = "FTEST";
 	public $custbody_source_code;
@@ -18,9 +19,11 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $location;
 	public $orderstatus = 'B';
 	public $otherrefnum;
-	public $paymentmethod;
+	public $paymentmethod = 8;
 	public $pnrefnum;
+	public $recordtype = "salesorder";
 	public $shipaddress;
+	public $shipdate;
 	public $taxtotal;
 	public $total;
 	public $trandate;
@@ -46,9 +49,9 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			'strAuthorizationTransactionID' => 'pnrefnum',
 			'strAuthorizationCode' => 'authcode',
 			'strCreditCardExpiration' => 'ccexpiredate',
-			'strCreditCardTypeLabel'  => 'paymentmethod',
-			'strCustomPaymentName' => 'ccname',
-			'strCreditCardNumberLast4' => 'ccnumber',
+			//'strCreditCardTypeLabel'  => 'paymentmethod',
+			//'strCustomPaymentName' => 'ccname',
+			//'strCreditCardNumberLast4' => 'ccnumber',
 			'strPaymentTypeLabel' => '_paymentmethod_flag'
 	);
 
@@ -64,18 +67,31 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->_aData = $aOrder;
 		$this->_map();
 		$this-> _setInternalSources( $locationData );
+		$this->_logic();
 	}
 
 	public function addItems( array $items ){
 		$this->item = $items;
 	}
 
-	private function _setInternalSources( $locationData ){
+	private function _logic(){
+
+		// Reformat ccexpire date string to Netsuite Friendly Format
+		if( isset( $this->ccexpiredate ) ){
+			$date = DateTime::createFromFormat('my', $this->ccexpiredate);
+			$this->ccexpiredate = $date->format('m/Y');
+		}
 		
-		$this->billaddress = $this->shipaddress = $locationData['location_address'];
+		$date = new DateTime( $this->trandate );
+		$this->trandate = $this->shipdate = $date->format('m/d/Y');
+	}
+
+	private function _setInternalSources( $locationData ){
+
+		$this->billaddress = $this->shipaddress = stripcslashes( $locationData['location_address']);
 		$this->custbody_order_source = (int) $locationData['location_netsuite_order_source'];
 		$this->location = (int) $locationData['location_netsuite_id'];
 		$this->department = (int) $locationData['location_netsuite_department'];
-		$this->leadsource = (int) $locationData['location_netsuite_lead'];		
+		$this->leadsource = (int) $locationData['location_netsuite_lead'];
 	}
 }

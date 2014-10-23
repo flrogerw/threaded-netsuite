@@ -40,6 +40,8 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 			'country' => array('filter' => FILTER_SANITIZE_STRING),
 			'custcol_produce_in_store' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custcol_store_pickup' => array('filter' => FILTER_VALIDATE_BOOLEAN),
+			'custcol_image_url' =>array('filter' => FILTER_SANITIZE_STRING),
+			'custcol_page_count_formattedValue' =>array('filter' => FILTER_SANITIZE_STRING),
 			'custcol162' => array('filter' => FILTER_SANITIZE_STRING),
 			//'description' => array('filter' => FILTER_SANITIZE_STRING),
 			'discountitem' => array('filter' => FILTER_VALIDATE_INT),
