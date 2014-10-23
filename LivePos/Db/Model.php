@@ -21,30 +21,61 @@ final class LivePos_Db_Model
 	public function __construct() {
 		$this->_dbHandle = Netsuite_Db_Db::getInstance();
 	}
-	
+
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 */
-	public function skuToNsId( $sSku ){
-		
+	public function getEntity( $locationId ){
+
+		$dbResults = array();
+
 		try{
-		
-			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'SKU_TO_NSID' ) );
-		
+
+			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'GET_ENTITY' ) );
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-		
+
+			$sth->execute( array( $locationId ) );
+			$dbResults = $sth->fetch(PDO::FETCH_ASSOC);
+				
+			if( empty($dbResults) ){
+				throw new Exception( 'Location Information Array was EMPTY From DB' );
+			}
+			return( $dbResults );
+
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get Location Information From DB' );
+		}
+
+	}
+
+	/**
+	 *
+	 *
+	 */
+	public function skuToNsId( $sSku ){
+
+		try{
+
+			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'SKU_TO_NSID' ) );
+
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+
 			$sth->execute( array( $sSku ) );
 			$dbResults = $sth->fetch(PDO::FETCH_ASSOC);
 			return( $dbResults );
-		
+
 		}catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Get NetSuite Id for Sku From DB' );
 		}
-		
+
 	}
 
 	/**
@@ -56,7 +87,6 @@ final class LivePos_Db_Model
 	 */
 	public function insertReceipt( array $aReceiptData )
 	{
-
 		try{
 
 			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'INSERT_RECEIPT' ) );

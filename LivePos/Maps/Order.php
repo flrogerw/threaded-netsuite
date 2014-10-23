@@ -1,101 +1,32 @@
 <?php 
 class LivePos_Maps_Order extends LivePos_Maps_Map {
 
+	public $authcode;
+	public $billaddress;
+	public $ccexpiredate;
+	public $ccname;
+	public $ccnumber;
+	public $ccprocessor = 1;
+	public $custbody_order_source;
+	public $custbody_source_code;
+	public $customform = 107;
+	public $department;
+	public $entity;
+	public $item;
+	public $leadsource;
+	public $location;
+	public $otherrefnum;
+	public $paymentmethod;
+	public $pnrefnum;
+	public $shipaddress;
+	public $taxtotal;
+	public $total;
+	public $trandate;
+
+	protected $_source; // convert to NS ID;
 	protected $_aData;
+	protected $_paymentmethod_flag;
 
-
-
-	/*
-		//'AuthErrorMessage' => 'custbody_web_payment_error',
-	'AdditionalCustomizations' => '_additionalcustomizations',
-	'AuthorizationCode' => 'authcode',
-	'BillingCompanyName' => 'companyname',
-	'BillingAddress1' => 'addr1',
-	'BillingAddress2' => 'addr2',
-	'BillingCity' => 'city',
-	'BillingState' => 'state',
-	'BillingProvince' => 'province',
-	//'BillingProvince(Other)' => null,
-	'BillingZip' => 'zip',
-	'BillingCountry' => 'country',
-	'BillingPhone' => 'phone',
-	'CCType' => 'paymentmethod',
-	'CCFullName' => 'ccname',
-	'CCNumber' => 'ccnumber',
-	'CCMonthExpiration' => '_ccexpiremonth',
-	'CCYearExpiration' => '_ccexpireyear',
-	'CustomerFirstName' => 'firstname',
-	'CustomerLastName' => 'lastname',
-	'CustomerE-mail' => 'email',
-	'CustomerAccountType' => 'isperson',
-	'CustomerCompanyName' => 'companyname',
-	'CustomerFotomail' => 'custentity_fotomail',
-	'CustomerID' => 'custentity_customer_source_id',
-	'Engraving' => 'custbody_logorequired',
-	'EngravingDetails' => '_engravingdetails',
-	'entityid' => 'entityid',  // REMOVE FOR LIVE TOOL ONLY
-	//'EventDate' => 'custbody_event_date',
-	//'GiftMessage' => 'message', ///??????
-	'GiftCertificateAmount' => '_gcamount',
-	'HandlingAmount' => 'handlingcost',
-	//'How did you hear about us' => null,
-	'ImageSKU' => 'custcol162',
-	'ItemDiscountAmount' => 'discounttotal',
-	'ItemDiscountCodes' => 'discountitem',
-	'Items' => 'description',
-	'Message' => 'custbody_textrequired',
-	'MessageDetails' => '_messagedetails',
-	'MultiShipTo' => 'ismultishipto',
-	'NewGiftCertificateCode' => 'giftcertnumber',
-	//'NewGiftCertificateAmount' => ,
-	'NewGiftCertificateFromName' => 'giftcertfrom',
-	//'NewGiftCertificateFromEmail' => ,
-	'NewGiftCertificateToName' => 'giftcertrecipientname',
-	'NewGiftCertificateToEmail' => 'giftcertrecipientemail',
-	'NewGiftCertificateMessage' => 'giftcertmessage',
-	'OptionValues' => 'custbody_comments',
-	'OrderItemSubtotal' => 'subtotal',
-	//'OrderItemTotal' => 'amount',
-	'OrderParcelNumber' => '_order_parcel_number',
-	'OrderSource' => '_source',
-	//'OrderStatus' => 'orderstatus',
-	'OrderNumber' => 'custbody_order_source_id',
-	'OrderDate' => 'trandate',
-	'OrderDiscountAmount' => 'discounttotal',
-	'OrderTotal' => 'total',
-	'PaymentMethod' => '_paymentmethod_flag',
-	//'PurchaseOrderNumber' => 'otherrefnum',
-	'PickTicketNotes' => 'custbody_pickticketnotes',
-	'PromoCode' => '_promocode',
-	'PromoCodeAmount' => '_promoamount',
-	'ProduceInStore' => 'custcol_produce_in_store',
-	'ProductSKU' => 'item',
-	'Qty' => 'quantity',
-	//'RequestToken' => 'pnrefnum',
-	'SetupFee' => 'setup',
-	'ShippingMethod' => 'shipmethod',
-	//'SalespersonSalespersonID' => 'salesrep',
-	'StorePickup' => 'custcol_store_pickup',
-	'ShippingAmount' => 'shippingcost',
-	'ShippingAddress' => 'shipaddress',
-	'ShippingFirstName' => '_attention1',
-	'ShippingLastName' => '_attention2',
-	'ShippingCompanyName' => '_companyname',
-	'ShippingAddress1' => 'addr1',
-	'ShippingAddress2' => 'addr2',
-	'ShippingCity' => 'city',
-	'ShippingState' => 'state',
-	'ShippingProvince' => 'province',
-	'ShippingZip' => 'zip',
-	'ShippingCountry' => 'country',
-	'ShippingPhone' => 'phone',
-	'SourceCode' => 'custbody_source_code',
-	'TaxAmount' => 'pnrefnum',
-	'TaxRate' => 'taxrate',
-	'TransactionKey' => 'pnrefnum',
-	'UnitPrice' => 'rate'
-	);
-	*/
 	protected $_mapArray = array(
 			'intLocationID'  => '_source', // convert to NS ID
 			//'strFNUMBER' => 'custbody_order_source_id',
@@ -113,11 +44,10 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			//'PromoCodeAmount',
 			'strAuthorizationTransactionID' => 'pnrefnum',
 			'strAuthorizationCode' => 'authcode',
+			'strCreditCardExpiration' => 'ccexpiredate',
 			'strCreditCardTypeLabel'  => 'paymentmethod',
 			'strCustomPaymentName' => 'ccname',
 			'strCreditCardNumberLast4' => 'ccnumber',
-			'CCMonthExpiration' => '_ccexpiremonth',
-			'CCYearExpiration' => '_ccexpireyear',
 			'strPaymentTypeLabel' => '_paymentmethod_flag'
 	);
 
@@ -127,10 +57,25 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aOrder ) {
+	public function __construct( array $aOrder, $locationData ) {
 
 		parent::__construct();
 		$this->_aData = $aOrder;
-		$this->_mappedData = $this->_map();
+		$this->_map();
+		$this-> _setInternalSources( $locationData );
+	}
+
+	public function addItems( array $items ){
+		$this->item = $items;
+	}
+
+	private function _setInternalSources( $locationData ){
+		
+		$this->entity = (int) $locationData['location_entity'];
+		$this->billaddress = $this->shipaddress = $locationData['location_address'];
+		$this->custbody_order_source = (int) $locationData['location_netsuite_order_source'];
+		$this->location = (int) $locationData['location_netsuite_id'];
+		$this->department = (int) $locationData['location_netsuite_department'];
+		$this->leadsource = (int) $locationData['location_netsuite_lead'];		
 	}
 }

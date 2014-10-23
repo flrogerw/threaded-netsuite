@@ -4,13 +4,14 @@ class LivePos_LivePos extends Stackable {
 
 	protected $_receiptId;
 	protected $_sessionId;
+	protected $_locationId;
 	protected $_errors = array();
 
-	public function __construct( $iReceiptId, $sSessionId ){
+	public function __construct( $iReceiptId, $sSessionId, $locationData ){
 
 		$this->_receiptId = $iReceiptId;
 		$this->_sessionId = $sSessionId;
-
+		$this->_locationData = $locationData;
 	}
 
 
@@ -33,18 +34,18 @@ class LivePos_LivePos extends Stackable {
 					$aResponse = $call->getResponse();
 					$this->worker->addData( array('code' => $aResponse['code']) );
 					$this->worker->addData( array('data' => $aResponse['data']) );
-						
+
 					if( $aResponse['code'] == 200 ){
-						
+
 						$aOrderData = json_decode( $aResponse['data'], true );
-						
-						
-						$order = LivePos_Maps_MapFactory::create( 'order', $aOrderData );
+
+						$order = LivePos_Maps_MapFactory::create( 'order', $aOrderData, $this->_locationData );
+						$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'] );
+						$order->addItems( $items->getItems() );
 						echo( $order->getJson() . "\n" );
-						//$items = LivePos_Maps_MapFactory::create( 'items', $aOrderData[0]['enumProductsSold'] );
 					}
-												
-					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );						
+
+					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
 				}
 
 			} catch( Exception $e ) {
@@ -56,7 +57,7 @@ class LivePos_LivePos extends Stackable {
 				$this->worker->addData( array('error' => $e->getMessage()) );
 			}
 
-				
+
 			$this->_logReceipt();
 	}
 
