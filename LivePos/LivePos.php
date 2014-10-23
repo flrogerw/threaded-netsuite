@@ -42,7 +42,7 @@ class LivePos_LivePos extends Stackable {
 						$order = LivePos_Maps_MapFactory::create( 'order', $aOrderData, $this->_locationData );
 						$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'] );
 						$order->addItems( $items->getItems() );
-						echo( $order->getJson() . "\n" );
+						echo( $order->getEncrypted() . "\n" );
 					}
 
 					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );

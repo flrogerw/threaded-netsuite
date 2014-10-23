@@ -8,6 +8,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $ccnumber;
 	public $ccprocessor = 1;
 	public $custbody_order_source;
+	public $custbody_order_source_id = "FTEST";
 	public $custbody_source_code;
 	public $customform = 107;
 	public $department;
@@ -64,6 +65,10 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->_map();
 		$this-> _setInternalSources( $locationData );
 	}
+	
+	public function getEncrypted(){
+		return( Netsuite_Crypt::encrypt( $this->getJson() ) );
+	}
 
 	public function addItems( array $items ){
 		$this->item = $items;
@@ -71,7 +76,8 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 	private function _setInternalSources( $locationData ){
 		
-		$this->entity = (int) $locationData['location_entity'];
+		//$this->entity = (int) $locationData['location_entity'];
+		$this->entity = 279308;
 		$this->billaddress = $this->shipaddress = $locationData['location_address'];
 		$this->custbody_order_source = (int) $locationData['location_netsuite_order_source'];
 		$this->location = (int) $locationData['location_netsuite_id'];
