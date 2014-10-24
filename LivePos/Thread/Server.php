@@ -16,11 +16,11 @@ class LivePos_Thread_Server {
 	}
 
 	public function hasOrders(){
-		
+
 		$bReturn = ( !empty( $this->orderIDs ) )? true: false;
 		return( $bReturn );
 	}
-	
+
 	public function poolOrders() {
 
 		foreach( $this->orderIDs as $iOrderId ){
@@ -30,13 +30,30 @@ class LivePos_Thread_Server {
 		}
 
 		$this->_pool->shutdown();
+		$this->_queueOrders();
 
 		if( DEBUG ){
 			foreach($this->_pool->workers as $worker) {
-				printf("%s made %d attempts ...\n", $worker->getName(), $worker->getAttempts());
 				print_r($worker->getData());
-					
 			}
 		}
+	}
+
+	private function _queueOrders(){
+
+		$oModel = new LivePos_Db_Model();
+		$aOrdersArray = array();
+
+		foreach( $this->_pool->workers as $worker ) {
+				
+			$aWorkerData = $worker->getData();
+			$aOrdersArray[] = array( 
+					':customer_activa_id' => $aWorkerData['entityId'],
+					':order_activa_id' => 'POS' . $aWorkerData['receiptId'],
+					':order_json' => $aWorkerData['encrypted']
+			 );
+		}
+		
+		$oModel->queueOrders( $aOrdersArray );
 	}
 }

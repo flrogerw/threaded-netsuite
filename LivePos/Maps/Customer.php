@@ -5,10 +5,10 @@ class LivePos_Maps_Customer extends LivePos_Maps_Map {
 	public $custentity_customer_source_id = 'FPOS_TEST';
 	public $entitiyid;
 	public $firstname = 'Anonymous';
-	public $lastname = 'needNameHere';
-	public $email = 'n.ahmad702@gmail.com';
+	public $lastname = 'User';
+	public $email = 'admin@polaroidfotobar.com';
 	public $isperson = true;
-	public $custentity_fotomail = 'hiimtheguywiththebeard97835@myfotobar.com';
+	public $custentity_fotomail = 'admin@myfotobar.com';
 	public $custentitycustomer_department;
 	public $recordtype = 'customer';
 	public $department;

@@ -310,32 +310,6 @@ final class Netsuite_Db_Model
 
 
 	/**
-	 * Inserts Orders Into DB Queue
-	 *
-	 * @param string $sOrderJSON
-	 * @access public
-	 * @return void
-	 */
-	public function queueOrder( $sOrderJSON )
-	{
-
-		try{
-
-			$sth = $this->_dbHandle->prepare( Netsuite_Db_Query::getQuery( 'QUEUE_ORDER' ) );
-
-			if ( !$sth ) {
-				throw new Exception( explode(',', $sth->errorInfo() ) );
-			}
-
-			$sth->execute( array( ':order_json' => $sOrderJSON ) );
-
-		}catch( Exception $e ){
-			self::logError( $e );
-			throw new Exception( 'Could NOT Queue Order Into DB' );
-		}
-	}
-
-	/**
 	 * Returns Customer InternalId based on Activa Id
 	 *
 	 * @param string $sCusterId - Activa Customer Id

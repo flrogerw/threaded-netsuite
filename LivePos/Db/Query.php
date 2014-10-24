@@ -16,8 +16,9 @@ final class LivePos_Db_Query
 
 	protected static $SKU_TO_NSID = "SELECT SQL_CACHE netsuite_id, fulfilled_by FROM skus WHERE sku = ?";
 
-	protected static $GET_ENTITY = "SELECT SQL_CACHE * FROM livepos_locations WHERE location_id = ?";
+	protected static $GET_ENTITY = "SELECT SQL_CACHE *, CONCAT_WS('\\n',location_attention,location_addressee, location_addr1,location_addr2,location_addr3,CONCAT_WS(' ',location_city, location_state, location_zip, location_country)) AS location_addresstxt FROM livepos_locations WHERE location_id = ?";
 	
+	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( customer_activa_id, order_activa_id, order_json ) VALUES ( :customer_activa_id, :order_activa_id, :order_json)";
 	
 	/**
 	 *

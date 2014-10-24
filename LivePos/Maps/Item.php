@@ -3,18 +3,18 @@
 class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 	protected $_aData;
-	
+
 	public $amount = 0;
-	public $addressee = 'sssss';
-	public $addr1 = '123 main st';
+	public $addressee;
+	public $addr1;
 	public $addr2;
-	public $attention = 'rrrrrr';
-	public $city = 'Boca Raton';
+	public $attention;
+	public $city;
 	public $country = 'US';
 	public $custcol_image_url;
-	public $custcol_page_count_formattedValue;
+	public $custcol_page_count;
 	public $custcol_produce_in_store = false;
-	public $custcol_store_pickup = false;
+	public $custcol_store_pickup = true;
 	public $custcol162 = null;
 	public $description;
 	public $discountitem;
@@ -36,9 +36,9 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $rate;
 	public $shipaddress;
 	public $shipmethod = 10;
-	public $state = 'FL';
+	public $state;
 	//public $taxcode = -125;
-	public $zip = '33484';
+	public $zip;
 
 	protected $_mapArray = array(
 			"intProductSoldUnits"  => 'quantity',
@@ -51,10 +51,28 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aItems ) {
-		
+	public function __construct( array $aItems, $locationData ) {
+
 		parent::__construct();
 		$this->_aData = $aItems;
 		$this->_map();
-	}	
+		$this->_setAddress( $locationData );
+	}
+
+/**
+ * 
+ * @param array $locationData
+ * @return void
+ */
+	private function _setAddress( array $locationData ){
+
+		array_walk( array_filter($locationData), function($value, $key) {
+			
+			$sProperty = str_replace('location_', '',$key);
+			if(property_exists($this, $sProperty)){
+				$this->$sProperty = $value;
+			}
+			return;
+		});
+	}
 }

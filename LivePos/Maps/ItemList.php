@@ -10,17 +10,17 @@ class LivePos_Maps_ItemList {
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aItems ) {
+	public function __construct( array $aItems, $locationData ) {
 
 		$this->_aData = $aItems;
-		$this->_getItemList();
+		$this->_getItemList( $locationData );
 		$this->_skusToNsIds();
 	}
 
-	private function _getItemList(){
+	private function _getItemList( $locationData ){
 
 		foreach( $this->_aData as $aItem ){
-			$item = LivePos_Maps_MapFactory::create( 'item', array( $aItem ) );
+			$item = LivePos_Maps_MapFactory::create( 'item', array( $aItem ), $locationData );
 			$this->_itemList[] = $item->getPublicVars();
 		}
 	}

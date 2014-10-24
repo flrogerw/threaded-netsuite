@@ -17,10 +17,9 @@ try{
 			break;
 
 		default:
-				
+
 			$model = new LivePos_Db_Model();
 			$locationData = $model->getEntity( $locationId );
-
 			getReceipts($locationData);
 			break;
 	}
@@ -54,7 +53,7 @@ function getReceipts( $locationData ){
 }
 
 function processPosOrders( $aOrdersChunkedArray, $call, $locationData ){
-		
+
 	$aCurrentArray = array_shift( $aOrdersChunkedArray);
 	$processOrder = new LivePos_Thread_Server( $aCurrentArray, $call->getSessionId(), $locationData );
 	$processOrder->poolOrders();

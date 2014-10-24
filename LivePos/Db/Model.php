@@ -9,7 +9,7 @@
  * @see PDO
  * @uses Netsuite_Db_Db
  */
-final class LivePos_Db_Model
+final class LivePos_Db_Model extends PDO
 {
 
 	/**
@@ -19,7 +19,14 @@ final class LivePos_Db_Model
 	 * @return void
 	 */
 	public function __construct() {
-		$this->_dbHandle = Netsuite_Db_Db::getInstance();
+	try{
+			$dsn = 'mysql:host=' . SYSTEM_DB_HOST . ';dbname=' . SYSTEM_DB_DATABASE;
+			parent::__construct( $dsn, SYSTEM_DB_USER, SYSTEM_DB_PASS );
+			$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		}catch( Exception $e ) {
+			echo( $e->getMessage() );
+		}
 	}
 
 	/**
@@ -32,7 +39,7 @@ final class LivePos_Db_Model
 
 		try{
 
-			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'GET_ENTITY' ) );
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_ENTITY' ) );
 
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
@@ -40,7 +47,7 @@ final class LivePos_Db_Model
 
 			$sth->execute( array( $locationId ) );
 			$dbResults = $sth->fetch(PDO::FETCH_ASSOC);
-				
+
 			if( empty($dbResults) ){
 				throw new Exception( 'Location Information Array was EMPTY From DB' );
 			}
@@ -61,7 +68,7 @@ final class LivePos_Db_Model
 
 		try{
 
-			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'SKU_TO_NSID' ) );
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'SKU_TO_NSID' ) );
 
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
@@ -89,7 +96,7 @@ final class LivePos_Db_Model
 	{
 		try{
 
-			$sth = $this->_dbHandle->prepare( LivePos_Db_Query::getQuery( 'INSERT_RECEIPT' ) );
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'INSERT_RECEIPT' ) );
 
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
@@ -102,6 +109,42 @@ final class LivePos_Db_Model
 			throw new Exception( 'Could NOT Enter/Update LivePOS Receipt Into DB' );
 		}
 	}
+
+	/**
+	 * Inserts Orders Into DB Queue
+	 *
+	 * @param string $sOrderJson
+	 * @param string $sOrderActivaId
+	 * @param int $iCustomerActivaId
+	 * @access public
+	 * @return void
+	 */
+	public function queueOrders( array $aOrdersArray ){
+
+
+		try{
+
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'QUEUE_ORDER' ) );
+
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+
+			//$this->->beginTransaction();
+
+			foreach( $aOrdersArray as $aOrder ){
+				//array( ':customer_activa_id' => $aOrder[':customer_activa_id'],':order_activa_id' => $aOrder[':order_activa_id'],':order_json' => $aOrder[':order_json'] );
+				$sth->execute( $aOrder );
+			}
+
+			//$this->->commit();
+
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Queue LivePOS Order Into DB: ' . $aOrder[':order_activa_id'] );
+		}
+	}
+
 
 	/**
 	 * Logs System Exceptions to DataBase
@@ -132,5 +175,4 @@ final class LivePos_Db_Model
 			var_dump($e);
 		}
 	}
-
 }

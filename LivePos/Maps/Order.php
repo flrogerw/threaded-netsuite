@@ -8,11 +8,12 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $ccnumber;
 	public $ccprocessor = 1;
 	public $custbody_order_source;
-	public $custbody_order_source_id = "FTEST";
+	public $custbody_order_source_id;
 	public $custbody_source_code;
 	public $customform = 107;
 	public $department;
 	public $entity;
+	public $ismultishipto = false;
 	public $item;
 	public $leadsource;
 	public $location;
@@ -87,8 +88,11 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	}
 
 	private function _setInternalSources( $locationData ){
+		
+		// REMOVE WHEN F-NUMBER BECOMES AVAILABLE
+		$this->custbody_order_source_id = 'POS' . $this->otherrefnum;
 
-		$this->billaddress = $this->shipaddress = stripcslashes( $locationData['location_address']);
+		$this->billaddress = $this->shipaddress = stripcslashes( $locationData['location_addresstxt']);
 		$this->custbody_order_source = (int) $locationData['location_netsuite_order_source'];
 		$this->location = (int) $locationData['location_netsuite_id'];
 		$this->department = (int) $locationData['location_netsuite_department'];

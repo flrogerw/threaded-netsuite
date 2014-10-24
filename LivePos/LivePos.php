@@ -24,6 +24,7 @@ class LivePos_LivePos extends Stackable {
 
 			try{
 				$this->worker->addData( array('receiptId' => $this->_receiptId) );
+				$this->worker->addData( array('entityId' => $this->_locationData['location_entity']) );
 
 				$call = new LivePos_Job_GetRecord( false );
 
@@ -42,17 +43,16 @@ class LivePos_LivePos extends Stackable {
 						switch( $aOrderData[0]['strTransactionTypeLabel'] ){
 
 							case( 'SALE'):
-								
+
 								$order = LivePos_Maps_MapFactory::create( 'order', $aOrderData, $this->_locationData );
 								$customer = LivePos_Maps_MapFactory::create( 'customer', $aOrderData, $this->_locationData );
-								$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'] );
+								$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'], $this->_locationData );
 								$order->addItems( $items->getItems() );
-								//echo( $order->getJson() );
-								echo( $this->_getEncryptedJson( $customer, $order ) . "\n" );
+								$this->worker->addData( array('encrypted' => $this->_getEncryptedJson( $customer, $order ) ) );
 								break;
-								
+
 							default:
-								
+
 								$this->_errors[] = 'Did Not Recognize Transaction Type: ' . $aOrderData['strTransactionTypeLabel'];
 								break;
 						}
@@ -69,6 +69,7 @@ class LivePos_LivePos extends Stackable {
 				$this->worker->addData( array('data' => $call->getResponse()) );
 				$this->_errors[] = $e->getMessage();
 				$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
+
 			}
 
 			$this->_logReceipt();
@@ -78,7 +79,6 @@ class LivePos_LivePos extends Stackable {
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
 
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
-		//return( json_encode( $aToEncrypt ) );
 		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 
