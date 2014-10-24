@@ -3,6 +3,7 @@
 class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 	protected $_aData;
+	protected $_aLocationData;
 
 	public $amount = 0;
 	public $addressee;
@@ -13,8 +14,8 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $country = 'US';
 	public $custcol_image_url;
 	public $custcol_page_count;
-	public $custcol_produce_in_store = false;
-	public $custcol_store_pickup = true;
+	public $custcol_produce_in_store = 'F';
+	public $custcol_store_pickup = 'T';
 	public $custcol162 = null;
 	public $description;
 	public $discountitem;
@@ -24,10 +25,10 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $giftcertnumber;
 	public $giftcertrecipientemail;
 	public $giftcertrecipientname;
-	public $isclosed = false;
-	public $isresidential = true;
-	public $isestimate = false;
-	public $istaxable = true;
+	public $isclosed = 'F';
+	public $isresidential = 'T';
+	public $isestimate = 'F';
+	public $istaxable = 'T';
 	public $item;
 	public $location;
 	public $phone;
@@ -51,22 +52,30 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aItems, $locationData ) {
+	public function __construct( array $aItem, $locationData ) {
 
 		parent::__construct();
-		$this->_aData = $aItems;
+		$this->_aData = $aItem;
+		$this->_aLocationData = $locationData;
 		$this->_map();
-		$this->_setAddress( $locationData );
+		$this->_setAddress();
+		$this->_logic();
+	}
+	
+	private function _logic(){
+		
+		// Set Item to Match Store Location
+		$this->location = $this->_aLocationData['location_netsuite_id'];
 	}
 
 /**
  * 
- * @param array $locationData
+ * @param array $this->_aLocationData
  * @return void
  */
-	private function _setAddress( array $locationData ){
+	private function _setAddress(){
 
-		array_walk( array_filter($locationData), function($value, $key) {
+		array_walk( array_filter($this->_aLocationData), function($value, $key) {
 			
 			$sProperty = str_replace('location_', '',$key);
 			if(property_exists($this, $sProperty)){

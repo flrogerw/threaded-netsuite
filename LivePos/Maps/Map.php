@@ -56,6 +56,7 @@ class LivePos_Maps_Map {
 
 		$publicVars = create_function('$obj', 'return get_object_vars($obj);');
 		return array_filter($publicVars($this));
+		//return ($publicVars($this));
 	}
 
 	public function getJson(){

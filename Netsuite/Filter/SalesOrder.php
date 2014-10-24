@@ -71,6 +71,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custbody_order_source_id' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pickticketnotes' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_trans_id'=> array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_postranstime' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_source_code' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_textrequired' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custbody_web_discount_code' => array('filter' => FILTER_SANITIZE_STRING),

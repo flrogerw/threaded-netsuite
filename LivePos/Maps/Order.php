@@ -10,10 +10,12 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_order_source;
 	public $custbody_order_source_id;
 	public $custbody_source_code;
+	public $custbody_pos_trans_id;
+	public $custbody_pos_postranstime;
 	public $customform = 107;
 	public $department;
 	public $entity;
-	public $ismultishipto = false;
+	public $ismultishipto = 'F';
 	public $item;
 	public $leadsource;
 	public $location;
@@ -37,23 +39,16 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			'intLocationID'  => '_source', // convert to NS ID
 			//'strFNUMBER' => 'custbody_order_source_id',
 			'dtTransactionDate' => 'trandate',
-			//'OrderStatus',
 			'dblTax1' => 'taxtotal',
-			//'OrderDiscountAmount',
 			'dblGrandTotal' => 'total',
-			'intReceiptNumber' => 'otherrefnum',
-			'SalespersonSalespersonID',
-			//'GiftCertificateAmount',
-			//'SourceCode' => 'custbody_source_code',
-			//'PromoCode',
-			//'PromoCodeAmount',
-			'strAuthorizationTransactionID' => 'pnrefnum',
+			'intInvoiceNumber' => 'otherrefnum',
+			'strAuthorizationTransactionID' => 'custbody_pos_trans_id',
 			'strAuthorizationCode' => 'authcode',
 			'strCreditCardExpiration' => 'ccexpiredate',
-			//'strCreditCardTypeLabel'  => 'paymentmethod',
-			//'strCustomPaymentName' => 'ccname',
-			//'strCreditCardNumberLast4' => 'ccnumber',
-			'strPaymentTypeLabel' => '_paymentmethod_flag'
+			'strPaymentTypeLabel' => '_paymentmethod_flag',
+			'intReceiptNumber' => 'custbody_order_source_id',
+			'dtTransactionDate' => 'custbody_pos_postranstime'
+			
 	);
 
 
@@ -90,7 +85,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	private function _setInternalSources( $locationData ){
 		
 		// REMOVE WHEN F-NUMBER BECOMES AVAILABLE
-		$this->custbody_order_source_id = 'POS' . $this->otherrefnum;
+		//$this->custbody_order_source_id = 'POS' . $this->otherrefnum;
 
 		$this->billaddress = $this->shipaddress = stripcslashes( $locationData['location_addresstxt']);
 		$this->custbody_order_source = (int) $locationData['location_netsuite_order_source'];

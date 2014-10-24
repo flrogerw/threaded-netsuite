@@ -20,6 +20,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $custbody_order_source;
 	public $custbody_order_source_id; // REMOVE WHEN LIVE
 	public $custbody_pickticketnotes;
+	public $custbody_pos_postranstime;
 	public $custbody_pos_trans_id;
 	public $custbody_source_code;
 	public $custbody_textrequired = false;
