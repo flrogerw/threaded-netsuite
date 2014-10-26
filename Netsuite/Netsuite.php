@@ -14,8 +14,6 @@ class Netsuite_Netsuite extends Stackable {
 
                 $this->_order = $aOrder;
                 
-                var_dump($this->_order);
-                
                 $this->_order['customer']['_source'] = $this->_order['order']['_source'];
                 $this->_queueId = $iQueueId;
                 //$this->_orderId = $this->_order['order']['custbody_order_source_id'];
@@ -76,8 +74,6 @@ class Netsuite_Netsuite extends Stackable {
         protected function _createCustomer(){
 
                 $customer = Netsuite_Record::factory()->customer( $this->_order['customer'] );
-                
-                var_dump($this->_order);
 
                         $model = new Netsuite_Db_Model();
                         $activa = new Netsuite_Db_Activa();
@@ -86,7 +82,7 @@ class Netsuite_Netsuite extends Stackable {
                                 $aJsonReturn['success'] = false;
                                 $aJsonReturn['error'] = implode( ',', $customer->getErrors());
                                 $aJsonReturn['warn'] = ( $customer->hasWarnings() )? $customer->getWarnings():null;
-                                $this->worker->addData( $aJsonReturn );
+                                $this->worker->addData( array('customer' => $aJsonReturn ) );
                                 return;
                         }
 
@@ -101,7 +97,7 @@ class Netsuite_Netsuite extends Stackable {
                                                 $results['message'] = 'Added Contact to Bongo with Id: ' . $customer->entityid;
                                                 $results['json'] = json_encode( $this->_order['customer'] );
                                         }
-                                        $this->worker->addData( $results );
+                                       // $this->worker->addData( $results );
                                         break;
 
                                 case( empty( $customer->entityid ) ):
@@ -113,36 +109,17 @@ class Netsuite_Netsuite extends Stackable {
                                                 $model->insertCustomer( $customer->custentity_customer_source_id, $customer->entityid );
                                                 $activa->updateCustomer( $customer->custentity_customer_source_id, $customer->entityid );
                                         }
-                                        $this->worker->addData( $results );
+                                       // $this->worker->addData( $results );
                                         break;
 
                                 default:
                                         $results['netsuite']['record_id'] = $customer->entityid;
                                         $results['success'] = true;
                                         $results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
-                                        $this->worker->addData( $results );
+                                        //$this->worker->addData( $results );
                                         break;
                         }
-/*
-
-                        if( empty( $customer->entityid )  ){
-                                $results = $this->_process('customer', $customer );
-
-                                if( $results['success'] === true ){
-                                        $customer->entityid = $results['netsuite']['record_id'];
-                                        $model->insertCustomer( $customer->custentity_customer_source_id, $customer->entityid );
-                                        $activa->updateCustomer( $customer->custentity_customer_source_id, $customer->entityid );
-                                }
-                                $this->worker->addData( $results );
-                        } else {
-                                //$results['netsuite']['record_id'] = $customer->entityid = $mInternalId;
-                                $results['success'] = true;
-                                $results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
-                                $this->worker->addData( $results );
-                        }
-
-*/
-
+                        $this->worker->addData( array('customer' => $results ) );
                 // updateAddressBook( $customer );  add this functionality
 
                 $mReturn = ( $results['success'] !== false )? $customer: false;
