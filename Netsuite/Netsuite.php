@@ -36,7 +36,7 @@ class Netsuite_Netsuite extends Stackable {
                 });
 
                         try{
-                                $this->worker->addData( $this->_queueId );
+                                $this->worker->addData( array( 'queue_id' => $this->_queueId ) );
                                 $customer = $this->_createCustomer();
 
                                 if( $customer !== false  ){
@@ -119,6 +119,7 @@ class Netsuite_Netsuite extends Stackable {
                                         //$this->worker->addData( $results );
                                         break;
                         }
+                        
                         $this->worker->addData( array('customer' => $results ) );
                 // updateAddressBook( $customer );  add this functionality
 
@@ -134,17 +135,17 @@ class Netsuite_Netsuite extends Stackable {
                 $sSystemError = '';
 
                 $aResults = $this->worker->getData();
-                $sIsSuccess = ( $aResults[1]['success'] == true && $aResults[2]['success'] == true )? 'complete': 'error';
-                $sCustomerStatus = ( $aResults[1]['success'] == true )? 'success': 'fail';
-                $sOrderStatus = ( $aResults[2]['success'] == true )? 'success': 'fail';
+                $sIsSuccess = ( $aResults['customer']['success'] == true && $aResults['order']['success'] == true )? 'complete': 'error';
+                $sCustomerStatus = ( $aResults['customer']['success'] == true )? 'success': 'fail';
+                $sOrderStatus = ( $aResults['order']['success'] == true )? 'success': 'fail';
 
                 switch( true )
                 {
-                        case( !empty( $aResults[1]['system']['error'] ) ):
-                                $sSystemError .= $aResults[1]['system']['error'] . ' ';
+                        case( !empty( $aResults['customer']['system']['error'] ) ):
+                                $sSystemError .= $aResults['customer']['system']['error'] . ' ';
 
-                        case( !empty( $aResults[2]['system']['error'] ) ):
-                                $sSystemError .= $aResults[2]['system']['error'];
+                        case( !empty( $aResults['order']['system']['error'] ) ):
+                                $sSystemError .= $aResults['order']['system']['error'];
                                 break;
                 }
 
@@ -154,19 +155,19 @@ class Netsuite_Netsuite extends Stackable {
                                 ':system_error' => $sSystemError,
                                 ':process_date' => date("Y-m-d H:i:s"),
                                 ':customer_status' => $sCustomerStatus,
-                                ':customer_id' => $aResults[1]['netsuite']['record_id'],
-                                ':customer_warnings' => ( is_array( $aResults[1]['warn'] ) )?implode( ',',$aResults[1]['warn']):$aResults[1]['warn'],
-                                ':customer_errors' => $aResults[1]['error'],
-                                ':customer_json' => $aResults[1]['json'],
+                                ':customer_id' => $aResults['customer']['netsuite']['record_id'],
+                                ':customer_warnings' => ( is_array( $aResults['customer']['warn'] ) )?implode( ',',$aResults['customer']['warn']):$aResults['customer']['warn'],
+                                ':customer_errors' => $aResults['customer']['error'],
+                                ':customer_json' => $aResults['customer']['json'],
                                 ':order_status' => $sOrderStatus,
-                                ':order_id' => $aResults[2]['netsuite']['record_id'],
-                                ':order_warnings' => ( is_array( $aResults[2]['warn'] ) )?implode( ',',$aResults[2]['warn']):$aResults[2]['warn'],
-                                ':order_errors' => $aResults[2]['error'],
-                                ':order_json' => $this->_maskCcNumber( $aResults[2]['json'] )
+                                ':order_id' => $aResults['order']['netsuite']['record_id'],
+                                ':order_warnings' => ( is_array( $aResults['order']['warn'] ) )?implode( ',',$aResults['order']['warn']):$aResults['order']['warn'],
+                                ':order_errors' => $aResults['order']['error'],
+                                ':order_json' => $this->_maskCcNumber( $aResults['order']['json'] )
                 );
 
                 $sOutcome = ( $sCustomerStatus == 'fail' || $sOrderStatus == 'fail' )? 'error' : 'complete';
-                $model->updateOrderQueue( $aResults[0], $sOutcome );
+                $model->updateOrderQueue( $aResults['queue_id'], $sOutcome );
                 $model->logProcess( $aUpdateData );
                 $activa->logProcess( $aUpdateData );
         }
