@@ -13,6 +13,9 @@ class Netsuite_Netsuite extends Stackable {
         public function __construct( array $aOrder, $iQueueId, $sOrderID ){
 
                 $this->_order = $aOrder;
+                
+                var_dump($this->_order);
+                
                 $this->_order['customer']['_source'] = $this->_order['order']['_source'];
                 $this->_queueId = $iQueueId;
                 //$this->_orderId = $this->_order['order']['custbody_order_source_id'];
@@ -73,6 +76,8 @@ class Netsuite_Netsuite extends Stackable {
         protected function _createCustomer(){
 
                 $customer = Netsuite_Record::factory()->customer( $this->_order['customer'] );
+                
+                var_dump($this->_order);
 
                         $model = new Netsuite_Db_Model();
                         $activa = new Netsuite_Db_Activa();
@@ -112,7 +117,7 @@ class Netsuite_Netsuite extends Stackable {
                                         break;
 
                                 default:
-                                        //$results['netsuite']['record_id'] = $customer->entityid = $mInternalId;
+                                        $results['netsuite']['record_id'] = $customer->entityid;
                                         $results['success'] = true;
                                         $results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
                                         $this->worker->addData( $results );

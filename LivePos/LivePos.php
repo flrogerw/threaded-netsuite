@@ -48,7 +48,11 @@ class LivePos_LivePos extends Stackable {
 								$customer = LivePos_Maps_MapFactory::create( 'customer', $aOrderData, $this->_locationData );
 								$items = new LivePos_Maps_ItemList( $aOrderData[0]['enumProductsSold'], $this->_locationData );
 								$order->addItems( $items->getItems() );
+								$customer = Netsuite_Record::factory()->customer( $customer->getPublicVars() );
+								$order = Netsuite_Record::factory()->salesOrder( $order->getPublicVars(), $customer );
 								$this->worker->addData( array('encrypted' => $this->_getEncryptedJson( $customer, $order ) ) );
+
+								
 								break;
 
 							default:
@@ -76,9 +80,9 @@ class LivePos_LivePos extends Stackable {
 	}
 
 
-	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
+	private function _getEncryptedJson( Netsuite_Record_Customer $customer, Netsuite_Record_SalesOrder $order ){
 
-		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
+		$aToEncrypt = array( 'order' => $order->getFields(), 'customer' => $customer->getFields() );
 		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 
