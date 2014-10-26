@@ -67,7 +67,7 @@ class Netsuite_Netsuite extends Stackable {
                 }
 
                 $results = $this->_process('salesorder', $salesOrder );
-                $this->worker->addData( $results );
+                $this->worker->addData( array( 'order' => $results ) );
 
         }
 
