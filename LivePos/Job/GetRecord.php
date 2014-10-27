@@ -23,6 +23,10 @@ final class LivePos_Job_GetRecord {
 		$bIsOk = ( $this->_hasErrors )? false: true;
 		return( $bIsOk );
 	}
+	
+	public function getErrors(){
+		return( $this->_response['error'] );
+	}
 
 	public function getResponse(){
 
@@ -83,7 +87,7 @@ final class LivePos_Job_GetRecord {
 			}
 		}
 		
-		$this->_response['error'] =  'cURL Error: ' . curl_error( $cURL );
+		$this->_response['error'][] =  'cURL Error: ' . curl_error( $cURL );
 		$this->_hasErrors = true;
 		curl_close($cURL);
 		return;
@@ -136,7 +140,7 @@ final class LivePos_Job_GetRecord {
 			}
 		}
 
-		$this->_response =  'cURL Error: ' . curl_error( $cURL );
+		$this->_response['error'][] =  'cURL Error: ' . curl_error( $cURL );
 		$this->_hasErrors = true;
 		curl_close($cURL);
 	}

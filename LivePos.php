@@ -3,7 +3,8 @@
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
 $locationId = 27449;
-
+$runType = 'order';
+//$runType = 'receipt';
 
 try{
 	// See if Process is Already Running And Netsuite is Alive
@@ -16,11 +17,14 @@ try{
 			throw new Exception( 'LivePOS Process Already Running' );
 			break;
 
-		default:
+		case($runType == 'order'):
+			processPosOrders();
+			break;
+		
+		case($runType == 'receipt'):
 
-			$model = new LivePos_Db_Model();
-			$locationData = $model->getEntity( $locationId );
-			getReceipts($locationData);
+			
+			getReceipts($locationId);
 			break;
 	}
 
@@ -33,10 +37,10 @@ try{
 	Netsuite_Db_Model::logError( $e );
 }
 
-function getReceipts( $locationData ){
+function getReceipts($locationId){
 
 	$call = new LivePos_Job_GetRecord();
-	$call->sendRequest('GetReceipts', $call->getSessionId(), array('intLocationID' => $locationData['location_id'], 'dReportDate' => '2014-10-16'));
+	$call->sendRequest('GetReceipts', $call->getSessionId(), array('intLocationID' => $locationId, 'dReportDate' => '2014-10-16'));
 
 	if( $call->isOk() ){
 
@@ -46,20 +50,33 @@ function getReceipts( $locationData ){
 
 		if( !empty($receiptIds)){
 
-			$aOrdersChunkedArray = array_chunk($receiptIds, LIVEPOS_MAX_RECORDS );
-			processPosOrders( $aOrdersChunkedArray, $call, $locationData );
+			$aReceiptsChunkedArray = array_chunk($receiptIds, LIVEPOS_MAX_RECORDS );
+			processPosReceipts( $aReceiptsChunkedArray, $call, $locationId );
 		}
 	}
 }
 
-function processPosOrders( $aOrdersChunkedArray, $call, $locationData ){
 
-	$aCurrentArray = array_shift( $aOrdersChunkedArray);
-	$processOrder = new LivePos_Thread_Server( $aCurrentArray, $call->getSessionId(), $locationData );
-	$processOrder->poolOrders();
+function processPosOrders( ){
+	
+	$processOrders = new LivePos_Thread_OrderServer();
 
-	if( !empty( $aOrdersChunkedArray ) ){
+	if( $processOrders->hasOrders() ){
+
+		$processOrders->poolOrders();
+		//processPosOrders();
+	}
+}
+
+
+function processPosReceipts( $aReceiptsChunkedArray, $call, $iLocationId ){
+
+	$aCurrentArray = array_shift( $aReceiptsChunkedArray);
+	$processReceipts = new LivePos_Thread_ReceiptServer( $aCurrentArray, $call->getSessionId(), $iLocationId );
+	$processReceipts->poolReceipts();
+
+	if( !empty( $aReceiptsChunkedArray ) ){
 		sleep(61);
-		processPosOrders( $aOrdersChunkedArray, $call, $locationData );
+		processPosReceipts( $aReceiptsChunkedArray, $call, $iLocationId );
 	}
 }

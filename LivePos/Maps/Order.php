@@ -85,7 +85,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	private function _setInternalSources( $locationData ){
 		
 		// REMOVE WHEN F-NUMBER BECOMES AVAILABLE
-		//$this->custbody_order_source_id = 'POS' . $this->otherrefnum;
+		$this->custbody_order_source_id = 'POS_' . $this->custbody_order_source_id;
 
 		$this->billaddress = $this->shipaddress = stripcslashes( $locationData['location_addresstxt']);
 		$this->custbody_order_source = (int) $locationData['location_netsuite_order_source'];

@@ -28,13 +28,15 @@ class LivePos_Maps_Customer extends LivePos_Maps_Map {
 
 		parent::__construct();
 		$this-> _setInternalSources( $locationData );
-
 	}
-
+	
+	public function setEntityId( $iEntityId = 866094 ){
+		$this->entityid = $iEntityId;
+	}
+		
 	private function _setInternalSources( $locationData ){
-
-		$this->entityid = 866094;
-		//$this->entityid = (int) $locationData['location_entity'];
+		
+		$this->entityid = (int) $locationData['location_entity'];
 		$this->custentitycustomer_department = (int) $locationData['location_netsuite_department'];
 		$this->custentity_customer_source = (int) $locationData['location_netsuite_customer_source'];
 		$this->leadsource = (int) $locationData['location_netsuite_lead'];

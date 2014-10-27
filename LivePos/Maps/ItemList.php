@@ -44,8 +44,7 @@ class LivePos_Maps_ItemList {
 			}catch (Exception $e){
 				$this->_errors = $e->getMessage();
 			}
-
-
 		}
+		$model = null;
 	}
 }

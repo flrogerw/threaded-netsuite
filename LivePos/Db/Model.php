@@ -19,7 +19,7 @@ final class LivePos_Db_Model extends PDO
 	 * @return void
 	 */
 	public function __construct() {
-	try{
+		try{
 			$dsn = 'mysql:host=' . SYSTEM_DB_HOST . ';dbname=' . SYSTEM_DB_DATABASE;
 			parent::__construct( $dsn, SYSTEM_DB_USER, SYSTEM_DB_PASS );
 			$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -59,7 +59,78 @@ final class LivePos_Db_Model extends PDO
 		}
 
 	}
-
+	
+	
+	/**
+	 *
+	 *
+	 */
+	public function getPosOrders( $iLimit ){
+	
+		$dbResults = array();
+	
+		try{
+	
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_ORDER_QUEUE' ) );
+			$sth->bindValue(':limit', (int)$iLimit, PDO::PARAM_INT);
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$sth->execute();
+			$dbResults = $sth->fetchAll(PDO::FETCH_ASSOC);
+			return( $dbResults );
+	
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get Orders From DB' );
+		}
+	
+	}
+	
+	/**
+	 * Looks at Process Log to See if Any of the Current Pending Orders
+	 * Have Already Been Processed.
+	 *
+	 * @param array $aNewOrders - Pending Orders to Be Searched
+	 * @access public
+	 * @return array|null $_dbResults
+	 * @throws Exception
+	 */
+	public function getCurrentOrders( $aSearchOrders){
+	
+		try{
+	
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_CURRENT_ORDERS', null, count( $aSearchOrders ) ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$aBindArgs = array();
+			$returnArray = array();
+	
+			array_walk( $aSearchOrders, function( $aSearchOrders, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = $aSearchOrders;
+			});
+	
+				$sth->execute( $aBindArgs  );
+				$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+				
+				array_walk( $this->_dbResults, function($aData, $sKey) use (&$returnArray){
+					$returnArray[ $aData['order_activa_id'] ] = $aData['customer_id'];
+				});
+				
+				return( $returnArray );
+	
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Read Processed Orders From the DB' );
+		}
+	}
+	
+	
 	/**
 	 *
 	 *
@@ -92,7 +163,7 @@ final class LivePos_Db_Model extends PDO
 	 * @access public
 	 * @return void
 	 */
-	public function insertReceipt( array $aReceiptData )
+	public function insertReceipts( array $aReceiptsData )
 	{
 		try{
 
@@ -101,9 +172,16 @@ final class LivePos_Db_Model extends PDO
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
+				
+			$this->beginTransaction();
+			
+			foreach( $aReceiptsData as $aReceiptData ){
 
-			$sth->execute( $aReceiptData );
-
+				$sth->execute( $aReceiptData );					
+			}
+				
+			$this->commit();
+			
 		}catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Enter/Update LivePOS Receipt Into DB' );
@@ -130,14 +208,14 @@ final class LivePos_Db_Model extends PDO
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
 
-			//$this->->beginTransaction();
+			$this->beginTransaction();
 
 			foreach( $aOrdersArray as $aOrder ){
-				//array( ':customer_activa_id' => $aOrder[':customer_activa_id'],':order_activa_id' => $aOrder[':order_activa_id'],':order_json' => $aOrder[':order_json'] );
+			
 				$sth->execute( $aOrder );
 			}
 
-			//$this->->commit();
+			$this->commit();
 
 		}catch( Exception $e ){
 			self::logError( $e );
