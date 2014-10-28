@@ -81,9 +81,7 @@ class Thread_Server {
 
 		if( DEBUG ){
 			foreach($this->_pool->workers as $worker) {
-				printf("%s made %d attempts ...\n", $worker->getName(), $worker->getAttempts());
-				print_r($worker->getData());
-					
+				print_r($worker->getData());	
 			}
 		}
 	}

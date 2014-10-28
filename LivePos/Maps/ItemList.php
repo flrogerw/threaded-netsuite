@@ -4,6 +4,8 @@ class LivePos_Maps_ItemList {
 
 	protected $_aData;
 	protected $_itemList = array();
+	
+	protected $_ignorePosSkus = array('Ship', 'Custom Art');
 
 	/**
 	 *
@@ -20,11 +22,22 @@ class LivePos_Maps_ItemList {
 	private function _getItemList( $locationData ){
 
 		foreach( $this->_aData as $aItem ){
+			
 			$item = LivePos_Maps_MapFactory::create( 'item', array( $aItem ), $locationData );
-			$this->_itemList[] = $item->getPublicVars();
+			
+			if( !in_array($item->item, $this->_ignorePosSkus) ){
+				
+				$this->_itemList[] = $item->getPublicVars();
+			}
 		}
 	}
 
+	public function hasItems(){
+		
+		$bReturn = ( !empty( $this->_itemList ) )? true: false;
+		return( $bReturn );
+	}
+	
 	public function getItems(){
 
 		return( $this->_itemList );

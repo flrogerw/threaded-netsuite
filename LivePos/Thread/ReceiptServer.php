@@ -6,13 +6,15 @@ class LivePos_Thread_ReceiptServer {
 	protected $_pool;
 	private $_sessionId;
 	private $_locationId;
+	private $_transactionDate;
 
-	public function __construct( array $aReceiptIDs, $sSessionId, $iLocationId ){
+	public function __construct( array $aReceiptIDs, $sSessionId, $iLocationId, $dTransactionDate ){
 
 		$this->_pool = new Thread_Pool( MAX_THREADS );
 		$this->receiptIds = $aReceiptIDs;
 		$this->_sessionId = $sSessionId;
 		$this->_locationId = $iLocationId;
+		$this->_transactionDate = $dTransactionDate;
 	}
 
 	public function hasReceipts(){
@@ -57,6 +59,7 @@ class LivePos_Thread_ReceiptServer {
 					':response_code' => $aResults['code'],
 					':receipt_string' => $aResults['data'],
 					':location_id' => $aResults['locationId'],
+					':transaction_date' => $this->_transactionDate,
 					':error_message' => $aResults['error'] );
 		}
 

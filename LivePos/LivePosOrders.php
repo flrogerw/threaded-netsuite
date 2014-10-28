@@ -5,7 +5,6 @@ class LivePos_LivePosOrders extends Stackable {
 	protected $_order;
 	protected $_locationData;
 	protected $_orderType;
-	protected $_errors = array();
 
 	public function __construct( $aOrder, $locationData ){
 
@@ -23,6 +22,7 @@ class LivePos_LivePosOrders extends Stackable {
 			include $sClass . '.php';
 		});
 		
+			$errors = array();
 			$this->worker->addData( array('receiptId' => $this->receiptId) );
 			
 			try{
@@ -30,13 +30,20 @@ class LivePos_LivePosOrders extends Stackable {
 				switch( $this->orderType ){
 
 					case( 'SALE'):
+						
+						$items = new LivePos_Maps_ItemList( $this->_order[0]['enumProductsSold'], $this->_locationData );
+						
+						// WEB Only Items
+						if( !$items->hasItems() ){
+							$this->worker->addData( array('ignore' => true ) );
+							$errors[] = 'WEB Only Items or Empty Item List';
+							break;
+						}
 
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_order, $this->_locationData );
 						$customer = Netsuite_Record::factory()->customer( $customer->getPublicVars() );
 
 						$order = LivePos_Maps_MapFactory::create( 'order', $this->_order, $this->_locationData );
-						
-						$items = new LivePos_Maps_ItemList( $this->_order[0]['enumProductsSold'], $this->_locationData );
 						$order->addItems( $items->getItems() );
 						$order = Netsuite_Record::factory()->salesOrder( $order->getPublicVars(), $customer );
 
@@ -46,19 +53,18 @@ class LivePos_LivePosOrders extends Stackable {
 
 					default:
 
-						$this->_errors[] = 'Did Not Recognize Transaction Type: ' . $this->orderType;
+						$errors[] = 'Did Not Recognize Transaction Type: ' . $this->orderType;
 						break;
 				}
-					
 
-				$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
+				$sFlatErrors = implode( ',', $errors );
+				$this->worker->addData( array('error' => $sFlatErrors ) );
 
 
 			} catch( Exception $e ) {
 
-				//Netsuite_Db_Model::logError( $e->getMessage() );
-				$this->_errors[] = $e->getMessage();
-				$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
+				LivePos_Db_Model::logError( $e );
+				$this->worker->addData( array('error' => $e->getMessage() ) );
 
 			}
 	}

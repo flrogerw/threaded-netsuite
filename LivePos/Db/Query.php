@@ -13,7 +13,7 @@ final class LivePos_Db_Query
 
 	protected static $LOG_ERROR = "INSERT INTO livepos_error_log (message, file, line, trace) VALUES (:message,:file,:line,:trace)";
 
-	protected static $INSERT_RECEIPT = "INSERT INTO livepos_receipts ( receipt_id, receipt_type, location_id, response_code, receipt_string, error_message ) VALUES (:receipt_id, :receipt_type, :location_id, :response_code, :receipt_string, :error_message) ON DUPLICATE KEY UPDATE response_code = :response_code, receipt_string = :receipt_string, error_message = :error_message, times_run = (times_run + 1) ";
+	protected static $INSERT_RECEIPT = "INSERT INTO livepos_receipts ( receipt_id, receipt_type, transaction_date, location_id, response_code, receipt_string, error_message ) VALUES (:receipt_id, :receipt_type, :transaction_date, :location_id, :response_code, :receipt_string, :error_message) ON DUPLICATE KEY UPDATE response_code = :response_code, receipt_string = :receipt_string, error_message = :error_message, times_run = (times_run + 1) ";
 
 	protected static $SKU_TO_NSID = "SELECT SQL_CACHE netsuite_id, fulfilled_by FROM skus WHERE sku = ?";
 
@@ -22,7 +22,13 @@ final class LivePos_Db_Query
 	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( customer_activa_id, order_activa_id, order_json ) VALUES ( :customer_activa_id, :order_activa_id, :order_json)";
 
 	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE receipt_id, location_id, receipt_type, receipt_string FROM livepos_receipts WHERE response_code = 200 AND sent_to_netsuite = 'pending' ORDER BY location_id, receipt_id LIMIT :limit";	
+	
+	protected static $VALIDATE_LOCATION = "SELECT SQL_CACHE location_id FROM livepos_locations WHERE location_id = :location_id";
 
+	protected static $UPDATE_IGNORED_ORDER = "UPDATE livepos_receipts SET error_message = :error_message, sent_to_netsuite = :sent_to_netsuite WHERE receipt_id = :receipt_id";
+	
+	protected static $SET_ORDERS_COMPLETE = "UPDATE livepos_receipts SET sent_to_netsuite = 'complete' WHERE receipt_id IN (%s)";
+		
 	/**
 	 *
 	 * @param string $TablePrefix

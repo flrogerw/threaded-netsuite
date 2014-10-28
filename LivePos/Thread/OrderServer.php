@@ -27,7 +27,7 @@ class LivePos_Thread_OrderServer {
 
 			$sOrderId = $this->_getOrderId( $aOrder );
 			$aLocation = $this->_getLocation( $aOrder['location_id'], $sOrderId );
-		
+
 			$aWork[] = $tThread = $this->_pool->submit( new LivePos_LivePosOrders( $aOrder, $aLocation ) );
 		}
 
@@ -40,9 +40,9 @@ class LivePos_Thread_OrderServer {
 			}
 		}
 	}
-	
+
 	private function _getOrderId( array $aOrder ){
-		
+
 		$aOrderData = json_decode( $aOrder['receipt_string'], true );
 		return( 'POS_' . $aOrderData[0]['intReceiptNumber']);
 		//return( $aOrderData[0]['strActivaNumber'] );
@@ -51,7 +51,7 @@ class LivePos_Thread_OrderServer {
 	private function _getCurrentOrders(){
 
 		foreach( $this->_orders as $aOrder ){
-				
+
 			$currentOrders[] = $this->_getOrderId( $aOrder );
 		}
 
@@ -68,9 +68,9 @@ class LivePos_Thread_OrderServer {
 			$this->_locationsData[ $iLocationId ] = $model->getEntity( $iLocationId );
 			$model = null;
 		}
-		
+
 		$aTempLocation = $this->_locationsData[ $iLocationId ];
-		
+
 		if( in_array( $sOrderId, array_keys( $this->_currentOrders ) ) ){
 			$aTempLocation['location_entity'] = $this->_currentOrders[ $sOrderId ];
 		}
@@ -88,10 +88,21 @@ class LivePos_Thread_OrderServer {
 	private function _queueOrders(){
 
 		$aOrdersArray = array();
+		$aIgnoredOrders = array();
 
 		foreach( $this->_pool->workers as $worker ) {
 
 			$aWorkerData = $worker->getData();
+
+			if( $aWorkerData['ignore'] ){
+
+				$aIgnoredOrders[] = array(
+						':receipt_id' => $aWorkerData['receiptId'],
+						':error_message' => $aWorkerData['error'],
+						'sent_to_netsuite' => 'ignored');
+				continue;
+			}
+
 			$aOrdersArray[] = array(
 					':customer_activa_id' => $aWorkerData['entityId'],
 					':order_activa_id' => 'POS_' . $aWorkerData['receiptId'],
@@ -101,6 +112,7 @@ class LivePos_Thread_OrderServer {
 
 		$oModel = new LivePos_Db_Model();
 		$oModel->queueOrders( $aOrdersArray );
+		$oModel->updateIgnoredOrders( $aIgnoredOrders );
 		$oModel = null;
 	}
 }
