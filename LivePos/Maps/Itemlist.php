@@ -1,6 +1,6 @@
 <?php
 
-class LivePos_Maps_ItemList {
+class LivePos_Maps_Itemlist {
 
 	protected $_aData;
 	protected $_itemList = array();

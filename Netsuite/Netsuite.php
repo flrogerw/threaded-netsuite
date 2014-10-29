@@ -3,238 +3,242 @@
 
 class Netsuite_Netsuite extends Stackable {
 
-        public $response = null;
-        protected $_queueId;
-        protected $_customer;
-        protected $_order;
-        protected $_client;
-        protected $_results = array();
+	public $response = null;
+	protected $_queueId;
+	protected $_customer;
+	protected $_order;
+	protected $_client;
+	protected $_results = array();
 
-        public function __construct( array $aOrder, $iQueueId, $sOrderID ){
+	public function __construct( array $aOrder, $iQueueId, $sOrderID ){
 
-                $this->_order = $aOrder;
-                
-                $this->_order['customer']['_source'] = $this->_order['order']['_source'];
-                $this->_queueId = $iQueueId;
-                //$this->_orderId = $this->_order['order']['custbody_order_source_id'];
-                $this->_orderId = $sOrderID;
+		$this->_order = $aOrder;
 
-        }
+		$this->_order['customer']['_source'] = $this->_order['order']['_source'];
+		$this->_queueId = $iQueueId;
+		//$this->_orderId = $this->_order['order']['custbody_order_source_id'];
+		$this->_orderId = $sOrderID;
 
-        protected function _isCustomer( $sCustomerId ){
+	}
 
-                $activa = new Netsuite_Db_Activa();
-                $sInternalId = $activa->getCustomer( $sCustomerId );
-                return( $sInternalId );
-        }
+	protected function _isCustomer( $sCustomerId ){
 
-        public function run(){
+		$activa = new Netsuite_Db_Activa();
+		$sInternalId = $activa->getCustomer( $sCustomerId );
+		return( $sInternalId );
+	}
 
-                spl_autoload_register(function ($sClass) {
-                        $sClass = str_replace( "_", "/", $sClass );
-                        include $sClass . '.php';
-                });
+	public function run(){
 
-                        try{
-                                $this->worker->addData( array( 'queue_id' => $this->_queueId ) );
-                                $customer = $this->_createCustomer();
+		spl_autoload_register(function ($sClass) {
+			$sClass = str_replace( "_", "/", $sClass );
+			include $sClass . '.php';
+		});
 
-                                if( $customer !== false  ){
-                                        $this->_createSalesOrder( $customer );
-                                }
+			try{
+				$this->worker->addData( array( 'queue_id' => $this->_queueId ) );
+				$customer = $this->_createCustomer();
 
-                        } catch( Exception $e ) {
-                                Netsuite_Db_Model::logError( $e->getMessage() );
-                                $results['system']['error'] = $e->getMessage();
-                                $this->worker->addData( $results );
-                        }
+				if( $customer !== false  ){
+					$this->_createSalesOrder( $customer );
+				}
 
-                        $this->_logResults();
-        }
+			} catch( Exception $e ) {
+				Netsuite_Db_Model::logError( $e->getMessage() );
+				$results['system']['error'] = $e->getMessage();
+				$this->worker->addData( $results );
+			}
 
-        protected function _createSalesOrder( $customer ){
+			$this->_logResults();
+	}
 
-                $salesOrder = Netsuite_Record::factory()->salesOrder( $this->_order['order'], $customer );
+	protected function _createSalesOrder( $customer ){
 
-                if( !$salesOrder->isOk() ){
+		$salesOrder = Netsuite_Record::factory()->salesOrder( $this->_order['order'], $customer );
 
-                        $aJsonReturn['success'] = false;
-                        $aJsonReturn['error'] = implode( ',', $salesOrder->getErrors());
-                        $aJsonReturn['warn'] = ( $salesOrder->hasWarnings() )? implode( ',', $salesOrder->getWarnings() ):null;
-                        $aJsonReturn['json'] = json_encode( $this->_order['order'] );
-                        $this->worker->addData( $aJsonReturn );
-                        return;
-                }
+		if( !$salesOrder->isOk() ){
 
-                $results = $this->_process('salesorder', $salesOrder );
-                $this->worker->addData( array( 'order' => $results ) );
+			$aJsonReturn['success'] = false;
+			$aJsonReturn['error'] = implode( ',', $salesOrder->getErrors());
+			$aJsonReturn['warn'] = ( $salesOrder->hasWarnings() )? implode( ',', $salesOrder->getWarnings() ):null;
+			$aJsonReturn['json'] = json_encode( $this->_order['order'] );
+			$this->worker->addData( $aJsonReturn );
+			return;
+		}
 
-        }
+		$results = $this->_process('salesorder', $salesOrder );
+		$this->worker->addData( array( 'order' => $results ) );
 
-        protected function _createCustomer(){
+	}
 
-                $customer = Netsuite_Record::factory()->customer( $this->_order['customer'] );
+	protected function _createCustomer(){
 
-                        $model = new Netsuite_Db_Model();
-                        $activa = new Netsuite_Db_Activa();
-
-                        if( !$customer->isOk() ){
-                                $aJsonReturn['success'] = false;
-                                $aJsonReturn['error'] = implode( ',', $customer->getErrors());
-                                $aJsonReturn['warn'] = ( $customer->hasWarnings() )? $customer->getWarnings():null;
-                                $this->worker->addData( array('customer' => $aJsonReturn ) );
-                                return;
-                        }
+		$customer = Netsuite_Record::factory()->customer( $this->_order['customer'] );
 
 
-                        switch( true ){
 
-                                case( $customer->custentity_customer_source_id == 'bongo' ):
-                                        $results = $this->_process('bongocontact', $customer );
-
-                                        if( $results['success'] === true ){
-                                                //$customer->entityid = $results['netsuite']['record_id'];
-                                                $results['message'] = 'Added Contact to Bongo with Id: ' . $customer->entityid;
-                                                $results['json'] = json_encode( $this->_order['customer'] );
-                                        }
-                                       // $this->worker->addData( $results );
-                                        break;
-
-                                case( empty( $customer->entityid ) ):
-
-                                        $results = $this->_process('customer', $customer );
-
-                                        if( $results['success'] === true ){
-                                                $customer->entityid = $results['netsuite']['record_id'];
-                                                $model->insertCustomer( $customer->custentity_customer_source_id, $customer->entityid );
-                                                $activa->updateCustomer( $customer->custentity_customer_source_id, $customer->entityid );
-                                        }
-                                       // $this->worker->addData( $results );
-                                        break;
-
-                                default:
-                                        $results['netsuite']['record_id'] = $customer->entityid;
-                                        $results['success'] = true;
-                                        $results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
-                                        //$this->worker->addData( $results );
-                                        break;
-                        }
-                        
-                        $this->worker->addData( array('customer' => $results ) );
-                // updateAddressBook( $customer );  add this functionality
-
-                $mReturn = ( $results['success'] !== false )? $customer: false;
-                return( $mReturn );
-        }
+		if( !$customer->isOk() ){
+			$aJsonReturn['success'] = false;
+			$aJsonReturn['error'] = implode( ',', $customer->getErrors());
+			$aJsonReturn['warn'] = ( $customer->hasWarnings() )? $customer->getWarnings():null;
+			$this->worker->addData( array('customer' => $aJsonReturn ) );
+			return;
+		}
 
 
-        protected function _logResults() {
+		switch( true ){
 
-                $model = new Netsuite_Db_Model();
-                $activa = new Netsuite_Db_Activa();
-                $sSystemError = '';
+			case( $customer->custentity_customer_source_id == 'bongo' ):
+				$results = $this->_process('bongocontact', $customer );
 
-                $aResults = $this->worker->getData();
-                $sIsSuccess = ( $aResults['customer']['success'] == true && $aResults['order']['success'] == true )? 'complete': 'error';
-                $sCustomerStatus = ( $aResults['customer']['success'] == true )? 'success': 'fail';
-                $sOrderStatus = ( $aResults['order']['success'] == true )? 'success': 'fail';
+				if( $results['success'] === true ){
+					//$customer->entityid = $results['netsuite']['record_id'];
+					$results['message'] = 'Added Contact to Bongo with Id: ' . $customer->entityid;
+					$results['json'] = json_encode( $this->_order['customer'] );
+				}
+				// $this->worker->addData( $results );
+				break;
 
-                switch( true )
-                {
-                        case( !empty( $aResults['customer']['system']['error'] ) ):
-                                $sSystemError .= $aResults['customer']['system']['error'] . ' ';
+			case( empty( $customer->entityid ) ):
 
-                        case( !empty( $aResults['order']['system']['error'] ) ):
-                                $sSystemError .= $aResults['order']['system']['error'];
-                                break;
-                }
+				$results = $this->_process('customer', $customer );
 
-                $aUpdateData = array(
-                                ':status' => $sIsSuccess,
-                                ':order_activa_id' => $this->_orderId,
-                                ':system_error' => $sSystemError,
-                                ':process_date' => date("Y-m-d H:i:s"),
-                                ':customer_status' => $sCustomerStatus,
-                                ':customer_id' => $aResults['customer']['netsuite']['record_id'],
-                                ':customer_warnings' => ( is_array( $aResults['customer']['warn'] ) )?implode( ',',$aResults['customer']['warn']):$aResults['customer']['warn'],
-                                ':customer_errors' => $aResults['customer']['error'],
-                                ':customer_json' => $aResults['customer']['json'],
-                                ':order_status' => $sOrderStatus,
-                                ':order_id' => $aResults['order']['netsuite']['record_id'],
-                                ':order_warnings' => ( is_array( $aResults['order']['warn'] ) )?implode( ',',$aResults['order']['warn']):$aResults['order']['warn'],
-                                ':order_errors' => $aResults['order']['error'],
-                                ':order_json' => $this->_maskCcNumber( $aResults['order']['json'] )
-                );
+				if( $results['success'] === true ){
+					
+					$model = new Netsuite_Db_Model();
+					$activa = new Netsuite_Db_Activa();
+					$customer->entityid = $results['netsuite']['record_id'];
+					$model->insertCustomer( $customer->custentity_customer_source_id, $customer->entityid );
+					$activa->updateCustomer( $customer->custentity_customer_source_id, $customer->entityid );
+					$activa = $model = null;
+				}
+				// $this->worker->addData( $results );
+				break;
 
-                $sOutcome = ( $sCustomerStatus == 'fail' || $sOrderStatus == 'fail' )? 'error' : 'complete';
-                $model->updateOrderQueue( $aResults['queue_id'], $sOutcome );
-                $model->logProcess( $aUpdateData );
-                $activa->logProcess( $aUpdateData );
-        }
+			default:
+				$results['netsuite']['record_id'] = $customer->entityid;
+				$results['success'] = true;
+				$results['json'] = 'Using Existing Netsuite Id: ' . $customer->entityid;
+				//$this->worker->addData( $results );
+				break;
+		}
+
+		$this->worker->addData( array('customer' => $results ) );
+		// updateAddressBook( $customer );  add this functionality
+
+		$mReturn = ( $results['success'] !== false )? $customer: false;
+		return( $mReturn );
+	}
 
 
-        /**
-         * Mask Credit Card Number for Storage in the Database
-         *
-         * @access protected
-         * @param string $sJson
-         * @return string
-         */
-        protected function _maskCcNumber( $sJson ){
+	protected function _logResults() {
+		
+		$sSystemError = '';
 
-                $aTempData = json_decode( $sJson, true );
+		$aResults = $this->worker->getData();
+		$sIsSuccess = ( $aResults['customer']['success'] == true && $aResults['order']['success'] == true )? 'complete': 'error';
+		$sCustomerStatus = ( $aResults['customer']['success'] == true )? 'success': 'fail';
+		$sOrderStatus = ( $aResults['order']['success'] == true )? 'success': 'fail';
 
-                if( isset( $aTempData['ccnumber'] ) && $aTempData['ccnumber'] != '' ){
-                        $aTempData['ccnumber'] = '**** **** **** ' . substr( $aTempData['ccnumber'], -4);
-                        $aTempData['authcode'] = '*****';
-                }
+		switch( true )
+		{
+			case( !empty( $aResults['customer']['system']['error'] ) ):
+				$sSystemError .= $aResults['customer']['system']['error'] . ' ';
 
-                return( json_encode(  $aTempData ) );
-        }
+			case( !empty( $aResults['order']['system']['error'] ) ):
+				$sSystemError .= $aResults['order']['system']['error'];
+				break;
+		}
 
-        protected function _process( $sRecordName, $oRecord ){
+		$aUpdateData = array(
+				':status' => $sIsSuccess,
+				':order_activa_id' => $this->_orderId,
+				':system_error' => $sSystemError,
+				':process_date' => date("Y-m-d H:i:s"),
+				':customer_status' => $sCustomerStatus,
+				':customer_id' => $aResults['customer']['netsuite']['record_id'],
+				':customer_warnings' => ( is_array( $aResults['customer']['warn'] ) )?implode( ',',$aResults['customer']['warn']):$aResults['customer']['warn'],
+				':customer_errors' => $aResults['customer']['error'],
+				':customer_json' => $aResults['customer']['json'],
+				':order_status' => $sOrderStatus,
+				':order_id' => $aResults['order']['netsuite']['record_id'],
+				':order_warnings' => ( is_array( $aResults['order']['warn'] ) )?implode( ',',$aResults['order']['warn']):$aResults['order']['warn'],
+				':order_errors' => $aResults['order']['error'],
+				':order_json' => $this->_maskCcNumber( $aResults['order']['json'] )
+		);
 
-                $aJsonReturn = array('system' => array( 'error' => null ), 'netsuite' => array( 'error' => null ));
+		$sOutcome = ( $sCustomerStatus == 'fail' || $sOrderStatus == 'fail' )? 'error' : 'complete';
+		$model = new Netsuite_Db_Model();
+		$activa = new Netsuite_Db_Activa();
+		$model->updateOrderQueue( $aResults['queue_id'], $sOutcome );
+		$model->logProcess( $aUpdateData );
+		$activa->logProcess( $aUpdateData );
+		$activa = $model = null;
+	}
 
-                $oSetRecord = new Netsuite_Job_SetRecord( $sRecordName, $oRecord->getJSON() );
 
-                if( !$oSetRecord->isOk() ){
-                        $aJsonReturn['success'] = false;
-                        $aJsonReturn['error'] = $oSetRecord->response;
-                        $aJsonReturn['netsuite']['success'] = false;
-                        $aJsonReturn['netsuite']['error'] = $oSetRecord->response;
+	/**
+	 * Mask Credit Card Number for Storage in the Database
+	 *
+	 * @access protected
+	 * @param string $sJson
+	 * @return string
+	 */
+	protected function _maskCcNumber( $sJson ){
 
-                        return( $aJsonReturn );
-                }
+		$aTempData = json_decode( $sJson, true );
 
-                $record = ( !is_numeric( $oSetRecord->response ) )? json_decode( $oSetRecord->response ): $oSetRecord->response;
+		if( isset( $aTempData['ccnumber'] ) && $aTempData['ccnumber'] != '' ){
+			$aTempData['ccnumber'] = '**** **** **** ' . substr( $aTempData['ccnumber'], -4);
+			$aTempData['authcode'] = '*****';
+		}
 
-                switch( true ){
+		return( json_encode(  $aTempData ) );
+	}
 
-                        case( $record == null ):
+	protected function _process( $sRecordName, $oRecord ){
 
-                                $aJsonReturn['success'] = false;
-                                $aJsonReturn['netsuite']['success'] = false;
-                                $aJsonReturn['system']['error'] = ( is_array( $oSetRecord->response ) || is_object( $oSetRecord->response ) )? json_encode($oSetRecord->response): $oSetRecord->response;
-                                break;
+		$aJsonReturn = array('system' => array( 'error' => null ), 'netsuite' => array( 'error' => null ));
 
-                        case( $record->status == 'failure' ):
-                                $aJsonReturn['success'] = false;
-                                $aJsonReturn['netsuite']['success'] = false;
-                                $aJsonReturn['netsuite']['error'] = $record->payload->code . ' - ' . $record->payload->details;
-                                $aJsonReturn['error'] = $record->payload->code . ' - ' . $record->payload->details;
-                                $aJsonReturn['json'] = $oRecord->getJSON();
-                                break;
+		$oSetRecord = new Netsuite_Job_SetRecord( $sRecordName, $oRecord->getJSON() );
 
-                        default:
+		if( !$oSetRecord->isOk() ){
+			$aJsonReturn['success'] = false;
+			$aJsonReturn['error'] = $oSetRecord->response;
+			$aJsonReturn['netsuite']['success'] = false;
+			$aJsonReturn['netsuite']['error'] = $oSetRecord->response;
 
-                                $aJsonReturn['netsuite']['record_id'] = $record;
-                                $aJsonReturn['success'] = true;
-                                $aJsonReturn['warn'] = $oRecord->getWarnings();
-                                $aJsonReturn['json'] = $oRecord->getJSON();
-                                break;
-                }
+			return( $aJsonReturn );
+		}
 
-                return( $aJsonReturn );
-        }
+		$record = ( !is_numeric( $oSetRecord->response ) )? json_decode( $oSetRecord->response ): $oSetRecord->response;
+
+		switch( true ){
+
+			case( $record == null ):
+
+				$aJsonReturn['success'] = false;
+				$aJsonReturn['netsuite']['success'] = false;
+				$aJsonReturn['system']['error'] = ( is_array( $oSetRecord->response ) || is_object( $oSetRecord->response ) )? json_encode($oSetRecord->response): $oSetRecord->response;
+				break;
+
+			case( $record->status == 'failure' ):
+				$aJsonReturn['success'] = false;
+				$aJsonReturn['netsuite']['success'] = false;
+				$aJsonReturn['netsuite']['error'] = $record->payload->code . ' - ' . $record->payload->details;
+				$aJsonReturn['error'] = $record->payload->code . ' - ' . $record->payload->details;
+				$aJsonReturn['json'] = $oRecord->getJSON();
+				break;
+
+			default:
+
+				$aJsonReturn['netsuite']['record_id'] = $record;
+				$aJsonReturn['success'] = true;
+				$aJsonReturn['warn'] = $oRecord->getWarnings();
+				$aJsonReturn['json'] = $oRecord->getJSON();
+				break;
+		}
+
+		return( $aJsonReturn );
+	}
 }

@@ -13,8 +13,7 @@ class LivePos_LivePosOrders extends Stackable {
 		$this->orderType = $aOrder['receipt_type'];
 		$this->receiptId = $aOrder['receipt_id'];
 		$this->_locationData = $locationData;
-		$this->_orderId = $sOrderId;
-		
+		$this->_orderId = $sOrderId;		
 	}
 
 
@@ -47,9 +46,10 @@ class LivePos_LivePosOrders extends Stackable {
 							
 					case( 'SALE'):
 							
-						$items = new LivePos_Maps_ItemList( $this->_order[0]['enumProductsSold'], $this->_locationData );
+						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_order[0]['enumProductsSold'], $this->_locationData );
+						$coupon = LivePos_Maps_MapFactory::create( 'coupon', $this->_order[0]['enumCouponDiscounts']);
 
-						// WEB Only Items
+						// WEB Only Items or Empty Order
 						if( !$items->hasItems() ){
 							$this->worker->addData( array('ignore' => true ) );
 							$errors[] = 'WEB Only Items or Empty Item List';
