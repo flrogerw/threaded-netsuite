@@ -11,7 +11,6 @@ try{
 	switch( true){
 
 		case( $pid->already_running ):
-			throw new Exception( 'Netsuite Process Already Running' );
 			break;
 
 		case( !Netsuite_Job_SetRecord::isAlive() ):

@@ -4,8 +4,9 @@ class LivePos_Maps_ItemList {
 
 	protected $_aData;
 	protected $_itemList = array();
-	
-	protected $_ignorePosSkus = array('Ship', 'Custom Art');
+	public $hasWebItems = false;
+
+	protected $_webSkus = array('Ship', 'Custom Art');
 
 	/**
 	 *
@@ -22,22 +23,24 @@ class LivePos_Maps_ItemList {
 	private function _getItemList( $locationData ){
 
 		foreach( $this->_aData as $aItem ){
-			
+
 			$item = LivePos_Maps_MapFactory::create( 'item', array( $aItem ), $locationData );
-			
-			if( !in_array($item->item, $this->_ignorePosSkus) ){
-				
-				$this->_itemList[] = $item->getPublicVars();
+
+			if( in_array($item->item, $this->_webSkus) ){
+				$this->hasWebItems = true;
+				continue;
 			}
+				
+			$this->_itemList[] = $item->getPublicVars();
 		}
 	}
 
 	public function hasItems(){
-		
+
 		$bReturn = ( !empty( $this->_itemList ) )? true: false;
 		return( $bReturn );
 	}
-	
+
 	public function getItems(){
 
 		return( $this->_itemList );
@@ -45,19 +48,24 @@ class LivePos_Maps_ItemList {
 
 	private function _skusToNsIds(){
 
-		$model = new LivePos_Db_Model();
+		if( $this->hasItems() ){
 
-		foreach( $this->_itemList as &$aItem ){
+			$aSkusArray = array();
 
-			try{
+			// Create Array of Item Skus
+			array_walk( $this->_itemList, function($aData, $sKey) use (&$aSkusArray){
+				$aSkusArray[] = $aData[ 'item' ];
+			});
 
-				$aNsData = $model->skuToNsId( $aItem['item']);
-				$aItem['item'] = $aNsData['netsuite_id'];
+				$model = new LivePos_Db_Model();
+				$aNsData = $model->skusToNsId( array_unique( $aSkusArray ) );
 
-			}catch (Exception $e){
-				$this->_errors = $e->getMessage();
-			}
+				// Replace Skus
+				array_walk( $this->_itemList, function(&$aData, $sKey) use (&$aNsData){
+					$aData['item'] = ( $aNsData[ $aData['item'] ]['id'] == null )?$aData['item']:$aNsData[ $aData['item'] ]['id'];
+				});
+
+					$model = null;
 		}
-		$model = null;
 	}
 }

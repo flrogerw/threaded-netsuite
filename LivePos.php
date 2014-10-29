@@ -7,7 +7,6 @@ $iLocationId = $aCommmandLineOptions['l'];
 $sTask = $aCommmandLineOptions['t'];
 $dReceiptsDate = $aCommmandLineOptions['d'];
 
-
 try{
 	// See if Process is Already Running And Netsuite is Alive
 	$pid = new Netsuite_Pid( '/tmp', basename( __FILE__ ) );
@@ -45,7 +44,8 @@ try{
 			$sError = "\nThe TASK ( $sTask ) is NOT Understood\nPlease use '-t orders' or '-t receipts'\n";
 			break;
 	}
-
+	
+	
 	if( DEBUG ){
 		echo( $sError . "\n" );
 	}

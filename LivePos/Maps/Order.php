@@ -38,7 +38,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	protected $_mapArray = array(
 			'intLocationID'  => '_source', // convert to NS ID
 			//'strFNUMBER' => 'custbody_order_source_id',
-			'dtTransactionDate' => 'trandate',
+			//'dtTransactionDate' => 'trandate',
 			'dblTax1' => 'taxtotal',
 			'dblGrandTotal' => 'total',
 			'intInvoiceNumber' => 'otherrefnum',
@@ -78,7 +78,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			$this->ccexpiredate = $date->format('m/Y');
 		}
 		
-		$date = new DateTime( $this->trandate );
+		$date = new DateTime( $this->custbody_pos_postranstime );
 		$this->trandate = $this->shipdate = $date->format('m/d/Y');
 	}
 
