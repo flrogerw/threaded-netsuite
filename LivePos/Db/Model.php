@@ -52,24 +52,31 @@ final class LivePos_Db_Model extends PDO
 			throw new Exception( 'Could NOT Get TaxCode From the DB' );
 		}
 	}
-	
-	public function getProduct( $sSku ){
-	
+
+	public function getProducts( array $aSkus ){
+
 		try{
-	
-			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_PRODUCT' ) );
-	
+
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_PRODUCTS', null, count(  $aSkus ) ) );
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-	
-			$sth->execute( array( $sSku ) );
-			$dbResults = $sth->fetch(PDO::FETCH_ASSOC);
-			return( $dbResults );
-	
+
+			$aBindArgs = array();
+			$returnArray = array();
+
+			array_walk( array_unique( $aSkus ), function( $sSku, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = $sSku;
+			});
+
+				$sth->execute( $aBindArgs  );
+				$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+				return( $aResults );
+
 		}catch( Exception $e ){
 			self::logError( $e );
-			throw new Exception( 'Could NOT Get Product Data From the DB for ' . $sSku );
+			throw new Exception( 'Could NOT Get Product Data From the DB' );
 		}
 	}
 
@@ -143,6 +150,43 @@ final class LivePos_Db_Model extends PDO
 			throw new Exception( 'Could NOT Get Pending POS Orders From DB' );
 		}
 	}
+
+
+	/**
+	 *
+	 * @param array $aNewOrders - Pending Orders to Be Searched
+	 * @access public
+	 * @return array|null $_dbResults
+	 * @throws Exception
+	 */
+	public function getDiscounts( array $aDiscountIds ){
+
+
+		try{
+
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_DISCOUNTS', null, count(  $aDiscountIds ) ) );
+
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+
+			$aBindArgs = array();
+			$returnArray = array();
+
+			array_walk( array_unique( $aDiscountIds ), function( $aDiscountId, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = $aDiscountId;
+			});
+
+				$sth->execute( $aBindArgs  );
+				$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+				return( $aResults );
+
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get Discounts From the POS DB' );
+		}
+	}
+
 
 
 	/**

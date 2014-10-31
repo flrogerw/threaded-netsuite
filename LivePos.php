@@ -77,7 +77,7 @@ function getProducts(){
 
 		if( !empty( $productIds ) ){
 
-			$aProductsChunkedArray = array_chunk( $productIds, 10 );
+			$aProductsChunkedArray = array_chunk( $productIds, LIVEPOS_MAX_RECORDS );
 			processPosProducts( $aProductsChunkedArray );
 		}
 	}

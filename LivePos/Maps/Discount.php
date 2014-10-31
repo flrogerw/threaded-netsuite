@@ -6,13 +6,19 @@ class LivePos_Maps_Discount extends LivePos_Maps_Map {
 	public $discountscope;
 	public $discounttotal = 0;
 	public $discountid;
-
+	public $discountstart;
+	public $discountend;
+	public $discountuse;
+	public $discounttype;
 
 	protected $_mapArray = array(
-			'strCouponCode' => 'discountid',
-			'strCouponTargetType' => 'discountscope',
-			'intItemID' => 'discountitem',
-			'dblDiscountAmount' => 'discounttotal');
+			'discount_code' =>'discountid',
+			'discount_start' =>'discountstart',
+			'discount_end' => 'discountend',
+			'discount_use' => 'discountuse',
+			'discount_type' => 'discounttype',
+			'discount_amount' => 'discounttotal',
+			'discount_scope' => 'discountscope');
 
 
 	/**
@@ -20,15 +26,15 @@ class LivePos_Maps_Discount extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aDiscounts ) {
+	public function __construct( array $aDiscount ) {
 
 		parent::__construct();
-		$this->_aData = $aDiscounts;
+		$this->_aData = $aDiscount;
 		$this->_map();
 		$this->_logic();
 	}
 
-	
+
 
 	/**
 	 * Returns Original Price of Item based on the Discount

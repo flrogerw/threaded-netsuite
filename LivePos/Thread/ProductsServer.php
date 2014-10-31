@@ -35,7 +35,7 @@ class LivePos_Thread_ProductsServer {
 		$this->_pool->shutdown();
 		$this->_logProduct();
 
-		if( !DEBUG ){
+		if( DEBUG ){
 			foreach($this->_pool->workers as $worker) {
 				print_r($worker->getData());
 			}
@@ -54,7 +54,7 @@ class LivePos_Thread_ProductsServer {
 
 				$aProducts[] = array(
 						':product_id' => $aResults['product']['productid'],
-						':product_price' => $aResults['product']['productprice'],
+						':product_price' => ( $aResults['product']['productprice'] != null )? $aResults['product']['productprice']:0.00,
 						':product_sku' => $aResults['product']['productsku'],
 						':product_description' => $aResults['product']['description'] );
 

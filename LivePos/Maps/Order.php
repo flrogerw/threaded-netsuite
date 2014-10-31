@@ -69,6 +69,14 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public function addItems( array $items ){
 		$this->item = $items;
 	}
+	
+	public function getTotal(){
+		return( $this->total );
+	}
+	
+	public function getTax(){
+		return( $this->taxtotal );
+	}
 
 	private function _logic(){
 

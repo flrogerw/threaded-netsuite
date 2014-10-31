@@ -40,6 +40,9 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	//public $taxcode = -125;
 	public $zip;
 
+	protected $_originalprice;
+	protected $_sku;
+
 	protected $_mapArray = array(
 			"intProductSoldUnits"  => 'quantity',
 			"dblProductSoldNetPrice" => 'rate',
@@ -60,22 +63,41 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 		$this->_setAddress();
 		$this->_logic();
 	}
-	
-	private function _logic(){
-		
-		// Set Item to Match Store Location
-		$this->location = $this->_aLocationData['location_netsuite_id'];
+
+	public function getSku(){
+		return( $this->_sku );
 	}
 
-/**
- * 
- * @param array $this->_aLocationData
- * @return void
- */
+	public function getOriginalPrice(){
+
+		return( $this->_originalprice );
+	}
+
+	public function setOriginalPrice( $fPrice ){
+
+		$this->_originalprice = $fPrice;
+	}
+	
+	public function getQuantity(){
+		return( $this->quantity );
+	}
+
+	private function _logic(){
+
+		// Set Item to Match Store Location
+		$this->location = $this->_aLocationData['location_netsuite_id'];
+		$this->_sku = $this->item;
+	}
+
+	/**
+	 *
+	 * @param array $this->_aLocationData
+	 * @return void
+	 */
 	private function _setAddress(){
 
 		array_walk( array_filter($this->_aLocationData), function($value, $key) {
-			
+				
 			$sProperty = str_replace('location_', '',$key);
 			if(property_exists($this, $sProperty)){
 				$this->$sProperty = $value;

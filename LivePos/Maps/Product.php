@@ -26,18 +26,9 @@ class LivePos_Maps_Product extends LivePos_Maps_Map {
 		$this->_map();
 		$this->_logic();
 	}
-
-	public static function getProductBySku( $sSku ){
-
-		$model = new LivePos_Db_Model();
-		$aProductData = $model->getProduct( $sSku );
-		$model = null;
-
-		if( $aProductData !== false ){
-			$product = LivePos_Maps_MapFactory::create( 'product', array( $aProductData ) );
-			return( $product );
-		}
-		return( $aProductData );
+	
+	public function getPrice(){
+		return( $this->productprice );
 	}
 
 	private function _logic(){

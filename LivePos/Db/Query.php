@@ -29,8 +29,10 @@ final class LivePos_Db_Query
 	
 	protected static $SET_ORDERS_COMPLETE = "UPDATE livepos_receipts SET sent_to_netsuite = 'complete' WHERE receipt_id IN (%s)";
 
-	protected static $GET_PRODUCT = "SELECT SQL_NO_CACHE product_id as intProductID, product_sku as strProductSKU, product_price as dblProductDefaultPrice, product_description as strProductName FROM livepos_products WHERE product_sku = ?";	
+	protected static $GET_PRODUCTS = "SELECT SQL_CACHE product_id as intProductID, product_sku as strProductSKU, product_price as dblProductDefaultPrice, product_description as strProductName FROM livepos_products WHERE product_sku IN (%s)";	
 
+	protected static $GET_DISCOUNTS = "SELECT SQL_CACHE * FROM  livepos_discounts WHERE discount_code IN (%s)";
+	
 	/**
 	 *
 	 * @param string $TablePrefix

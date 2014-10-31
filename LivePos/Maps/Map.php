@@ -21,13 +21,14 @@ class LivePos_Maps_Map {
 		return( $this->_errors );
 	}
 
-	protected function _map( array $aRawData = null ){
+	protected function _map( array $aRawData = null, array $aMapArray = null ){
 
 		$aRawData = ( $aRawData == null )? $this->_aData: $aRawData;
+		$aReturn = array();
+		$iCounter = 0;
 
 		foreach( $aRawData as $aData ){
-
-			$aMap = array();
+			
 
 			foreach( $aData as $sKey=>$mValue ){
 					
@@ -40,7 +41,12 @@ class LivePos_Maps_Map {
 						break;
 
 					case( is_array( $aData[$sKey] ) ):
-						$this->_map( $aData[$sKey] );
+						$this->_map( $aData[$sKey], $aMapArray );
+						break;
+
+					case( $aMapArray != null && $aMapArray[$sKey] != null ):
+						$sParam = $aMapArray[$sKey];
+						$aReturn[ $iCounter ][ $sParam ] = $mValue;
 						break;
 
 					case( property_exists( $this, $this->_mapArray[$sKey] ) ):
@@ -49,10 +55,12 @@ class LivePos_Maps_Map {
 						break;
 				}
 			}
+			$iCounter++;
 		}
+		return( $aReturn );
 	}
-	
-	
+
+
 	public function getPublicVars( $bFilter = true ){
 
 		$publicVars = create_function('$obj', 'return get_object_vars($obj);');

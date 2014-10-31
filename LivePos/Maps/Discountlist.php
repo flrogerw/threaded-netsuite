@@ -2,50 +2,66 @@
 class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 
 	protected $_discountList = array();
-	
-		
+	protected $_discountIds = array();
+
+	protected $_discountMap = array( 'strCouponCode' => 'discountid' );
+
+
 	/**
 	 *
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aCoupons ) {
+	public function __construct( array $aDiscounts ) {
 
 		parent::__construct();
-		$this->_aData = $aCoupons;
+		$this->_getDiscountIds( $aDiscounts );
 		$this->_getDiscountList();
 	}
-	
-	public function hasDiscount(){
-		
-		$bReturn = ( !empty( $this->_discountList ) )? true: false;
+
+	public function hasDiscounts(){
+
+		$bReturn = ( !empty( $this->_discountIds ) )? true: false;
 		return( $bReturn );
 	}
-	
-	public static function getPosCoupons(){
-		
+
+	public function calculateDiscounts( LivePos_Maps_Itemlist $oItems ){
+
+		foreach( $oItems->getItems() as $oItem ){
+			var_dump( $oItem->getSku() );
+		}
 	}
-	
-	public function getDiscountTotal(){
-		
-		$fTotal = 0;
-		
-		array_walk( $this->_discountList, function(&$aData, $sKey) use (&$fTotal){
-			$fTotal +=  $aData['discounttotal'];
-		});
-		
-		return( $fTotal );
+
+	public function getDiscountIds(){
+
+		return( $this->_discountIds );
 	}
-	
+
 	public function getDiscounts(){
-	
+
 		return( $this->_discountList );
 	}
-	
+
+	private function _getDiscountIds( array $aDiscounts ){
+
+		$aTempIds = array();
+		$aDiscounts =  $this->_map( $aDiscounts, $this->_discountMap );
+
+		array_walk( $aDiscounts, function($aData, $sKey) use(&$aTempIds){
+			$aTempIds[] = $aData['discountid'];
+		});
+
+			$this->_discountIds = array_unique( $aTempIds );
+	}
+
 	private function _getDiscountList(){
-	
-		foreach( $this->_aData as $aDiscount ){
-	
+
+		$model = new LivePos_Db_Model();
+		$aDiscountsData = $model->getDiscounts(  $this->_discountIds );
+		$model = null;
+
+		foreach( $aDiscountsData as $aDiscount ){
+
 			$discount = LivePos_Maps_MapFactory::create( 'discount', array( $aDiscount ) );
 			$this->_discountList[] = $discount->getPublicVars();
 		}
