@@ -1,8 +1,7 @@
 <?php
 
-class LivePos_Maps_Itemlist {
+class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
-	protected $_aData;
 	protected $_itemList = array();
 	public $hasWebItems = false;
 
@@ -15,11 +14,13 @@ class LivePos_Maps_Itemlist {
 	*/
 	public function __construct( array $aItems, $locationData ) {
 
+		parent::__construct();
 		$this->_aData = $aItems;
 		$this->_getItemList( $locationData );
 		$this->_skusToNsIds();
 	}
 
+	
 	private function _getItemList( $locationData ){
 
 		foreach( $this->_aData as $aItem ){
@@ -30,10 +31,11 @@ class LivePos_Maps_Itemlist {
 				$this->hasWebItems = true;
 				continue;
 			}
-				
+
 			$this->_itemList[] = $item->getPublicVars();
 		}
 	}
+
 
 	public function hasItems(){
 

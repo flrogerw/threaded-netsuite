@@ -4,8 +4,8 @@ class LivePos_Maps_MapFactory {
 
 
 
-	public static function create( $sType, $aData, array $locationData = null ) {
+	public static function create( $sType, $aData, array $locationData = null, $sOrderId = null ) {
 		$sClassName = 'LivePos_Maps_' . ucfirst(strtolower( $sType ) );
-		return new $sClassName( $aData, $locationData );
+		return new $sClassName( $aData, $locationData, $sOrderId );
 	}
 }

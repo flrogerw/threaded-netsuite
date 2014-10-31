@@ -2,7 +2,6 @@
 
 class LivePos_Maps_Item extends LivePos_Maps_Map {
 
-	protected $_aData;
 	protected $_aLocationData;
 
 	public $amount = 0;

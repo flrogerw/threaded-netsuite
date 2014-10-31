@@ -1,6 +1,6 @@
 <?php
 
-class LivePos_Thread_OrderServer {
+class LivePos_Thread_OrdersServer {
 
 	private $_orders = array();
 	protected $_pool;
@@ -28,7 +28,7 @@ class LivePos_Thread_OrderServer {
 			$sOrderId = $this->_getOrderId( $aOrder );
 			$aLocation = $this->_getLocation( $aOrder['location_id'], $sOrderId );
 
-			$aWork[] = $tThread = $this->_pool->submit( new LivePos_LivePosOrders( $sOrderId, $aOrder, $aLocation ) );
+			$aWork[] = $tThread = $this->_pool->submit( new LivePos_LivePosOrder( $sOrderId, $aOrder, $aLocation ) );
 		}
 
 		$this->_pool->shutdown();
@@ -111,9 +111,9 @@ class LivePos_Thread_OrderServer {
 					':order_json' => $aWorkerData['encrypted'] );
 		}
 		
-		$oModel = new LivePos_Db_Model();
-		$oModel->queueOrders( $aOrdersArray );
-		$oModel->updateIgnoredOrders( $aIgnoredOrders );
-		$oModel = null;
+		//$oModel = new LivePos_Db_Model();
+		//$oModel->queueOrders( $aOrdersArray );
+		//$oModel->updateIgnoredOrders( $aIgnoredOrders );
+		//$oModel = null;
 	}
 }

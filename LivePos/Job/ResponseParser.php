@@ -22,4 +22,17 @@ final class LivePos_Job_ResponseParser {
 		
 		return($returnArray);
 	}
+	
+	public function GetProductIds( $data ){
+	
+		$returnArray = array();
+		$aProducts = json_decode($data);
+	
+		foreach( $aProducts as $oProduct ){
+
+			$returnArray[] = $oProduct->strProductSKU;
+		}
+	
+		return($returnArray);
+	}
 }

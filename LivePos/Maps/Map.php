@@ -2,9 +2,10 @@
 
 class LivePos_Maps_Map {
 
-	protected $_mappedData;
+	protected $_mappedData = array();
 	protected $_errors = false;
 	protected $_aMapped = array();
+	protected $_aData;
 
 	public function __construct() {
 
@@ -52,11 +53,11 @@ class LivePos_Maps_Map {
 	}
 	
 	
-	public function getPublicVars(){
+	public function getPublicVars( $bFilter = true ){
 
 		$publicVars = create_function('$obj', 'return get_object_vars($obj);');
-		return array_filter($publicVars($this));
-		//return ($publicVars($this));
+		$aReturn = ( $bFilter )? array_filter( $publicVars( $this ) ): $publicVars( $this );
+		return $aReturn;
 	}
 
 	public function getJson(){

@@ -27,12 +27,11 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $shipaddress;
 	public $shipmethod = 10;
 	public $shipdate;
-	public $taxtotal;
-	public $total;
+	public $taxtotal = 0;
+	public $total = 0;
 	public $trandate;
 
 	protected $_source; // convert to NS ID;
-	protected $_aData;
 	protected $_paymentmethod_flag;
 
 	protected $_mapArray = array(
@@ -46,7 +45,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			'strAuthorizationCode' => 'authcode',
 			'strCreditCardExpiration' => 'ccexpiredate',
 			'strPaymentTypeLabel' => '_paymentmethod_flag',
-			'intReceiptNumber' => 'custbody_order_source_id',
+			//'intReceiptNumber' => 'custbody_order_source_id',
 			'dtTransactionDate' => 'custbody_pos_postranstime'
 			
 	);
@@ -57,10 +56,11 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aOrder, $locationData ) {
+	public function __construct( array $aOrder, $locationData, $sOrderId ) {
 
 		parent::__construct();
 		$this->_aData = $aOrder;
+		$this->custbody_order_source_id = $sOrderId;
 		$this->_map();
 		$this-> _setInternalSources( $locationData );
 		$this->_logic();
@@ -78,14 +78,15 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			$this->ccexpiredate = $date->format('m/Y');
 		}
 		
+		// Set Shipping/ Billing Dates
 		$date = new DateTime( $this->custbody_pos_postranstime );
 		$this->trandate = $this->shipdate = $date->format('m/d/Y');
+		
+		// Set Total
+		$this->total = ( $this->total - $this->taxtotal );
 	}
 
 	private function _setInternalSources( $locationData ){
-		
-		// REMOVE WHEN F-NUMBER BECOMES AVAILABLE
-		$this->custbody_order_source_id = 'POS_' . $this->custbody_order_source_id;
 
 		$this->billaddress = $this->shipaddress = stripcslashes( $locationData['location_addresstxt']);
 		$this->custbody_order_source = (int) $locationData['location_netsuite_order_source'];

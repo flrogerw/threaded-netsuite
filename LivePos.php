@@ -16,6 +16,10 @@ try{
 		case( $pid->already_running ):
 			throw new Exception( 'LivePOS Process Already Running' );
 			break;
+				
+		case($sTask == 'products'):
+			getProducts();
+			break;
 
 		case($sTask == 'orders'):
 			processPosOrders();
@@ -44,8 +48,8 @@ try{
 			$sError = "\nThe TASK ( $sTask ) is NOT Understood\nPlease use '-t orders' or '-t receipts'\n";
 			break;
 	}
-	
-	
+
+
 	if( DEBUG ){
 		echo( $sError . "\n" );
 	}
@@ -58,6 +62,39 @@ try{
 	}
 
 	Netsuite_Db_Model::logError( $e );
+}
+
+function getProducts(){
+
+	$call = new LivePos_Job_GetRecord();
+	$call->sendRequest('GetProducts', $call->getSessionId(), array( 'intProductStatus' => 1 ) );
+
+	if( $call->isOk() ){
+
+		$parser = new LivePos_Job_ResponseParser();
+		$aResponse = $call->getResponse();
+		$productIds = $parser->GetProductIds( $aResponse['data'] );
+
+		if( !empty( $productIds ) ){
+
+			$aProductsChunkedArray = array_chunk( $productIds, 10 );
+			processPosProducts( $aProductsChunkedArray );
+		}
+	}
+
+}
+
+function processPosProducts( $aProductsChunkedArray ){
+
+	$aCurrentArray = array_shift( $aProductsChunkedArray);
+	$call = new LivePos_Job_GetRecord();
+	$processProducts = new LivePos_Thread_ProductsServer( $aCurrentArray, $call->getSessionId() );
+	$processProducts->poolProducts();
+
+	if( !empty( $aProductsChunkedArray ) ){
+		sleep(61);
+		processPosProducts( $aProductsChunkedArray );
+	}
 }
 
 function getReceipts( $iLocationId, $dReceiptsDate ){
@@ -74,27 +111,28 @@ function getReceipts( $iLocationId, $dReceiptsDate ){
 		if( !empty($receiptIds)){
 
 			$aReceiptsChunkedArray = array_chunk($receiptIds, LIVEPOS_MAX_RECORDS );
-			processPosReceipts( $aReceiptsChunkedArray, $call, $iLocationId, $dReceiptsDate );
+			processPosReceipts( $aReceiptsChunkedArray, $iLocationId, $dReceiptsDate );
 		}
 	}
 }
 
 
-function processPosReceipts( $aReceiptsChunkedArray, $call, $iLocationId, $dReceiptsDate ){
+function processPosReceipts( $aReceiptsChunkedArray, $iLocationId, $dReceiptsDate ){
 
 	$aCurrentArray = array_shift( $aReceiptsChunkedArray);
-	$processReceipts = new LivePos_Thread_ReceiptServer( $aCurrentArray, $call->getSessionId(), $iLocationId, $dReceiptsDate );
+	$call = new LivePos_Job_GetRecord();
+	$processReceipts = new LivePos_Thread_ReceiptsServer( $aCurrentArray, $call->getSessionId(), $iLocationId, $dReceiptsDate );
 	$processReceipts->poolReceipts();
 
 	if( !empty( $aReceiptsChunkedArray ) ){
 		sleep(61);
-		processPosReceipts( $aReceiptsChunkedArray, $call, $iLocationId, $dReceiptsDate );
+		processPosReceipts( $aReceiptsChunkedArray, $iLocationId, $dReceiptsDate );
 	}
 }
 
 function processPosOrders( ){
 
-	$processOrders = new LivePos_Thread_OrderServer();
+	$processOrders = new LivePos_Thread_OrdersServer();
 
 	if( $processOrders->hasOrders() ){
 

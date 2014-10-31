@@ -1,6 +1,6 @@
 <?php
 
-class LivePos_Thread_ReceiptServer {
+class LivePos_Thread_ReceiptsServer {
 
 	public $receiptIds = array();
 	protected $_pool;

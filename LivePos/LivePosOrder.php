@@ -1,6 +1,6 @@
 <?php 
 
-class LivePos_LivePosOrders extends Stackable {
+class LivePos_LivePosOrder extends Stackable {
 
 	protected $_order;
 	protected $_orderId;
@@ -47,8 +47,11 @@ class LivePos_LivePosOrders extends Stackable {
 					case( 'SALE'):
 							
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_order[0]['enumProductsSold'], $this->_locationData );
-						$coupon = LivePos_Maps_MapFactory::create( 'coupon', $this->_order[0]['enumCouponDiscounts']);
+						$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_order[0]['enumCouponDiscounts']);
 
+						var_dump($discounts->getDiscounts());
+						die();
+						
 						// WEB Only Items or Empty Order
 						if( !$items->hasItems() ){
 							$this->worker->addData( array('ignore' => true ) );
@@ -59,7 +62,7 @@ class LivePos_LivePosOrders extends Stackable {
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_order, $this->_locationData );
 						$customer = Netsuite_Record::factory()->customer( $customer->getPublicVars() );
 
-						$order = LivePos_Maps_MapFactory::create( 'order', $this->_order, $this->_locationData );
+						$order = LivePos_Maps_MapFactory::create( 'order', $this->_order, $this->_locationData, $this->_orderId );
 						$order->addItems( $items->getItems() );
 						$order = Netsuite_Record::factory()->salesOrder( $order->getPublicVars(), $customer );
 

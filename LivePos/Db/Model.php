@@ -43,13 +43,33 @@ final class LivePos_Db_Model extends PDO
 			}
 
 			$sth->execute();
-			$iReturn = ( $sth->fetchColumn() === false)? false: true;
+			$bReturn = ( $sth->fetchColumn() === false)? false: true;
 			$connection = null;
-			return( $iReturn );
+			return( $bReturn );
 
 		}catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Get TaxCode From the DB' );
+		}
+	}
+	
+	public function getProduct( $sSku ){
+	
+		try{
+	
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_PRODUCT' ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$sth->execute( array( $sSku ) );
+			$dbResults = $sth->fetch(PDO::FETCH_ASSOC);
+			return( $dbResults );
+	
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get Product Data From the DB for ' . $sSku );
 		}
 	}
 
@@ -238,6 +258,40 @@ final class LivePos_Db_Model extends PDO
 			throw new Exception( 'Could NOT Get NetSuite Id for Skus From DB' );
 		}
 	}
+
+	/**
+	 * Enters New Receipt Into Database
+	 *
+	 * @param array $aReceiptData
+	 * @access public
+	 * @return void
+	 */
+	public function insertProducts( array $aProductsData )
+	{
+		try{
+
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'INSERT_PRODUCT' ) );
+
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+
+			$this->beginTransaction();
+
+			foreach( $aProductsData as $aProductData ){
+
+				$sth->execute( $aProductData );
+			}
+
+			$this->commit();
+
+		}catch( Exception $e ){
+			$this->rollBack();
+			self::logError( $e );
+			throw new Exception( 'Could NOT Enter/Update LivePOS Products DB' );
+		}
+	}
+
 
 	/**
 	 * Enters New Receipt Into Database

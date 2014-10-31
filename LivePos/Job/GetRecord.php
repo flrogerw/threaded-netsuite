@@ -9,7 +9,7 @@ final class LivePos_Job_GetRecord {
 
 
 	public function __construct( $bCreateAuth = true ) {
-		
+
 		if( $bCreateAuth ){
 			$this->_sendAuth();
 			if( !$this->isOk() ){
@@ -23,7 +23,7 @@ final class LivePos_Job_GetRecord {
 		$bIsOk = ( $this->_hasErrors )? false: true;
 		return( $bIsOk );
 	}
-	
+
 	public function getErrors(){
 		return( $this->_response['error'] );
 	}
@@ -42,25 +42,20 @@ final class LivePos_Job_GetRecord {
 
 	private function _setHeader( $iContentLength = 0, $sSessionId ){
 
-		$header = array(
-				'APISessionKey: ' . $sSessionId,
+		$header = array('APISessionKey: ' . $sSessionId,
 				'Content-Type: application/json',
 				'Content-length: '. $iContentLength,
-		'Accept: */*');
+				'Accept: */*');
 
 		return( $header );
 	}
 
 	public function sendRequest( $requestType, $sSessionId, array $params = null ){
-		
+
 		$sPayload = ( $params == null )? $params: json_encode( $params );
-				
+
 		$options = array(
-				
-				//CURLOPT_HEADER =>true,
-				//CURLINFO_HEADER_OUT => true,
-				//CURLOPT_VERBOSE => true,
-				
+
 				CURLOPT_URL => LIVEPOS_URL . $requestType,
 				CURLOPT_TIMEOUT => 30,
 				CURLOPT_POST => 1,
@@ -68,41 +63,46 @@ final class LivePos_Job_GetRecord {
 				CURLOPT_POSTFIELDS => $sPayload,
 				CURLOPT_HTTPHEADER => $this->_setHeader( strlen($sPayload), $sSessionId ),
 				CURLOPT_RETURNTRANSFER => true );
-		
+
 		$cURL = curl_init();
-		
+
 		curl_setopt_array( $cURL, $options );
-		
+
 		for( $i=0; $i<3; $i++ ) {
-		
+
 			$curl_result = curl_exec($cURL);
-					
+
 			if ( curl_errno($cURL) == 0 ) {
-				
+
 				$this->_response['data'] = $curl_result;
 				$this->_response['code'] = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
+
+				if( $this->_response['code'] != 200 ){
+					$this->_hasErrors = true;
+					$this->_response['error'][] = 'Response Code: ' . $this->_response['code'];
+				}
 
 				curl_close($cURL);
 				return;
 			}
 		}
-		
+
 		$this->_response['error'][] =  'cURL Error: ' . curl_error( $cURL );
 		$this->_hasErrors = true;
 		curl_close($cURL);
 		return;
-		}
-	
-	
+	}
+
+
 	private function _setAuthHeader( $iContentLength = 0 ) {
 
 		$auth_header = array(
 				'APIApplicationKey: ' . LIVEPOS_API_KEY,
 				'APIApplicationID: ' . LIVEPOS_API_ID,
-				'Content-length: '. $iContentLength,
 				'Content-Type: application/json',
-				
-		'Accept: */*');
+				'Content-length: '. $iContentLength,
+				'Accept: */*');
+
 
 				return( $auth_header );
 	}
