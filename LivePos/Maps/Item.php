@@ -17,8 +17,6 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $custcol_store_pickup = 'T';
 	public $custcol162 = null;
 	public $description;
-	public $discountitem;
-	public $discounttotal = 0;
 	public $giftcertfrom;
 	public $giftcertmessage;
 	public $giftcertnumber;
@@ -67,13 +65,17 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public function getSku(){
 		return( $this->_sku );
 	}
+	
+	public function removeDiscount(){
+		$this->rate = $this->getPreDiscountPrice();
+	}
 
-	public function getOriginalPrice(){
+	public function getPreDiscountPrice(){
 
 		return( $this->_originalprice );
 	}
 
-	public function setOriginalPrice( $fPrice ){
+	public function setPreDiscountPrice( $fPrice ){
 
 		$this->_originalprice = $fPrice;
 	}

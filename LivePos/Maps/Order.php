@@ -14,6 +14,9 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_pos_postranstime;
 	public $customform = 107;
 	public $department;
+	public $discountitem;
+	public $discounttotal = 0;
+	public $discountrate;
 	public $entity;
 	public $ismultishipto = 'F';
 	public $item;
@@ -25,19 +28,18 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $pnrefnum;
 	public $recordtype = "salesorder";
 	public $shipaddress;
+	public $shipcomplete = 'T';
 	public $shipmethod = 10;
 	public $shipdate;
 	public $taxtotal = 0;
 	public $total = 0;
 	public $trandate;
 
-	protected $_source; // convert to NS ID;
-	protected $_paymentmethod_flag;
+	protected $_subtotal;
 
 	protected $_mapArray = array(
-			'intLocationID'  => '_source', // convert to NS ID
-			//'strFNUMBER' => 'custbody_order_source_id',
-			//'dtTransactionDate' => 'trandate',
+			'strAuthorizationCode' => 'authcode',
+			//'intLocationID'  => '_source', // convert to NS ID
 			'dblTax1' => 'taxtotal',
 			'dblGrandTotal' => 'total',
 			'intInvoiceNumber' => 'otherrefnum',
@@ -45,10 +47,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			'strAuthorizationCode' => 'authcode',
 			'strCreditCardExpiration' => 'ccexpiredate',
 			'strPaymentTypeLabel' => '_paymentmethod_flag',
-			//'intReceiptNumber' => 'custbody_order_source_id',
-			'dtTransactionDate' => 'custbody_pos_postranstime'
-			
-	);
+			'dtTransactionDate' => 'custbody_pos_postranstime');
 
 
 	/**
@@ -69,11 +68,26 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public function addItems( array $items ){
 		$this->item = $items;
 	}
-	
-	public function getTotal(){
-		return( $this->total );
+
+	public function setDiscount( $fDiscount, $iDiscountCode ){
+		$this->discounttotal = $fDiscount;
+		//$this->discountitem = $iDiscountCode;
 	}
-	
+
+	/**
+	 * Always Returns the Order's Original SubTotal
+	 */
+	public function getSubTotal(){
+		return( $this->_subtotal );
+	}
+
+	/**
+	 *
+	 */
+	public function setNewTotal( $fTotal ){
+		$this->total = $fTotal;
+	}
+
 	public function getTax(){
 		return( $this->taxtotal );
 	}
@@ -85,13 +99,13 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			$date = DateTime::createFromFormat('my', $this->ccexpiredate);
 			$this->ccexpiredate = $date->format('m/Y');
 		}
-		
+
 		// Set Shipping/ Billing Dates
 		$date = new DateTime( $this->custbody_pos_postranstime );
 		$this->trandate = $this->shipdate = $date->format('m/d/Y');
-		
+
 		// Set Total
-		$this->total = ( $this->total - $this->taxtotal );
+		$this->total = $this->_subtotal = ( $this->total - $this->taxtotal );
 	}
 
 	private function _setInternalSources( $locationData ){

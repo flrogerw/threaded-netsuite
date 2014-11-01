@@ -6,14 +6,14 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 	protected $_webSkus = array('Ship', 'Custom Art');
 	protected $_itemList = array();
-	
+
 	/**
-	 * List of the Original Skus of Items in List
+	 * List of the PreDiscount Skus of Items in List
 	 * @var array
 	 * @access protected
-	 */
+	*/
 	protected $_listSkus = array();
-	
+
 	protected $_productList = array();
 
 	/**
@@ -51,24 +51,26 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$this->_itemList[] = $item;
 		}
 	}
-	
-	public function getOriginalTotal(){
-		
-		$fOriginalTotal = 0;
-		
-		array_walk( $this->_itemList, function($oItem, $sKey) use (&$fOriginalTotal){
-			$fOriginalTotal += ( $oItem->getOriginalPrice() * $oItem->getQuantity() );
+	/**
+	 * Gets Total of Items Before Discount is Applied
+	 * @return number
+	 */
+	public function getPreDiscountTotal(){
+
+		$fPreDiscountTotal = 0;
+
+		array_walk( $this->_itemList, function($oItem, $sKey) use (&$fPreDiscountTotal){
+			$fPreDiscountTotal += ( $oItem->getPreDiscountPrice() * $oItem->getQuantity() );
 		});
-		
-		return( $fOriginalTotal );
+
+			return( $fPreDiscountTotal );
 	}
 
-	public function getOriginalPrices(){
 
-		if( !$this->_calledProducts ){
 
-			$this->_getProductsBySku();
-		}
+	public function popPreDiscountPrices(){
+
+		$this->_getProductsBySku();
 	}
 
 	public function hasItems(){
@@ -85,8 +87,15 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 			$aItemsArray[] = $oItem->getPublicVars();
 		}
-
 		return( $aItemsArray );
+	}
+
+	public function removeDiscount(){
+
+		array_walk( $this->_itemList, function(&$oItem, $sKey){
+			$oItem->removeDiscount();
+		});
+
 	}
 
 	public function getItems(){
@@ -104,12 +113,12 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$product = LivePos_Maps_MapFactory::create( 'product', array($aProduct)  );
 			$this->_productList[ $product->productsku ] = $product;
 		}
-		
+
 		array_walk( $this->_itemList, function(&$oItem, $sKey){
-			$oItem->setOriginalPrice( $this->_productList[ $oItem->getSku() ]->getPrice() );
+			$oItem->setPreDiscountPrice( $this->_productList[ $oItem->getSku() ]->getPrice() );
 		});
-		
-		$this->_calledProducts = true;
+
+			$this->_calledProducts = true;
 	}
 
 	private function _skusToNsIds(){
