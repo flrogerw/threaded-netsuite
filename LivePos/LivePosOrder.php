@@ -67,8 +67,8 @@ class LivePos_LivePosOrder extends Stackable {
 							$items->popPreDiscountPrices();
 							$discountTotal = ( $items->getPreDiscountTotal() - $order->getSubTotal() );
 							$order->setNewTotal( $items->getPreDiscountTotal() );
-							$order->setDiscount( $discountTotal );
-							$items->removeDiscount();
+							//$order->setDiscount( $discountTotal );
+							$items->removeDiscount( true );
 						}
 
 						$order->addItems( $items->getItemsArray() );

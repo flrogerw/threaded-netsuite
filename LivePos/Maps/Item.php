@@ -73,14 +73,14 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	 * Sets Price Back to PreDiscount Amount and Sets
 	 * discounttotal to the diference.
 	 */
-	public function removeDiscount( $sDiscountItem = 'webdiscount' ){
-		
-		//$this->discounttotal = ( $this->rate - $this->getPreDiscountPrice() );
-		if( $this->discounttotal != 0 ){
-			
+	public function removeDiscount( $bItemLevel = false, $sDiscountItem = NETSUITE_DEFAULT_DISCOUNT ){
+				
+		if( $bItemLevel ){
+			$this->discounttotal = ( ($this->rate - $this->getPreDiscountPrice() ) * $this->quantity );
 			$this->discountitem = $sDiscountItem;
-			$this->rate = $this->getPreDiscountPrice();
 		}
+		
+		$this->rate = $this->getPreDiscountPrice();
 	}
 
 	public function getPreDiscountPrice(){

@@ -16,7 +16,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $department;
 	public $discountitem;
 	public $discounttotal;
-	public $discountrate = 20;
+	public $discountrate;
 	public $entity;
 	public $ismultishipto = 'F';
 	public $item;
@@ -69,9 +69,10 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->item = $items;
 	}
 
-	public function setDiscount( $fDiscount, $sDiscountCode = 1164 ){
+	public function setDiscount( $fDiscount, $sDiscountCode = NETSUITE_DEFAULT_DISCOUNT ){
 		
-		$this->discounttotal = ( $fDiscount * -1 );
+		//$this->discounttotal = $fDiscount;
+		$this->discountrate = ( $fDiscount * -1 );
 		$this->discountitem = $sDiscountCode;
 	}
 

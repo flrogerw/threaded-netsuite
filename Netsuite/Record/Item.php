@@ -102,7 +102,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 		return( true );
 	}
 
-	public function getDiscountItem( $sDiscountType = 'webdiscount', $ismultishipto) {
+	public function getDiscountItem( $sDiscountType = NETSUITE_DEFAULT_DISCOUNT, $ismultishipto) {
 
 		$oModel = new Netsuite_Db_Model();
 
