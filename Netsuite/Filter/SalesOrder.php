@@ -78,8 +78,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custentity_customer_source_id' => array('filter' => FILTER_SANITIZE_STRING),
 			'customform' => array('filter' => FILTER_VALIDATE_INT),
 			'department' => array('filter' => FILTER_VALIDATE_INT),
-			'discountitem' => array('filter' => FILTER_VALIDATE_INT,
-					'flags'  => FILTER_NULL_ON_FAILURE),
+			'discountitem' => array('filter' => FILTER_SANITIZE_STRING),
 			'discountrate'  => array('filter' => FILTER_VALIDATE_FLOAT),
 			'discounttotal' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'entity' => array('filter' => FILTER_VALIDATE_INT),
@@ -160,7 +159,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 		//$this->_paymentType = $this->_record['_paymentmethod_flag'];
 
 		if( $this->_record['discounttotal'] < 0 ){
-			array_push( $this->_requiredFields, 'discountitem' );
+			// array_push( $this->_requiredFields, 'discountitem' );
 		}
 
 		if( $this->_record['ccnumber'] != '' ) {

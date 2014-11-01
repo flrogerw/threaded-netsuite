@@ -44,7 +44,7 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 			'custcol_page_count' =>array('filter' => FILTER_SANITIZE_STRING),
 			'custcol162' => array('filter' => FILTER_SANITIZE_STRING),
 			//'description' => array('filter' => FILTER_SANITIZE_STRING),
-			'discountitem' => array('filter' => FILTER_VALIDATE_INT),
+			'discountitem' => array('filter' => FILTER_SANITIZE_STRING),
 			'discounttotal' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'giftcertfrom' => array('filter' => FILTER_SANITIZE_STRING),
 			'giftcertmessage' => array('filter' => FILTER_SANITIZE_STRING),

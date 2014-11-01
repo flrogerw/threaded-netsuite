@@ -17,6 +17,9 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $custcol_store_pickup = 'T';
 	public $custcol162 = null;
 	public $description;
+	public $discountitem;
+	public $discounttotal = 0;
+	public $discountrate;
 	public $giftcertfrom;
 	public $giftcertmessage;
 	public $giftcertnumber;
@@ -65,9 +68,19 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public function getSku(){
 		return( $this->_sku );
 	}
-	
-	public function removeDiscount(){
-		$this->rate = $this->getPreDiscountPrice();
+
+	/**
+	 * Sets Price Back to PreDiscount Amount and Sets
+	 * discounttotal to the diference.
+	 */
+	public function removeDiscount( $sDiscountItem = 'webdiscount' ){
+		
+		//$this->discounttotal = ( $this->rate - $this->getPreDiscountPrice() );
+		if( $this->discounttotal != 0 ){
+			
+			$this->discountitem = $sDiscountItem;
+			$this->rate = $this->getPreDiscountPrice();
+		}
 	}
 
 	public function getPreDiscountPrice(){
@@ -77,9 +90,9 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 	public function setPreDiscountPrice( $fPrice ){
 
-		$this->_originalprice = $fPrice;
+		$this->_originalprice = (float) $fPrice;
 	}
-	
+
 	public function getQuantity(){
 		return( $this->quantity );
 	}
@@ -99,7 +112,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	private function _setAddress(){
 
 		array_walk( array_filter($this->_aLocationData), function($value, $key) {
-				
+
 			$sProperty = str_replace('location_', '',$key);
 			if(property_exists($this, $sProperty)){
 				$this->$sProperty = $value;

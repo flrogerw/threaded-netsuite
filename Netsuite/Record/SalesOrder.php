@@ -28,7 +28,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $custbody_web_payment_error;
 	public $custentity_customer_source_id;
 	public $department;
-	public $discountitem = null;
+	public $discountitem = 'webdiscount';
 	public $discounttotal = 0;
 	public $discountrate = 0;
 	public $email;

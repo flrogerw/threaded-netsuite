@@ -111,9 +111,9 @@ class LivePos_Thread_OrdersServer {
 					':order_json' => $aWorkerData['encrypted'] );
 		}
 		
-		//$oModel = new LivePos_Db_Model();
-		//$oModel->queueOrders( $aOrdersArray );
-		//$oModel->updateIgnoredOrders( $aIgnoredOrders );
-		//$oModel = null;
+		$oModel = new LivePos_Db_Model();
+		$oModel->queueOrders( $aOrdersArray );
+		$oModel->updateIgnoredOrders( $aIgnoredOrders );
+		$oModel = null;
 	}
 }

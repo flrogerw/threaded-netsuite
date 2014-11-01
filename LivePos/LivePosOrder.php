@@ -48,8 +48,6 @@ class LivePos_LivePosOrder extends Stackable {
 							
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_order[0]['enumProductsSold'], $this->_locationData );
 
-
-
 						// WEB Only Items or Empty Order
 						if( !$items->hasItems() ){
 							$this->worker->addData( array('ignore' => true ) );
@@ -62,20 +60,20 @@ class LivePos_LivePosOrder extends Stackable {
 
 						$order = LivePos_Maps_MapFactory::create( 'order', $this->_order, $this->_locationData, $this->_orderId );
 
-
 						$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_order[0]['enumCouponDiscounts']);
-
+						
 						if( $discounts->hasDiscounts() ){
 							
 							$items->popPreDiscountPrices();
 							$discountTotal = ( $items->getPreDiscountTotal() - $order->getSubTotal() );
 							$order->setNewTotal( $items->getPreDiscountTotal() );
-							$order->setDiscount( $discountTotal, null );
+							$order->setDiscount( $discountTotal );
 							$items->removeDiscount();
 						}
 
 						$order->addItems( $items->getItemsArray() );
-						$order = Netsuite_Record::factory()->salesOrder( $order->getPublicVars(), $customer );
+						//$order = Netsuite_Record::factory()->salesOrder( $order->getPublicVars(), $customer );
+						
 
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedJson( $customer, $order ) ) );
 						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
@@ -98,10 +96,11 @@ class LivePos_LivePosOrder extends Stackable {
 			}
 	}
 
-	private function _getEncryptedJson( Netsuite_Record_Customer $customer, Netsuite_Record_SalesOrder $order ){
+	private function _getEncryptedJson( Netsuite_Record_Customer $customer, LivePos_Maps_Order $order ){
 
-		$aToEncrypt = array( 'order' => $order->getFields(), 'customer' => $customer->getFields() );
-		return(  json_encode( $aToEncrypt ) );
-		//return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
+		//$aToEncrypt = array( 'order' => $order->getFields(), 'customer' => $customer->getFields() );
+		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getFields() );
+		//return(  json_encode( $aToEncrypt ) );
+		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 }

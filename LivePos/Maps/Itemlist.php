@@ -95,6 +95,8 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 		array_walk( $this->_itemList, function(&$oItem, $sKey){
 			$oItem->removeDiscount();
 		});
+		
+		
 
 	}
 

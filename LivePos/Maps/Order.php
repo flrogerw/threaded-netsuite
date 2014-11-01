@@ -15,8 +15,8 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $customform = 107;
 	public $department;
 	public $discountitem;
-	public $discounttotal = 0;
-	public $discountrate;
+	public $discounttotal;
+	public $discountrate = 20;
 	public $entity;
 	public $ismultishipto = 'F';
 	public $item;
@@ -69,9 +69,10 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->item = $items;
 	}
 
-	public function setDiscount( $fDiscount, $iDiscountCode ){
-		$this->discounttotal = $fDiscount;
-		//$this->discountitem = $iDiscountCode;
+	public function setDiscount( $fDiscount, $sDiscountCode = 'webdiscount' ){
+		
+		$this->discounttotal = ( $fDiscount * -1 );
+		$this->discountitem = $sDiscountCode;
 	}
 
 	/**
