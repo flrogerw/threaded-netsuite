@@ -69,7 +69,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->item = $items;
 	}
 
-	public function setDiscount( $fDiscount, $sDiscountCode = 'webdiscount' ){
+	public function setDiscount( $fDiscount, $sDiscountCode = 1164 ){
 		
 		$this->discounttotal = ( $fDiscount * -1 );
 		$this->discountitem = $sDiscountCode;

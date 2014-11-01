@@ -78,7 +78,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custentity_customer_source_id' => array('filter' => FILTER_SANITIZE_STRING),
 			'customform' => array('filter' => FILTER_VALIDATE_INT),
 			'department' => array('filter' => FILTER_VALIDATE_INT),
-			'discountitem' => array('filter' => FILTER_SANITIZE_STRING),
+			'discountitem'  => array('filter' => FILTER_VALIDATE_INT),
 			'discountrate'  => array('filter' => FILTER_VALIDATE_FLOAT),
 			'discounttotal' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'entity' => array('filter' => FILTER_VALIDATE_INT),
