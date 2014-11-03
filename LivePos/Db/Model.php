@@ -151,7 +151,33 @@ final class LivePos_Db_Model extends PDO
 		}
 	}
 
-
+	/**
+	 *
+	 *
+	 */
+	public function getAllDiscounts(){
+	
+		$dbResults = array();
+	
+		try{
+	
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_ALL_DISCOUNTS' ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$sth->execute();
+			$dbResults = $sth->fetchAll(PDO::FETCH_ASSOC);
+			return( $dbResults );
+	
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get All Discounts Information From DB' );
+		}
+	}
+	
+	
 	/**
 	 *
 	 * @param array $aNewOrders - Pending Orders to Be Searched

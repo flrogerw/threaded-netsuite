@@ -92,11 +92,11 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 	public function removeDiscount( $bItemLevel = false ){
 
-		array_walk( $this->_itemList, function(&$oItem, $sKey){
+		array_walk( $this->_itemList, function(&$oItem, $sKey) use ($bItemLevel){
 			$oItem->removeDiscount( $bItemLevel );
 		});
-		
-		
+
+
 
 	}
 

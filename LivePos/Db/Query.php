@@ -33,6 +33,8 @@ final class LivePos_Db_Query
 
 	protected static $GET_DISCOUNTS = "SELECT SQL_CACHE * FROM  livepos_discounts WHERE discount_code IN (%s)";
 	
+	protected static $GET_ALL_DISCOUNTS = "SELECT SQL_CACHE * FROM  livepos_discounts";
+	
 	/**
 	 *
 	 * @param string $TablePrefix

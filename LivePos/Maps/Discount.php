@@ -1,8 +1,6 @@
 <?php 
 class LivePos_Maps_Discount extends LivePos_Maps_Map {
 
-	public $discountitem = null;
-	public $discountrate = 0;
 	public $discountscope;
 	public $discounttotal = 0;
 	public $discountid;
@@ -34,42 +32,34 @@ class LivePos_Maps_Discount extends LivePos_Maps_Map {
 		$this->_logic();
 	}
 
+	public function getType(){
+		return( $this->discounttype );
+	}
 
+	public function getAmount(){
 
-	/**
-	 * Returns Original Price of Item based on the Discount
-	 * Price and Discount.
-	 *
-	 * @access public
-	 * @static
-	 * @param float $fPrice - Discounted Price
-	 * @param float $fDiscountPercent - Percent of Discount
-	 * @return float
-	 */
-	public static function calculateOriginalPrice( $fPrice, $fDiscount, $sType = 'percent' ){
+		return( $this->discounttotal );
+	}
 
+	public function getId(){
+		return( $this->discountid );
+	}
 
-		switch( $sType ){
-
-			case( 'percent' ):
-
-				$fOriginalPrice = $fPrice/( 100 - $fDiscount ) * 100;
-				return( $fOriginalPrice );
-				break;
-
-			case( 'price' ):
-
-				$fOriginalPrice = $fPrice + $fDiscount;
-				return( $fOriginalPrice );
-				break;
-
-			default:
-				return( $fOriginalPrice );
-				break;
-		}
+	public function getScope(){
+		return( $this->discountscope );
 	}
 
 	private function _logic(){
 
+		switch( true ){
+			case( stripos( $this->discountscope,'sale' ) !== false ):
+				$sScope = 'sale';
+				break;
+
+			case( stripos( $this->discountscope,'item' ) !== false ):
+				$sScope = 'item';
+				break;
+		}
+		$this->discountscope = $sScope;
 	}
 }

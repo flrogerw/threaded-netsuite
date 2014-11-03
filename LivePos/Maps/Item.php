@@ -38,7 +38,6 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $shipaddress;
 	public $shipmethod = 10;
 	public $state;
-	//public $taxcode = -125;
 	public $zip;
 
 	protected $_originalprice;
@@ -74,12 +73,13 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	 * discounttotal to the diference.
 	 */
 	public function removeDiscount( $bItemLevel = false, $sDiscountItem = NETSUITE_DEFAULT_DISCOUNT ){
-				
+
 		if( $bItemLevel ){
-			$this->discounttotal = ( ($this->rate - $this->getPreDiscountPrice() ) * $this->quantity );
+				
+			$this->discounttotal = (  $this->rate - ( $this->getPreDiscountPrice() * $this->quantity ) );
 			$this->discountitem = $sDiscountItem;
 		}
-		
+
 		$this->rate = $this->getPreDiscountPrice();
 	}
 
@@ -114,10 +114,11 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 		array_walk( array_filter($this->_aLocationData), function($value, $key) {
 
 			$sProperty = str_replace('location_', '',$key);
+			
 			if(property_exists($this, $sProperty)){
+				
 				$this->$sProperty = $value;
 			}
-			return;
 		});
 	}
 }
