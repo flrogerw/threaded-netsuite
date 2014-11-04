@@ -41,7 +41,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 		foreach( $this->_aData as $aItem ){
 
-			$item = LivePos_Maps_MapFactory::create( 'item', array( $aItem ), $locationData );
+			$item = LivePos_Maps_MapFactory::create( 'item', $aItem, $locationData );
 
 			if( in_array($item->item, $this->_webSkus) ){
 				$this->hasWebItems = true;
@@ -112,7 +112,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 		$model = null;
 
 		foreach( $aProductData as $aProduct ){
-			$product = LivePos_Maps_MapFactory::create( 'product', array($aProduct)  );
+			$product = LivePos_Maps_MapFactory::create( 'product', $aProduct  );
 			$this->_productList[ $product->productsku ] = $product;
 		}
 

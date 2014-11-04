@@ -18,6 +18,8 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $discounttotal;
 	public $discountrate;
 	public $entity;
+	public $giftcertificateitem = array();
+	public $handlingcost;
 	public $ismultishipto = 'F';
 	public $item;
 	public $leadsource;
@@ -30,6 +32,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $shipaddress;
 	public $shipcomplete = 'T';
 	public $shipmethod = 10;
+	public $shippingcost;
 	public $shipdate;
 	public $taxtotal = 0;
 	public $total = 0;
@@ -39,6 +42,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	protected $_customer_firstname;
 	protected $_customer_lastname;
 	protected $_paymentmethod_flag;
+	protected $_location;
 
 	protected $_mapArray = array(
 			'dblTax1' => 'taxtotal',
@@ -69,17 +73,25 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->item = $items;
 	}
 
+	
+	public function setGiftCert( LivePos_Maps_Payment $oPayment ){
+		
+		$this->giftcertificateitem[] = array('giftcertcode' => $oPayment->getGiftCertId() );
+	}
+	
 	public function getPaymentType(){
 
 		return( $this->_paymentmethod_flag );
 	}
 	public function setCcData( LivePos_Maps_Payment $oPayment ){
 
-		$this->ccexpiredate = $oPayment->getCcExpire();
-		$this->ccname = $this->_customer_firstname . ' ' . $this->_customer_lastname;
-		$this->ccnumber = $oPayment->getCcNumber();
-		$this->authcode =$oPayment->getAuthCode();
+		//$this->ccexpiredate = $oPayment->getCcExpire();
+		//$this->ccname = $this->_customer_firstname . ' ' . $this->_customer_lastname;
+		//$this->ccnumber = $oPayment->getCcNumber();
+		//$this->authcode =$oPayment->getAuthCode();
 		$this->custbody_pos_trans_id = $oPayment->getTransactionId();
+		//$this->cczipcode = 11111;
+		//$this->pnrefnum = $oPayment->getTransactionId();
 	}
 
 	public function setPaymentType( $sPaymentType ){

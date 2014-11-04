@@ -1,5 +1,13 @@
 #!/usr/bin/php
 <?php 
+/**
+ * Pull Products from LivePOS: 					LivePos.php -t products
+ * Pull Receipts by Location and Date: 			LivePos.php  -l [LocationId] -d [TransactionDate] -t receipts 
+ * Send Receipts to Netsuite Queue: 			LivePos.php -t orders
+
+ * 
+ * 
+ */
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
 $aCommmandLineOptions = getopt("l:t:d:");

@@ -8,7 +8,7 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	public $authcode;
 	public $authtransactionid;
 	public $custompaymentname;
-	public $giftcardcode;
+	public $giftcertcode;
 	public $giftcardcodepin;
 	public $couponcode;
 	public $processedexternally;
@@ -28,7 +28,7 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 			'strAuthorizationCode' => 'authcode',
 			'strAuthorizationTransactionID' => 'authtransactionid',
 			'strCustomPaymentName' => 'custompaymentname',
-			'strGiftCardCode' => 'giftcardcode',
+			'strGiftCardCode' => 'giftcertcode',
 			'strGiftCardPIN' => 'giftcardcodepin',
 			'strCouponCode' => 'couponcode',
 			'bIsProcessedExternally' => 'processedexternally',
@@ -55,12 +55,22 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	}
 
 	public function getCcNumber(){
-		return( '999999999999' . $this->creditcardlast4 );
+		return( '414734003282' . $this->creditcardlast4 );
+	}
+	
+	public function getGiftCertId(){
+		
+		return( $this->giftcertcode );
 	}
 
 	public function getCcExpire(){
 
 		return( $this->creditcardexpiration );
+	}
+	
+	public function getTypeId(){
+	
+		return( (int) $this->typeid );
 	}
 
 	public function getType(){
@@ -82,12 +92,13 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	}
 
 	public function getAmount(){
+		
 		return( $this->amount );
 	}
 
 	private function _logic(){
 
-		if( $this->getType() == 'Credit Card'){
+		if( $this->getTypeId() == 2 ){
 
 			$date = DateTime::createFromFormat('my', $this->creditcardexpiration );
 			$this->creditcardexpiration = $date->format('m/Y');

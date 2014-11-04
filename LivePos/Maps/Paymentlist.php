@@ -34,7 +34,7 @@ class LivePos_Maps_Paymentlist extends LivePos_Maps_Map{
 	private function _getPaymentList(){
 
 		array_walk( $this->_aData, function($aPayment, $sKey){
-			$payment = LivePos_Maps_MapFactory::create( 'payment', array( $aPayment ) );
+			$payment = LivePos_Maps_MapFactory::create( 'payment',  $aPayment );
 			$this->_paymentList[] = $payment;
 		});
 	}

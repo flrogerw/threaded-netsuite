@@ -112,7 +112,7 @@ class LivePos_Thread_OrdersServer {
 		}
 		
 		$oModel = new LivePos_Db_Model();
-		$oModel->queueOrders( $aOrdersArray );
+		//$oModel->queueOrders( $aOrdersArray );
 		$oModel->updateIgnoredOrders( $aIgnoredOrders );
 		$oModel = null;
 	}

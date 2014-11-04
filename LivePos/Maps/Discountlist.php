@@ -1,7 +1,7 @@
 <?php 
 class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 
-	protected $_discountList;
+	protected $_discountList = array();
 	protected $_discountListMap = array( 'strCouponCode' => 'discount_code', 'strCouponTargetType' => 'discount_scope' );
 
 
@@ -13,8 +13,11 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 	public function __construct( array $aDiscounts ) {
 
 		parent::__construct();
-		$aDiscounts =  $this->_map( $aDiscounts, $this->_discountListMap );
-		$this->_getDiscountList( $aDiscounts );
+		if( !empty( $aDiscounts ) ){
+			
+			$aDiscounts =  $this->_map( $aDiscounts, $this->_discountListMap );
+			$this->_getDiscountList( $aDiscounts );
+		}
 	}
 
 	public function hasDiscounts(){
@@ -71,7 +74,7 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 
 		array_walk( $aDiscounts, function($aData, $sKey){
 
-			$discount = LivePos_Maps_MapFactory::create( 'discount', array( $aData ) );
+			$discount = LivePos_Maps_MapFactory::create( 'discount',  $aData );
 
 			if( !$this->isDiscount( $discount->getId() ) ){
 				$this->_discountList[ $discount->getId() ] = $discount;

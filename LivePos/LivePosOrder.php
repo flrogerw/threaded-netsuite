@@ -1,6 +1,27 @@
 <?php 
-
-class LivePos_LivePosOrder extends Stackable {
+/**
+ * LivePOS Order Processor
+ *
+ * @package Netsuite
+ * @subpackage LivePOS
+ * @author gWilli
+ * @version 1.0
+ * @copyright 2014
+ * @name LivePOS Order
+ */
+/**
+ * LivePOS Receipt to Netsuite Record Process
+ *
+ * Thread for Processing Receipts into Netsuite.  Captures Order, Discount and Payment Information
+ * from Receipt and Converts the Data into a Netsuite Order and Inserts into the Queue for Insertion.
+ *
+ * @uses Configure
+ * @uses Stackable
+ * @package Netsuite
+ * @subpackage LivePOS
+ * @final Can NOT Extend
+ */
+final class LivePos_LivePosOrder extends Stackable {
 
 	protected $_raworder;
 	protected $_order;
@@ -14,7 +35,7 @@ class LivePos_LivePosOrder extends Stackable {
 
 	public function __construct( $sOrderId, $aOrder, $locationData ){
 
-		$this->_raworder = json_decode( $aOrder['receipt_string'], true );
+		$this->_raworder =  current( json_decode( $aOrder['receipt_string'], true ) );
 		$this->orderType = $aOrder['receipt_type'];
 		$this->receiptId = $aOrder['receipt_id'];
 		$this->_locationData = $locationData;
@@ -52,7 +73,7 @@ class LivePos_LivePosOrder extends Stackable {
 							
 					case( 'SALE'):
 							
-						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder[0]['enumProductsSold'], $this->_locationData );
+						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 
 						// WEB Only Items or Empty Order
 						if( !$items->hasItems() ){
@@ -63,7 +84,7 @@ class LivePos_LivePosOrder extends Stackable {
 						}
 
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_raworder, $this->_locationData );
-						$order = LivePos_Maps_MapFactory::create( 'order', $this->_raworder, $this->_locationData, $this->_raworderId );
+						$order = LivePos_Maps_MapFactory::create( 'order', $this->_raworder, $this->_locationData, $this->_orderId );
 
 						$this->_processPayments( $order );
 						$this->_processDiscounts( $items, $order);
@@ -94,13 +115,13 @@ class LivePos_LivePosOrder extends Stackable {
 	private function _processDiscounts( LivePos_Maps_Itemlist $items, LivePos_Maps_Order $order ){
 
 		$bItemLevel;
-		$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_raworder[0]['enumCouponDiscounts'] );
+		$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_raworder['enumCouponDiscounts'] );
 
 		if( $discounts->hasDiscounts() ){
 
 			$items->popPreDiscountPrices();
 			$order->setNewTotal( $items->getPreDiscountTotal() );
-				
+
 
 			array_walk( $discounts->getDiscounts(), function( $oDiscount, $sKey ) use ( &$order, &$items, &$bItemLevel ){
 
@@ -128,22 +149,27 @@ class LivePos_LivePosOrder extends Stackable {
 
 	public function _processPayments( LivePos_Maps_Order $order ){
 
-		$payments = LivePos_Maps_MapFactory::create( 'paymentlist', $this->_raworder[0]['enumPayments'] );
+		$payments = LivePos_Maps_MapFactory::create( 'paymentlist', $this->_raworder['enumPayments'] );
 
 		array_walk( $payments->getPayments(), function( $oPayment, $sKey ) use ( &$order ){
 
-			switch( $oPayment->getType() ){
+			switch( $oPayment->getTypeId() ){
 					
-				case( 'CC' ):
+				case( 2 ): // Credit Card
 
 					$order->setCcData( $oPayment );
 					break;
 
-				case( 'Cash' ):
-				case( 'Check' ):
-				case( 'Gift Card' ):
-				case( 'Custom Payment' ):
-				case( 'Coupon' ):
+				case( 8 ): // Gift Card
+
+					$order->setGiftCert( $oPayment );
+					break;
+						
+				case( 1 ): // Cash
+				case( 3 ): // Check
+				case( 5 ): // Split -- Order Level Only
+				case( 9 ): // Custom Payment
+				case( 7 ): // Coupon
 					break;
 			}
 		});
@@ -153,7 +179,7 @@ class LivePos_LivePosOrder extends Stackable {
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
 
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
-		return(  json_encode( $aToEncrypt ) );
-		//return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
+		//return(  json_encode( $aToEncrypt ) );
+		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 }

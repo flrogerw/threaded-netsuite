@@ -23,16 +23,12 @@ class LivePos_Maps_Map {
 
 	protected function _map( array $aRawData = null, array $aMapArray = null ){
 
-		$aRawData = ( $aRawData == null )? $this->_aData: $aRawData;
+		$aData = ( $aRawData == null )? $this->_aData: $aRawData;
 		$aReturn = array();
 		$iCounter = 0;
-
-		foreach( $aRawData as $aData ){
 			
-
 			foreach( $aData as $sKey=>$mValue ){
 					
-				//echo( "KEY: $sKey => $mValue\n" );
 				switch( true ){
 
 					case( is_array( $mValue && empty( $mValue ) ) ):
@@ -56,7 +52,7 @@ class LivePos_Maps_Map {
 				}
 			}
 			$iCounter++;
-		}
+
 		return( $aReturn );
 	}
 
