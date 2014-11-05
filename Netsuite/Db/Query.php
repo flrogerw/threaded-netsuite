@@ -31,8 +31,10 @@ final class Netsuite_Db_Query
 
 	protected static $GET_EXCEPTION_ITEMS = "SELECT SQL_CACHE * FROM [TABLE_PREFIX]_sku_exceptions";
 
-	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' GROUP BY customer_activa_id ORDER BY queue_id LIMIT :limit";
+	//protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' GROUP BY customer_activa_id ORDER BY queue_id LIMIT :limit";
 
+	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' ORDER BY queue_id LIMIT :limit";
+	
 	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( order_json ) VALUES (:order_json)";
 
 	protected static $UPDATE_ORDER_QUEUE = "UPDATE fotobar_order_queue SET order_status = :order_status, order_complete_date = :order_complete_date WHERE queue_id = :queue_id";

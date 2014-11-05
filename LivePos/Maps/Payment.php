@@ -62,7 +62,7 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	public function getGiftCertId(){
 		
 		//////////////////////  TEST ONLY  /////////////////////////
-		$gcCodes = array('3veqsc6uc', 'store', 'Sotre26', 'store30', 'store38' );		
+		$gcCodes = array( 'bd6xq682', 'enytgzpb' );		
 		$rand_key = array_rand($gcCodes);		
 		return( $gcCodes[$rand_key] );
 		///////////////////////  TEST ONLY END   ///////////////////////////////

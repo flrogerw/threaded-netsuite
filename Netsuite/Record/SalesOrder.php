@@ -35,7 +35,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $entity;
 	public $excludecommission = false;
 	public $getauth = false;
-	public $giftcertificateitem = array();
+	public $giftcertificate = array();
 	public $handlingcost = 0;
 	public $ismultishipto = true;
 	public $istaxable = true;
