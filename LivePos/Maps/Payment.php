@@ -9,6 +9,7 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	public $authtransactionid;
 	public $custompaymentname;
 	public $giftcertcode;
+	public $giftcertapplied;
 	public $giftcardcodepin;
 	public $couponcode;
 	public $processedexternally;
@@ -60,7 +61,13 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	
 	public function getGiftCertId(){
 		
-		return( $this->giftcertcode );
+		//////////////////////  TEST ONLY  /////////////////////////
+		$gcCodes = array('3veqsc6uc', 'store', 'Sotre26', 'store30', 'store38' );		
+		$rand_key = array_rand($gcCodes);		
+		return( $gcCodes[$rand_key] );
+		///////////////////////  TEST ONLY END   ///////////////////////////////
+		
+		//return( $this->giftcertcode );
 	}
 
 	public function getCcExpire(){

@@ -61,13 +61,13 @@ class LivePos_LivePosReceipts extends Stackable {
 
 	private function _getReceiptType( array $aResponse ){
 
-		$aReceiptArray = json_decode($aResponse['data'], true);
+		$aReceiptArray = current( json_decode($aResponse['data'], true ) );
 
-		if( isset( $aReceiptArray[0]['strTransactionTypeLabel'] ) ) {
+		if( isset( $aReceiptArray['intTransactionTypeID'] ) ) {
 
-			$this->worker->addData( array( 'receiptType' => $aReceiptArray[0]['strTransactionTypeLabel'] ) );
+			$this->worker->addData( array( 'receiptType' => $aReceiptArray['intTransactionTypeID'] ) );
 		}else{
-			$this->worker->addData( array( 'receiptType' => 'ERROR' ) );
+			$this->worker->addData( array( 'receiptType' => 999 ) );
 			$this->_errors[] = 'Could NOT get Receipt Transaction Type';
 		}
 

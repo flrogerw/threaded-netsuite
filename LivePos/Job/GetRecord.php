@@ -13,7 +13,7 @@ final class LivePos_Job_GetRecord {
 		if( $bCreateAuth ){
 			$this->_sendAuth();
 			if( !$this->isOk() ){
-				throw new Exception('Could Not get Auth String from LivePOS: ' . $this->_response);
+				throw new Exception('Could Not get Auth String from LivePOS: ' . implode(',',$this->_response['error'] ) );
 			}
 		}
 	}
@@ -35,8 +35,8 @@ final class LivePos_Job_GetRecord {
 
 	public function getSessionId(){
 
-		$oResponse = json_decode( $this->_authResponse );
-		return( $oResponse[0]->strAPISessionKey );
+		$oResponse = current( json_decode( $this->_authResponse ) );
+		return( $oResponse->strAPISessionKey );
 
 	}
 

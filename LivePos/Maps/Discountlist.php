@@ -3,22 +3,31 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 
 	protected $_discountList = array();
 	protected $_discountListMap = array( 'strCouponCode' => 'discount_code', 'strCouponTargetType' => 'discount_scope' );
-
+	protected $_doscountTotal = 0;
 
 	/**
 	 *
 	 * @access public
 	 * @return void
-	*/
+	 */
 	public function __construct( array $aDiscounts ) {
 
 		parent::__construct();
 		if( !empty( $aDiscounts ) ){
-			
-			$aDiscounts =  $this->_map( $aDiscounts, $this->_discountListMap );
 			$this->_getDiscountList( $aDiscounts );
 		}
 	}
+
+	public function getDiscountTotal(){
+
+		return( $this->_doscountTotal );
+	}
+
+	public function updateDiscountTotal( $fDiscount ){
+
+		$this->_doscountTotal += $fDiscount;
+	}
+
 
 	public function hasDiscounts(){
 
@@ -69,13 +78,12 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 	}
 
 	private function _getDiscountList( array $aDiscounts ){
-
-		$this->_discountList = array();
-
+		
 		array_walk( $aDiscounts, function($aData, $sKey){
-
-			$discount = LivePos_Maps_MapFactory::create( 'discount',  $aData );
-
+			
+			$aMappedDiscount = $this->_map( $aData, $this->_discountListMap );
+			$discount = LivePos_Maps_MapFactory::create( 'discount',  $aMappedDiscount );			
+			
 			if( !$this->isDiscount( $discount->getId() ) ){
 				$this->_discountList[ $discount->getId() ] = $discount;
 			}

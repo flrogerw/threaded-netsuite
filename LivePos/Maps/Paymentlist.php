@@ -4,6 +4,7 @@ class LivePos_Maps_Paymentlist extends LivePos_Maps_Map{
 
 
 	protected $_paymentList = array();
+	protected $_doscountTotal = 0;
 
 	/**
 	 *
@@ -16,8 +17,7 @@ class LivePos_Maps_Paymentlist extends LivePos_Maps_Map{
 		$this->_aData = $aPayments;
 		$this->_getPaymentList();
 	}
-
-
+	
 	public function getPaymentByType( $sPaymentType ){
 
 		(int) $iTypeKey;

@@ -43,9 +43,9 @@ class LivePos_Thread_OrdersServer {
 
 	private function _getOrderId( array $aOrder ){
 
-		$aOrderData = json_decode( $aOrder['receipt_string'], true );
-		return( 'POS_' . $aOrderData[0]['intReceiptNumber']);
-		//return( $aOrderData[0]['strActivaNumber'] );
+		$aOrderData = current( json_decode( $aOrder['receipt_string'], true ) );
+		return( 'POS_' . $aOrderData['intReceiptNumber']);
+		//return( $aOrderData['strActivaNumber'] );
 	}
 
 	private function _getWebOrders(){
@@ -112,7 +112,7 @@ class LivePos_Thread_OrdersServer {
 		}
 		
 		$oModel = new LivePos_Db_Model();
-		//$oModel->queueOrders( $aOrdersArray );
+		$oModel->queueOrders( $aOrdersArray );
 		$oModel->updateIgnoredOrders( $aIgnoredOrders );
 		$oModel = null;
 	}

@@ -76,7 +76,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	
 	public function setGiftCert( LivePos_Maps_Payment $oPayment ){
 		
-		$this->giftcertificateitem[] = array('giftcertcode' => $oPayment->getGiftCertId() );
+		$this->giftcertificateitem[] = array('giftcertcode' => $oPayment->getGiftCertId(), 'giftcertapplied' => $oPayment->getAmount() );
 	}
 	
 	public function getPaymentType(){

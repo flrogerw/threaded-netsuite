@@ -13,7 +13,8 @@
  * LivePOS Receipt to Netsuite Record Process
  *
  * Thread for Processing Receipts into Netsuite.  Captures Order, Discount and Payment Information
- * from Receipt and Converts the Data into a Netsuite Order and Inserts into the Queue for Insertion.
+ * from LivePOS Receipt and Converts the Data into a Netsuite Order and Inserts into the Queue for Insertion
+ * into Netsuite.
  *
  * @uses Configure
  * @uses Stackable
@@ -28,11 +29,9 @@ final class LivePos_LivePosOrder extends Stackable {
 	protected $_orderId;
 	protected $_locationData;
 	protected $_orderType;
-	protected $_customer;
-	protected $_items;
-	protected $_discounts;
-	protected $_payments;
 
+	
+	
 	public function __construct( $sOrderId, $aOrder, $locationData ){
 
 		$this->_raworder =  current( json_decode( $aOrder['receipt_string'], true ) );
@@ -59,19 +58,22 @@ final class LivePos_LivePosOrder extends Stackable {
 
 				switch( $this->orderType ){
 
-					case('ERROR'):
+					case( 999 ): // Error
 						$this->worker->addData( array('ignore' => true ) );
+						$errors[] = 'Error Code 999';
 						break;
 
-					case('EXCHANGE'):
+					case( 2 ): // EXCHANGE ???
 						$this->worker->addData( array('ignore' => true ) );
+						$errors[] = 'Exchange';
 						break;
 
-					case('REFUND'):
+					case( 1 ): // REFUND
 						$this->worker->addData( array('ignore' => true ) );
+						$errors[] = 'Refund';
 						break;
 							
-					case( 'SALE'):
+					case( 0 ): // Sale
 							
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 
@@ -85,9 +87,11 @@ final class LivePos_LivePosOrder extends Stackable {
 
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_raworder, $this->_locationData );
 						$order = LivePos_Maps_MapFactory::create( 'order', $this->_raworder, $this->_locationData, $this->_orderId );
-
-						$this->_processPayments( $order );
-						$this->_processDiscounts( $items, $order);
+						$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_raworder['enumCouponDiscounts'] );
+						$payments = LivePos_Maps_MapFactory::create( 'paymentlist', $this->_raworder['enumPayments'] );
+						
+						$this->_processPayments( $order, $payments, $discounts );
+						$this->_processDiscounts( $items, $order, $discounts );
 
 						$order->addItems( $items->getItemsArray() );
 
@@ -112,33 +116,34 @@ final class LivePos_LivePosOrder extends Stackable {
 			}
 	}
 
-	private function _processDiscounts( LivePos_Maps_Itemlist $items, LivePos_Maps_Order $order ){
+	private function _processDiscounts( LivePos_Maps_Itemlist $items, LivePos_Maps_Order $order, LivePos_Maps_Discountlist $discounts ){
 
 		$bItemLevel;
-		$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_raworder['enumCouponDiscounts'] );
 
 		if( $discounts->hasDiscounts() ){
 
 			$items->popPreDiscountPrices();
 			$order->setNewTotal( $items->getPreDiscountTotal() );
 
+			array_walk( $discounts->getDiscounts(), function( $oDiscount, $sKey ) use ( &$order, &$items, &$discounts, &$bItemLevel ){
 
-			array_walk( $discounts->getDiscounts(), function( $oDiscount, $sKey ) use ( &$order, &$items, &$bItemLevel ){
-
+				// Check for 'use line item discount' flag
 				$sSwitchCompare = ( LIVEPOS_LINE_ITEM_DISCOUNTS )? $oDiscount->getScope(): 'sale';
-
+				
 				switch( $sSwitchCompare ){
 
 					case( 'sale' ):
-
-						$fDiscountTotal = ( $items->getPreDiscountTotal() - $order->getSubTotal() );
-						$order->setDiscount( $fDiscountTotal );
+						
+						$order->setDiscount( $discounts->getDiscountTotal() );
 						$bItemLevel = false;
 						break;
 
 					case( 'item' ):
 
 						$bItemLevel = true;
+						break;
+						
+					case( 'category' ):
 						break;
 				}
 			});
@@ -147,11 +152,9 @@ final class LivePos_LivePosOrder extends Stackable {
 		}
 	}
 
-	public function _processPayments( LivePos_Maps_Order $order ){
+	public function _processPayments( LivePos_Maps_Order $order, LivePos_Maps_Paymentlist $payments, LivePos_Maps_Discountlist $discounts ){
 
-		$payments = LivePos_Maps_MapFactory::create( 'paymentlist', $this->_raworder['enumPayments'] );
-
-		array_walk( $payments->getPayments(), function( $oPayment, $sKey ) use ( &$order ){
+		array_walk( $payments->getPayments(), function( $oPayment, $sKey ) use ( &$order, &$payments, &$discounts ){
 
 			switch( $oPayment->getTypeId() ){
 					
@@ -169,7 +172,10 @@ final class LivePos_LivePosOrder extends Stackable {
 				case( 3 ): // Check
 				case( 5 ): // Split -- Order Level Only
 				case( 9 ): // Custom Payment
+					break;
+					
 				case( 7 ): // Coupon
+					$discounts->updateDiscountTotal( $oPayment->getAmount() );
 					break;
 			}
 		});
