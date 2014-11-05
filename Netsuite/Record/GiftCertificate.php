@@ -3,7 +3,7 @@
 class Netsuite_Record_GiftCertificate extends Netsuite_Record_Base implements Netsuite_Interface_INetsuite {
 
 	public $giftcertcode;
-	public $authcodeapplied;
+	public $giftcertapplied;
 
 	public function __construct( array $aGc ) {
 
