@@ -18,7 +18,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $discounttotal;
 	public $discountrate;
 	public $entity;
-	public $giftcertificate = array();
+	public $giftcertificateitem = array();
 	public $handlingcost;
 	public $ismultishipto = 'F';
 	public $item;
@@ -77,7 +77,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public function setGiftCert( LivePos_Maps_Payment $oPayment ){
 		
 		//$this->giftcertificateitem[] = array('giftcertcode' => $oPayment->getGiftCertId(), 'giftcertapplied' => $oPayment->getAmount() );
-		$this->giftcertificate[] = array('giftcertcode' => $oPayment->getGiftCertId(), 'giftcertapplied' => 2.05 );
+		$this->giftcertificateitem[] = array('giftcertcode' => $oPayment->getGiftCertId(), 'authcodeapplied' => 2.05 );
 	}
 	
 	public function getPaymentType(){

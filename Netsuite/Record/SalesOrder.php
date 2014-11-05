@@ -35,7 +35,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $entity;
 	public $excludecommission = false;
 	public $getauth = false;
-	public $giftcertificate = array();
+	public $giftcertificateitem = array();
 	public $handlingcost = 0;
 	public $ismultishipto = true;
 	public $istaxable = true;
@@ -168,7 +168,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 		$aSalesOrder =  $this->_filter->optimizeValues( $this->_filter->getRecord() );
 		$aSalesOrder['item'] =  $this->item;
-		$aSalesOrder['giftcertificate'] =  $this->giftcertificate;
+		$aSalesOrder['giftcertificateitem'] =  $this->giftcertificateitem;
 		$aSalesOrder['addressbook'] = ( !empty( $this->addressbook ) )?$this->setAddressBook($this->addressbook): array();
 		return( $aSalesOrder );
 	}
@@ -182,11 +182,11 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 		$aCerts = array();
 
-		if( sizeof( $this->giftcertificate ) < 1 ){
+		if( sizeof( $this->giftcertificateitem ) < 1 ){
 			return( $aCerts );
 		}
 
-		foreach( $this->giftcertificate as $aCert ){
+		foreach( $this->giftcertificateitem as $aCert ){
 			$oCert = Netsuite_Record::factory()->giftCertificate( $aCert );
 			if( !$oCert->isOk() ) {
 
@@ -196,7 +196,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			}
 			$aCerts[] = $oCert;
 		}
-		$this->giftcertificate = $aCerts;
+		$this->giftcertificateitem = $aCerts;
 	}
 
 	public function setItemList() {
