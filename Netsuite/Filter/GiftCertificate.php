@@ -18,9 +18,7 @@ class Netsuite_Filter_GiftCertificate extends Netsuite_Filter_Base implements Ne
 	);
 
 	protected $_aSanatizeFinal = array(
-			'giftcertcode' => array('filter' => FILTER_SANITIZE_STRING),
-			'giftcertapplied' => array('filter' => FILTER_VALIDATE_FLOAT,
-					'flags'  => FILTER_NULL_ON_FAILURE ) );
+			'giftcertcode' => array('filter' => FILTER_SANITIZE_STRING) );
 
 
 	public function __construct( array $aGc ) {
