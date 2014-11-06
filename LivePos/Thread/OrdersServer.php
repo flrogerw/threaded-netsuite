@@ -40,6 +40,11 @@ class LivePos_Thread_OrdersServer {
 			}
 		}
 	}
+	
+	private function _getInvoiceId( array $aOrder ){
+		
+		
+	}
 
 	private function _getOrderId( array $aOrder ){
 
@@ -54,6 +59,7 @@ class LivePos_Thread_OrdersServer {
 		
 		foreach( $this->_orders as $aOrder ){
 
+			//$currentOrders[] = $this->_getOrderId( $aOrder );
 			$currentOrders[] = $this->_getOrderId( $aOrder );
 		}
 

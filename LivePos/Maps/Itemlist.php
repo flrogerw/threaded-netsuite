@@ -43,7 +43,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 			$item = LivePos_Maps_MapFactory::create( 'item', $aItem, $locationData );
 
-			if( in_array($item->item, $this->_webSkus) ){
+			if( in_array( $item->item, $this->_webSkus ) ){
 				$this->hasWebItems = true;
 				continue;
 			}

@@ -72,6 +72,11 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public function addItems( array $items ){
 		$this->item = $items;
 	}
+	
+	public function getInvoiceId(){
+		
+		return( $this->otherrefnum );
+	}
 
 	
 	public function setGiftCert( LivePos_Maps_Payment $oPayment ){
@@ -89,7 +94,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		//$this->ccname = $this->_customer_firstname . ' ' . $this->_customer_lastname;
 		//$this->ccnumber = $oPayment->getCcNumber();
 		//$this->authcode =$oPayment->getAuthCode();
-		$this->custbody_pos_trans_id = $oPayment->getTransactionId();
+		$this->custbody_pos_trans_id = $this->getInvoiceId();
 		//$this->cczipcode = 11111;
 		//$this->pnrefnum = $oPayment->getTransactionId();
 	}
