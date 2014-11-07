@@ -1,6 +1,25 @@
 <?php
-
-class LivePos_Thread_OrdersServer {
+/**
+ * LivePOS Order Server
+ *
+ * @package Netsuite
+ * @subpackage LivePOS
+ * @author gWilli
+ * @version 1.0
+ * @copyright 2014
+ * @name LivePOS Order Server
+ */
+/**
+ * LivePOS Receipt to Netsuite Record Process
+ *
+ * Thread Server for processing LivePOS Orders.
+ *
+ * @uses Configure
+ * @package Netsuite
+ * @subpackage LivePOS
+ * @final Can NOT Extend
+ */
+final class LivePos_Thread_OrdersServer {
 
 	private $_orders = array();
 	protected $_pool;
@@ -8,29 +27,40 @@ class LivePos_Thread_OrdersServer {
 	private $_webOrders = array();
 	private $_model;
 
+	/**
+	 *
+	 */
 	public function __construct(){
 
 		$this->_pool = new Thread_Pool( MAX_ORDER_RECORDS );
 		$this->_model = new LivePos_Db_Model();
 		$this->_getPosOrders();
-		
+
 		if( $this->hasOrders() ){
 			$this->_getWebOrders();
-		}	
+		}
 	}
 
+	/**
+	 *
+	 * @return boolean
+	 */
 	public function hasOrders(){
 
 		$bReturn = ( !empty( $this->_orders ) )? true: false;
 		return( $bReturn );
 	}
 
-
+	/**
+	 *
+	 * @return void
+	 */
 	public function poolOrders() {
 
 		foreach( $this->_orders as $aOrder ){
 
-			$sOrderId = $this->_getOrderId( $aOrder );
+			$aOrderData = current( json_decode( $aOrder['receipt_string'], true ) );
+			$sOrderId = $this->_getOrderId( $aOrderData );
 			$aLocation = $this->_getLocation( $aOrder['location_id'], $sOrderId );
 
 			$aWork[] = $tThread = $this->_pool->submit( new LivePos_LivePosOrder( $sOrderId, $aOrder, $aLocation ) );
@@ -46,13 +76,36 @@ class LivePos_Thread_OrdersServer {
 		}
 	}
 
-	private function _getOrderId( array $aOrder ){
+	/**
+	 * Returns LivePOS Invoice Id
+	 *
+	 * @access private
+	 * @param array $aOrderData
+	 * @return integer
+	 */
+	private function _getInvoiceId( array $aOrderData ){
 
-		$aOrderData = current( json_decode( $aOrder['receipt_string'], true ) );
+		return( $aOrderData['intInvoiceNumber'] );
+
+	}
+
+	/**
+	 * Returns Activa Order Id
+	 * 
+	 * @access private
+	 * @param array $aOrderData
+	 * @return string
+	 */
+	private function _getOrderId( array $aOrderData ){
+
 		return( 'POS_' . $aOrderData['intReceiptNumber']);
 		//return( $aOrderData['strActivaNumber'] );
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	private function _getWebOrders(){
 
 		$aSetToMerged = array();
@@ -82,7 +135,7 @@ class LivePos_Thread_OrdersServer {
 					}
 
 					$aSetToMerged[] = $aRawOrder['queue_id'];
-					$this->_webOrders[] = $salesOrder;
+					$this->_webOrders[ $aRawOrder['pos_number'] ] = $salesOrder;
 
 				}catch ( Exception $e ){
 
@@ -92,12 +145,12 @@ class LivePos_Thread_OrdersServer {
 			});
 
 				if( !empty( $aSetToMerged ) ){
-					
+
 					$this->_model->updateToMerged( $aSetToMerged );
 				}
 
 				if( !empty( $aErrorIds ) ){
-						
+
 					$this->_model->updateToMergeError( $aErrorIds );
 					// -> -> -> -> UPDATE ERRORS <- <- <- <-
 					//$aErrorMessages
@@ -105,6 +158,13 @@ class LivePos_Thread_OrdersServer {
 		}
 	}
 
+
+	/**
+	 *
+	 * @param int $iLocationId
+	 * @param string $sOrderId
+	 * @return array $aTempLocation
+	 */
 	private function _getLocation( $iLocationId, $sOrderId ){
 
 		if( !isset( $this->_locationsData[ $iLocationId ] ) ){
@@ -127,6 +187,9 @@ class LivePos_Thread_OrdersServer {
 		$this->_orders = $this->_model->getPosOrders( LIVEPOS_MAX_PROCESSED );
 	}
 
+	/**
+	 *
+	 */
 	private function _queueOrders(){
 
 		$aOrdersArray = array();
@@ -147,11 +210,12 @@ class LivePos_Thread_OrdersServer {
 
 			$aOrdersArray[] = array(
 					':customer_activa_id' => $aWorkerData['entityId'],
-					':order_activa_id' => ( $aWorkerData['web_items'] )? $aWorkerData['order_id'] .'-POS': $aWorkerData['order_id'],
+					//':order_activa_id' => ( $aWorkerData['web_items'] )? $aWorkerData['order_id'] .'-POS': $aWorkerData['order_id'],
+					':order_activa_id' => $aWorkerData['order_id'],
 					':order_json' => $aWorkerData['encrypted'] );
 		}
 
-		$this->_model->queueOrders( $aOrdersArray );
+		//$this->_model->queueOrders( $aOrdersArray );
 		$this->_model->updateIgnoredOrders( $aIgnoredOrders );
 
 	}

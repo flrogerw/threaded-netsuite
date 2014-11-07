@@ -42,10 +42,11 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 	protected $_originalprice;
 	protected $_sku;
+	protected $_netprice;
 
 	protected $_mapArray = array(
 			"intProductSoldUnits"  => 'quantity',
-			"dblProductSoldNetPrice" => 'rate',
+			"dblProductSoldNetPrice" => '_netprice',
 			"strProductName" => 'description',
 			"strProductSKU" => 'item');
 
@@ -76,7 +77,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 		if( $bItemLevel ){
 				
-			$this->discounttotal = (  $this->rate - ( $this->getPreDiscountPrice() * $this->quantity ) );
+			$this->discounttotal = ( ( $this->rate - $this->getPreDiscountPrice() ) * $this->quantity );
 			$this->discountitem = $sDiscountItem;
 		}
 
@@ -94,6 +95,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	}
 
 	public function getQuantity(){
+		
 		return( $this->quantity );
 	}
 
@@ -102,6 +104,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 		// Set Item to Match Store Location
 		$this->location = $this->_aLocationData['location_netsuite_id'];
 		$this->_sku = $this->item;
+		$this->rate = ( $this->_netprice / $this->quantity );
 	}
 
 	/**
