@@ -78,9 +78,9 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 					'flags'  => FILTER_NULL_ON_FAILURE,
 					'options' => array('regexp' => "/^(0[1-9]|1[012])\/(20)\d\d$/" ) ),
 			'custbody_pos_cc_number' => array('filter' => FILTER_SANITIZE_STRING),
-			'custbody_pos_invoice' => array('filter' => FILTER_VALIDATE_INT),
-			'custbody_pos_ref_num' => array('filter' => FILTER_VALIDATE_INT),
-			'custbody_pos_receipt' => array('filter' => FILTER_VALIDATE_INT),
+			'custbody_pos_invoice' => array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_ref_num' => array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_receipt' => array('filter' => FILTER_SANITIZE_STRING),
 				
 				
 			'custbody_source_code' => array('filter' => FILTER_SANITIZE_STRING),
