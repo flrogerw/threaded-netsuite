@@ -53,6 +53,73 @@ final class LivePos_Db_Model extends PDO
 		}
 	}
 
+	/**
+	 * Update Netsuite Queued Order to Merged for Orders with Both
+	 * Shipped Items and Instore Items
+	 *
+	 * @param array $aOrdersToMerge
+	 * @access public
+	 * @return void
+	 */
+	public function updateToMergeError( array $aMergeErrors ){
+
+		try{
+
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'SET_ORDERS_MERGED', null, count($aMergeErrors) ) );
+
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+
+			$aBindArgs = array();
+
+			array_walk( array_unique( $aMergeErrors ), function( $sQueueId, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = $sQueueId;
+			});
+
+				$sth->execute( $aBindArgs );
+
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Update Queued Order to Merge Error' );
+		}
+	}
+
+
+
+	/**
+	 * Update Netsuite Queued Order to Merged for Orders with Both
+	 * Shipped Items and Instore Items
+	 *
+	 * @param array $aOrdersToMerge
+	 * @access public
+	 * @return void
+	 */
+	public function updateToMerged( array $aOrdersToMerge ){
+
+		try{
+
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'SET_ORDERS_MERGED', null, count( array_unique( $aOrdersToMerge ) ) ) );
+
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+
+			$aBindArgs = array();
+
+			array_walk( array_unique( $aOrdersToMerge ), function( $sQueueId, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = $sQueueId;
+			});
+
+				$sth->execute( $aBindArgs );
+
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Update Queued Order to Merged' );
+		}
+	}
+
+
 	public function getProducts( array $aSkus ){
 
 		try{
@@ -156,28 +223,28 @@ final class LivePos_Db_Model extends PDO
 	 *
 	 */
 	public function getAllDiscounts(){
-	
+
 		$dbResults = array();
-	
+
 		try{
-	
+
 			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_ALL_DISCOUNTS' ) );
-	
+
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
-	
+
 			$sth->execute();
 			$dbResults = $sth->fetchAll(PDO::FETCH_ASSOC);
 			return( $dbResults );
-	
+
 		}catch( Exception $e ){
 			self::logError( $e );
 			throw new Exception( 'Could NOT Get All Discounts Information From DB' );
 		}
 	}
-	
-	
+
+
 	/**
 	 *
 	 * @param array $aNewOrders - Pending Orders to Be Searched
@@ -256,38 +323,23 @@ final class LivePos_Db_Model extends PDO
 	 * @return array|null $_dbResults
 	 * @throws Exception
 	 */
-	public function getWebOrders( array $aSearchOrders){
+	public function getWebOrders(){
 
-		$aBindArgs = array();
-		$returnArray = array();
+		try{
 
-		if( !empty( $aSearchOrders ) ){
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_WEB_ORDERS' ) );
 
-			try{
-
-				$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_CURRENT_ORDERS', null, count( $aSearchOrders ) ) );
-
-				if ( !$sth ) {
-					throw new Exception( explode(',', $sth->errorInfo() ) );
-				}
-
-				array_walk( $aSearchOrders, function( $aSearchOrders, $iKey ) use( &$aBindArgs){
-					$aBindArgs[':arg' . $iKey] = $aSearchOrders;
-				});
-
-					$sth->execute( $aBindArgs  );
-					$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );
-
-					array_walk( $aResults, function($aData, $sKey) use (&$returnArray){
-						$returnArray[ $aData['order_activa_id'] ] = $aData['customer_id'];
-					});
-
-						return( $returnArray );
-
-			} catch( Exception $e ){
-				self::logError( $e );
-				throw new Exception( 'Could NOT Read Processed Orders From the DB' );
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
+
+			$sth->execute();
+			$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+			return( $aResults );
+
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Read Web Orders From the DB' );
 		}
 	}
 

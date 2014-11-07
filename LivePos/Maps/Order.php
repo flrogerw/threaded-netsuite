@@ -12,6 +12,12 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_source_code;
 	public $custbody_pos_trans_id;
 	public $custbody_pos_postranstime;
+	public $custbody_pos_auth_code;
+	public $custbody_pos_cc_exp_date;
+	public $custbody_pos_cc_number;
+	public $custbody_pos_invoice;
+	public $custbody_pos_ref_num;
+	public $custbody_pos_receipt;
 	public $customform = 107;
 	public $department;
 	public $discountitem;
@@ -47,7 +53,8 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	protected $_mapArray = array(
 			'dblTax1' => 'taxtotal',
 			'dblGrandTotal' => 'total',
-			'intInvoiceNumber' => 'otherrefnum',
+			'intInvoiceNumber' => 'custbody_pos_invoice',
+			'intReceiptNumber' => 'custbody_pos_receipt',
 			'strCustomerFirstName' => '_customer_firstname',
 			'strCustomerLastName' => '_customer_lastname',
 			'strPaymentTypeLabel' => '_paymentmethod_flag',
@@ -72,31 +79,33 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public function addItems( array $items ){
 		$this->item = $items;
 	}
-	
+
 	public function getInvoiceId(){
-		
+
 		return( $this->otherrefnum );
 	}
 
-	
+	public function setMultiShipTo( $bIsMultiShipTo ){
+
+		$this->ismultishipto = ( $bIsMultiShipTo )? 'T': 'F';
+	}
+
 	public function setGiftCert( LivePos_Maps_Payment $oPayment ){
-		
+
 		$this->giftcertificateitem[] = array('giftcertcode' => $oPayment->getGiftCertId()  );
 	}
-	
+
 	public function getPaymentType(){
 
 		return( $this->_paymentmethod_flag );
 	}
+
 	public function setCcData( LivePos_Maps_Payment $oPayment ){
 
-		//$this->ccexpiredate = $oPayment->getCcExpire();
-		//$this->ccname = $this->_customer_firstname . ' ' . $this->_customer_lastname;
-		//$this->ccnumber = $oPayment->getCcNumber();
-		//$this->authcode =$oPayment->getAuthCode();
-		$this->custbody_pos_trans_id = $this->getInvoiceId();
-		//$this->cczipcode = 11111;
-		//$this->pnrefnum = $oPayment->getTransactionId();
+		$this->custbody_pos_cc_exp_date = $oPayment->getCcExpire();
+		$this->custbody_pos_cc_number = $oPayment->getCcNumber();
+		$this->custbody_pos_auth_code = $oPayment->getAuthCode();
+		$this->custbody_pos_ref_num = $oPayment->getTransactionId();
 	}
 
 	public function setPaymentType( $sPaymentType ){

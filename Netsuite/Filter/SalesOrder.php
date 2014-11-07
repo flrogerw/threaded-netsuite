@@ -72,6 +72,17 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custbody_pickticketnotes' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_trans_id'=> array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_postranstime' => array('filter' => FILTER_SANITIZE_STRING),
+				
+			'custbody_pos_auth_code' => array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_cc_exp_date' => array('filter' => FILTER_VALIDATE_REGEXP,
+					'flags'  => FILTER_NULL_ON_FAILURE,
+					'options' => array('regexp' => "/^(0[1-9]|1[012])\/(20)\d\d$/" ) ),
+			'custbody_pos_cc_number' => array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_invoice' => array('filter' => FILTER_VALIDATE_INT),
+			'custbody_pos_ref_num' => array('filter' => FILTER_VALIDATE_INT),
+			'custbody_pos_receipt' => array('filter' => FILTER_VALIDATE_INT),
+				
+				
 			'custbody_source_code' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_textrequired' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custbody_web_discount_code' => array('filter' => FILTER_SANITIZE_STRING),
@@ -79,7 +90,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'customform' => array('filter' => FILTER_VALIDATE_INT),
 			'department' => array('filter' => FILTER_VALIDATE_INT),
 			'discountitem'  => array('filter' => FILTER_VALIDATE_INT,
-								'flags'  => FILTER_NULL_ON_FAILURE ),
+					'flags'  => FILTER_NULL_ON_FAILURE ),
 			'discountrate'  => array('filter' => FILTER_VALIDATE_FLOAT),
 			'discounttotal' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'entity' => array('filter' => FILTER_VALIDATE_INT),

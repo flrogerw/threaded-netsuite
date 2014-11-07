@@ -22,6 +22,12 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $custbody_pickticketnotes;
 	public $custbody_pos_postranstime;
 	public $custbody_pos_trans_id;
+	public $custbody_pos_auth_code;
+	public $custbody_pos_cc_exp_date;
+	public $custbody_pos_cc_number;
+	public $custbody_pos_invoice;
+	public $custbody_pos_ref_num;
+	public $custbody_pos_receipt;
 	public $custbody_source_code;
 	public $custbody_textrequired = false;
 	public $custbody_web_discount_code;

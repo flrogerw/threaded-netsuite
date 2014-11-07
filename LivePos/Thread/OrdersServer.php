@@ -6,12 +6,17 @@ class LivePos_Thread_OrdersServer {
 	protected $_pool;
 	private $_locationsData = array();
 	private $_webOrders = array();
+	private $_model;
 
 	public function __construct(){
 
 		$this->_pool = new Thread_Pool( MAX_ORDER_RECORDS );
+		$this->_model = new LivePos_Db_Model();
 		$this->_getPosOrders();
-		$this->_getWebOrders();
+		
+		if( $this->hasOrders() ){
+			$this->_getWebOrders();
+		}	
 	}
 
 	public function hasOrders(){
@@ -40,11 +45,6 @@ class LivePos_Thread_OrdersServer {
 			}
 		}
 	}
-	
-	private function _getInvoiceId( array $aOrder ){
-		
-		
-	}
 
 	private function _getOrderId( array $aOrder ){
 
@@ -55,26 +55,62 @@ class LivePos_Thread_OrdersServer {
 
 	private function _getWebOrders(){
 
-		$currentOrders = array();
-		
-		foreach( $this->_orders as $aOrder ){
+		$aSetToMerged = array();
+		$aErrorIds = array();
+		$aErrorMessages = array();
+		$aWebOrders = $this->_model->getWebOrders();
 
-			//$currentOrders[] = $this->_getOrderId( $aOrder );
-			$currentOrders[] = $this->_getOrderId( $aOrder );
+		if( !empty( $aWebOrders ) ){
+
+			array_walk( $aWebOrders, function( $aRawOrder, $sKey ) use ( &$aSetToMerged, &$aErrorIds, &$aErrorMessages ){
+
+				try{
+
+					$aSetToMerged[] = $aRawOrder['queue_id'];
+					$aSalesOrder = json_decode( Netsuite_Crypt::decrypt( $aRawOrder['order_json'] ), true );
+
+					$customer = Netsuite_Record::factory()->customer( $aSalesOrder['customer'] );
+
+					if( !$customer->isOk() ){
+						throw new Exception('Could Not Create Customer for LivePOS Merge');
+					}
+
+					$salesOrder = Netsuite_Record::factory()->salesOrder( $aSalesOrder['order'], $customer );
+
+					if( !$salesOrder->isOk() ){
+						throw new Exception('Could Not Create SalesOrder for LivePOS Merge');
+					}
+
+					$aSetToMerged[] = $aRawOrder['queue_id'];
+					$this->_webOrders[] = $salesOrder;
+
+				}catch ( Exception $e ){
+
+					$aErrorIds[] = $aRawOrder['queue_id'];
+					$aErrorMessages[ $aRawOrder['order_activa_id'] ] = $e->getMessage();
+				}
+			});
+
+				if( !empty( $aSetToMerged ) ){
+					
+					$this->_model->updateToMerged( $aSetToMerged );
+				}
+
+				if( !empty( $aErrorIds ) ){
+						
+					$this->_model->updateToMergeError( $aErrorIds );
+					// -> -> -> -> UPDATE ERRORS <- <- <- <-
+					//$aErrorMessages
+				}
 		}
-
-		$model = new LivePos_Db_Model();
-		$this->_webOrders = $model->getWebOrders( $currentOrders );
-		$model = null;
 	}
 
 	private function _getLocation( $iLocationId, $sOrderId ){
 
 		if( !isset( $this->_locationsData[ $iLocationId ] ) ){
 
-			$model = new LivePos_Db_Model();
-			$this->_locationsData[ $iLocationId ] = $model->getEntity( $iLocationId );
-			$model = null;
+			$this->_locationsData[ $iLocationId ] = $this->_model->getEntity( $iLocationId );
+
 		}
 
 		$aTempLocation = $this->_locationsData[ $iLocationId ];
@@ -88,9 +124,7 @@ class LivePos_Thread_OrdersServer {
 
 	private function _getPosOrders(){
 
-		$model = new LivePos_Db_Model();
-		$this->_orders = $model->getPosOrders( LIVEPOS_MAX_PROCESSED );
-		$model = null;
+		$this->_orders = $this->_model->getPosOrders( LIVEPOS_MAX_PROCESSED );
 	}
 
 	private function _queueOrders(){
@@ -116,10 +150,9 @@ class LivePos_Thread_OrdersServer {
 					':order_activa_id' => ( $aWorkerData['web_items'] )? $aWorkerData['order_id'] .'-POS': $aWorkerData['order_id'],
 					':order_json' => $aWorkerData['encrypted'] );
 		}
-		
-		$oModel = new LivePos_Db_Model();
-		$oModel->queueOrders( $aOrdersArray );
-		$oModel->updateIgnoredOrders( $aIgnoredOrders );
-		$oModel = null;
+
+		$this->_model->queueOrders( $aOrdersArray );
+		$this->_model->updateIgnoredOrders( $aIgnoredOrders );
+
 	}
 }

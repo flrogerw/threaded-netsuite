@@ -56,7 +56,8 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	}
 
 	public function getCcNumber(){
-		return( '414734003282' . $this->creditcardlast4 );
+		
+		return( '**** **** **** ' . $this->creditcardlast4 );
 	}
 	
 	public function getGiftCertId(){
