@@ -115,9 +115,13 @@ final class LivePos_LivePosOrder extends Stackable {
 						}
 						
 						$order->addItems( $items->getItemsArray() );
-						//$order->setNewTotal( $items->getTotal() );
 						$this->_processDiscounts( $order, $items, $discounts );
 						
+						$this->worker->addData( array('posTotal' => $order->getPosTotal() ) );
+						$this->worker->addData( array('orderTotal' => $order->getTotal() ) );
+						$this->worker->addData( array('webItems' => $items->getWebItemsTotal() ) );
+						
+		
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedJson( $customer, $order ) ) );
 						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
 						$this->worker->addData( array('web_items' => $items->hasWebItems ) );
@@ -140,12 +144,10 @@ final class LivePos_LivePosOrder extends Stackable {
 	}
 
 	private function _processDiscounts( LivePos_Maps_Order $order, LivePos_Maps_Itemlist $items, LivePos_Maps_Discountlist $discounts ){
-
-		$bItemLevel;
 		
 		if( $discounts->hasDiscounts() ){
 
-			array_walk( $discounts->getDiscounts(), function( $oDiscount, $sKey ) use ( &$order, &$items, &$discounts, &$bItemLevel ){
+			array_walk( $discounts->getDiscounts(), function( $oDiscount, $sKey ) use ( &$order, &$items, &$discounts ){
 
 				// Check for 'use line item discount' flag
 				$sSwitchCompare = ( LIVEPOS_LINE_ITEM_DISCOUNTS )? $oDiscount->getScope(): 'sale';
@@ -156,11 +158,11 @@ final class LivePos_LivePosOrder extends Stackable {
 
 						$fDiscountAmount = $oDiscount->getDiscountTotal( $order->getTotal() );
 						$order->setDiscount( $fDiscountAmount );
-						$bItemLevel = false;
+						$this->worker->addData( array('SaleLevelDiscount' => $fDiscountAmount ) );
 						break;
 
 					case( 'item' ):
-						
+						$this->worker->addData( array('ItemLevelDiscount' => $oDiscount->getAmount() . ' ' . $oDiscount->getType() ) );
 						$items->applyDiscount( $oDiscount );
 						$order->addItems( $items->getItemsArray() );
 						break;
@@ -169,8 +171,6 @@ final class LivePos_LivePosOrder extends Stackable {
 						break;
 				}
 			});
-					
-				//$items->removeDiscount( $bItemLevel );
 		}
 	}
 

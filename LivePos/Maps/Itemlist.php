@@ -15,6 +15,8 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 	protected $_listSkus = array();
 
 	protected $_productList = array();
+	
+	protected $_webItems = array();
 
 	/**
 	 * Has made call to DB for Order's Products
@@ -44,6 +46,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$item = LivePos_Maps_MapFactory::create( 'item', $aItem, $locationData );
 
 			if( in_array( $item->item, $this->_webSkus ) ){
+				$this->_webItems[] = $item;
 				$this->hasWebItems = true;
 				continue;
 			}
@@ -55,6 +58,15 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 	public function addItem( LivePos_Maps_Item $oItem ){
 		
 		$this->_itemList[] = $oItem;
+	}
+	
+	public function getWebItemsTotal(){
+		$fTotal = 0;
+		
+		array_walk( $this->_webItems, function($oItem, $sKey) use (&$fTotal){
+			$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
+		});
+		return( $fTotal );
 	}
 	
 	public function getTotal(){

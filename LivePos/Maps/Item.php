@@ -58,16 +58,16 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public function __construct( array $aItem, $locationData, $bMergeItem = false ) {
 
 		parent::__construct();
-		
+
 		if( !$bMergeItem ){
-			
+				
 			$this->_aData = $aItem;
 			$this->_aLocationData = $locationData;
 			$this->_map();
 			$this->_setAddress();
 			$this->_logic();
 		}else{
-			
+				
 			$aItem = ( array_merge( get_object_vars( $this ), $aItem ) );
 			foreach( $aItem as $key => $value ) {
 				$this->$key = $value;
@@ -86,11 +86,8 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	 */
 	public function applyDiscount( $fDiscountAmount, $sDiscountItem = NETSUITE_DEFAULT_DISCOUNT ){
 
-
-			$this->discounttotal += $fDiscountAmount;
-			$this->discountitem = $sDiscountItem;
-		
-
+		$this->discounttotal += ( ( $fDiscountAmount * $this->getQuantity() ) * -1 );
+		$this->discountitem = $sDiscountItem;
 	}
 
 	public function getPreDiscountPrice(){
@@ -103,9 +100,9 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 		$this->_originalprice = $this->rate;
 		$this->rate = (float) $fPrice;
 	}
-	
+
 	public function getPrice(){
-		
+
 		return( $this->rate );
 	}
 
@@ -132,7 +129,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 		array_walk( array_filter($this->_aLocationData), function($value, $key) {
 
 			$sProperty = str_replace('location_', '',$key);
-				
+
 			if(property_exists($this, $sProperty)){
 
 				$this->$sProperty = $value;

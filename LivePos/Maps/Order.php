@@ -44,7 +44,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $total = 0;
 	public $trandate;
 
-	protected $_subtotal;
+	protected $_postotal;
 	protected $_customer_firstname;
 	protected $_customer_lastname;
 	protected $_paymentmethod_flag;
@@ -125,8 +125,8 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	/**
 	 * Always Returns the Order's Original SubTotal
 	 */
-	public function getSubTotal(){
-		return( $this->_subtotal );
+	public function getPosTotal(){
+		return( $this->_postotal );
 	}
 
 	public function getTotal(){
@@ -166,7 +166,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->custbody_pos_postranstime = $date->format('g:i a');
 
 		// Set Total
-		$this->total = $this->_subtotal = ( $this->total - $this->taxtotal );
+		$this->total = $this->_postotal = ( $this->total - $this->taxtotal );
 	}
 
 	private function _setInternalSources( $locationData ){
