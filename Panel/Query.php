@@ -20,7 +20,7 @@ final class Panel_Query
 	protected static $GET_SEARCH_RESULTS = "SELECT process_id, order_activa_id as activa_id,status, DATE_FORMAT(process_date, '%b %e %r') as process_date, customer_status, customer_warnings, customer_errors, order_status, order_warnings, order_errors FROM process_log WHERE order_activa_id LIKE ?";
 	
 	protected static $GET_POS_CONVERSION_RESULTS = "SELECT * FROM livepos_debug_results";
-	protected static $GET_POS_TEST_RESULTS = "SELECT livepos_test_orders.*, process_log.order_id, process_log.order_errors FROM livepos_test_orders JOIN process_log ON livepos_test_orders.receipt_id = process_log.order_activa_id";
+	protected static $GET_POS_TEST_RESULTS = "SELECT livepos_test_orders.*, process_log.order_id, process_log.order_errors FROM livepos_test_orders JOIN process_log ON CONCAT('POS_',livepos_test_orders.receipt_id) = process_log.order_activa_id";
 	
 /**
  * 
