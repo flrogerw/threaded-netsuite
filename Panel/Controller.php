@@ -37,7 +37,7 @@ class Panel_Controller {
 	
 	public function posAction(){
 	
-		$this->view->show('indexAction');
+		$this->view->show('posAction');
 	}
 	
 	public function orderqueueAction(){
