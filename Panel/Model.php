@@ -30,11 +30,34 @@ final class Panel_Model extends PDO
 	}
 	
 	
-	public function getPosTestResultsView(){
+	
+	public function getNsInsertResults(){
 	
 		try{
 	
 			$sth = $this->prepare( Panel_Query::getQuery( 'GET_POS_TEST_RESULTS' ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$sth->execute();
+			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+	
+			return( $this->_dbResults );
+	
+		}catch( Exception $e ){
+			Netsuite_Db_Model::logError( $e );
+			throw new Exception( 'Could NOT Get POS Test Results DB for the Control Panel' );
+		}
+	}
+	
+	
+	public function getPosConversionResultsView(){
+	
+		try{
+	
+			$sth = $this->prepare( Panel_Query::getQuery( 'GET_POS_CONVERSION_RESULTS' ) );
 	
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
@@ -47,7 +70,7 @@ final class Panel_Model extends PDO
 	
 		}catch( Exception $e ){
 			Netsuite_Db_Model::logError( $e );
-			throw new Exception( 'Could NOT Get POS Test Results DB for the Control Panel' );
+			throw new Exception( 'Could NOT Get POS Conversion Results DB for the Control Panel' );
 		}
 	}
 	

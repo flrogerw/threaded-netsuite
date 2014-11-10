@@ -19,7 +19,9 @@ final class Panel_Query
 	protected static $GET_USER_STATS = "SELECT DATE(insert_date) AS start_date, netsuite_id AS login_account, SUM(orders_run) AS total_orders_run, AVG(orders_run) AS avg_orders_per_run FROM pool_queue_log GROUP BY start_date, netsuite_id ORDER BY start_date DESC LIMIT :limit";
 	protected static $GET_SEARCH_RESULTS = "SELECT process_id, order_activa_id as activa_id,status, DATE_FORMAT(process_date, '%b %e %r') as process_date, customer_status, customer_warnings, customer_errors, order_status, order_warnings, order_errors FROM process_log WHERE order_activa_id LIKE ?";
 	
-	protected static $GET_POS_TEST_RESULTS = "SELECT * FROM livepos_debug_results";
+	protected static $GET_POS_CONVERSION_RESULTS = "SELECT * FROM livepos_debug_results";
+	protected static $GET_POS_TEST_RESULTS = "SELECT livepos_test_orders.*, process_log.order_id FROM livepos_test_orders JOIN process_log ON livepos_test_orders.order_id = process_log.order_activa_id";
+	
 /**
  * 
  * @param string $TablePrefix
