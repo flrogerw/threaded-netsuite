@@ -13,29 +13,16 @@
 		<th><?php echo( ucwords( str_replace( '_',' ', strtolower( $sHeading ) ) ) ) ?>
 		</th>
 		<?php endforeach ?>
-		<th>
-		Record View
-		</th>
 	</tr>
 	</thead>
 	<tbody>
 	<?php foreach( $this->aOrders as $aOrder ): ?>
 	<tr>
-		<?php foreach( $aOrder as $sKey => $mValue ):
-		if( in_array(  $sKey, $ignore ) ){
-			continue;
-		}
-		if($sKey == 'status' && $mValue == 'error'){
-			$title = '';
-			$title .= ( $aOrder['customer_errors'] != '')?"Customer Errors:\n" .$aOrder['customer_errors']."\n":'';
-			$title .= ( $aOrder['order_errors'] != '')?"Order Errors:\n". $aOrder['order_errors']:'';
-		}
-		?>
+		<?php foreach( $aOrder as $sKey => $mValue ):?>
 		<td class="td_<?php echo( $sKey ) ?>" align="center" title="<?php echo( $title ) ?>"><?php echo( $mValue ) ?>
 		</td>
 		<?php $title = 'Completed Successfully' ?>
 		<?php endforeach ?>
-		<td><a href="ViewRecord?q=<?php echo( $aOrder['process_id'] ) ?>">Veiw Record</a></td>
 	</tr>
 	<?php endforeach ?>
 	</tbody>
