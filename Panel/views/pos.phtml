@@ -46,6 +46,33 @@
 <br>
 <span>ALL Totals are Pre Tax Amounts</span>
 </div>
-<?php 
-var_dump($this->testStats);
-?>
+<h3><?php echo( PANEL_SUMMARY_RESULTS) ?> Day Summary</h3>
+
+<div id="stats">
+
+	<table id="stats_table" class="tablesorter">
+		<thead>
+			<tr>
+				<?php foreach( array_keys($this->testStats[0]) as $sHeading ):?>
+				<th><?php echo( ucwords( str_replace( '_',' ', strtolower( $sHeading ) ) ) ) ?>
+				</th>
+				<?php endforeach ?>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach( $this->testStats as $aOrder ): 
+			
+			?>
+			<tr>
+				<?php foreach( $aOrder as $sKey => $mValue ):?>
+				
+				<td class="td_<?php echo( $sKey ) ?>" align="center"><?php echo( trim($mValue) ) ?>
+				</td>
+
+				<?php endforeach ?>
+
+			</tr>
+			<?php endforeach ?>
+		</tbody>
+	</table>
+</div>
