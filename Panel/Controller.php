@@ -37,6 +37,7 @@ class Panel_Controller {
 	
 	public function posAction(){
 	
+		$this->view->aOrders = $this->_model->getPosTestResultsView();
 		$this->view->show('posAction');
 	}
 	

@@ -29,6 +29,30 @@ final class Panel_Model extends PDO
 		}
 	}
 	
+	
+	public function getPosTestResultsView(){
+	
+		try{
+	
+			$sth = $this->prepare( Panel_Query::getQuery( 'GET_POS_TEST_RESULTS' ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$sth->execute();
+			$this->_dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+				
+			return( $this->_dbResults );
+	
+		}catch( Exception $e ){
+			Netsuite_Db_Model::logError( $e );
+			throw new Exception( 'Could NOT Get POS Test Results DB for the Control Panel' );
+		}
+	}
+	
+	
+	
 	public function getSearchLogView( $searchId ){
 		
 		try{
