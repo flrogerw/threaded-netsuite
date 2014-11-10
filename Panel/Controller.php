@@ -35,6 +35,11 @@ class Panel_Controller {
 		$this->view->show('indexAction');
 	}
 	
+	public function posAction(){
+	
+		$this->view->show('indexAction');
+	}
+	
 	public function orderqueueAction(){
 	
 		$this->view->aOrders = $this->_model->getOrderQueueView();

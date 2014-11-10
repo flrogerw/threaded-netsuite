@@ -72,11 +72,17 @@ final class LivePos_Thread_OrdersServer {
 		$this->_queueOrders();
 
 		if( DEBUG ){
+
+		
+
 			foreach($this->_pool->workers as $worker) {
+				
+				$this->_logTestResults($worker->getData() );
 				print_r($worker->getData());
 			}
 		}
 	}
+
 
 	/**
 	 * Returns LivePOS Invoice Id
@@ -104,6 +110,23 @@ final class LivePos_Thread_OrdersServer {
 		//return( $aOrderData['strActivaNumber'] );
 	}
 
+	private function _logTestResults( $worker ){
+
+
+			$aTestResult = array( ':receipt_id' => $worker['receiptId'],
+					':invoice_id' => $worker['invoiceId'],
+					'pos_total' => $worker['posTotal'],
+					'ns_total' => $worker['orderTotal'],
+					':discount_scope' => $worker['discount_scope'],
+					':discount_type' => $worker['discount_type'],
+					':discount_amount' => $worker['discount_amount'],
+					':discount_total' => $worker['discount_total'],
+					':webitems_total' => $worker['webItems'],
+					':ignored_reason' => $worker['error'] );
+		
+			$this->_model->insertTestResults( $aTestResult );
+	}
+
 	/**
 	 *
 	 * @throws Exception
@@ -111,57 +134,15 @@ final class LivePos_Thread_OrdersServer {
 	private function _getWebOrders(){
 
 		$aSetToMerged = array();
-		//$aErrorIds = array();
-		//$aErrorMessages = array();
 		$aWebOrders = $this->_model->getWebOrders();
 
 		if( !empty( $aWebOrders ) ){
 
-			array_walk( $aWebOrders, function( $aRawOrder, $sKey ) use ( &$aSetToMerged /*,  &$aErrorIds, &$aErrorMessages */ ){
-
-				/*
-				 try{
+			array_walk( $aWebOrders, function( $aRawOrder, $sKey ) use ( &$aSetToMerged ){
 
 				$aSetToMerged[] = $aRawOrder['queue_id'];
-				$aSalesOrder = json_decode( Netsuite_Crypt::decrypt( $aRawOrder['order_json'] ), true );
-
-				$customer = Netsuite_Record::factory()->customer( $aSalesOrder['customer'] );
-
-				if( !$customer->isOk() ){
-				throw new Exception('Could Not Create Customer for LivePOS Merge');
-				}
-
-				$salesOrder = Netsuite_Record::factory()->salesOrder( $aSalesOrder['order'], $customer );
-
-				if( !$salesOrder->isOk() ){
-				throw new Exception('Could Not Create SalesOrder for LivePOS Merge');
-				}
-
-				$aSetToMerged[] = $aRawOrder['queue_id'];
-				$this->_webOrders[ $aRawOrder['pos_number'] ] = $salesOrder;
-
-				}catch ( Exception $e ){
-
-				$aErrorIds[] = $aRawOrder['queue_id'];
-				$aErrorMessages[ $aRawOrder['order_activa_id'] ] = $e->getMessage();
-				}
-
-				*/
-				$aSetToMerged[] = $aRawOrder['queue_id'];			
 				$this->_webOrders[ $aRawOrder['pos_number'] ] = $aRawOrder['order_json'];
 			});
-			
-				//if( !empty( $aSetToMerged ) ){
-
-				//$this->_model->updateToMerged( $aSetToMerged );
-				//}
-
-				//if( !empty( $aErrorIds ) ){
-
-				//$this->_model->updateToMergeError( $aErrorIds );
-				// -> -> -> -> UPDATE ERRORS <- <- <- <-
-				//$aErrorMessages
-				//}
 		}
 	}
 

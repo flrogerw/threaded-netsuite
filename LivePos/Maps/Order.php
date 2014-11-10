@@ -84,7 +84,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 	public function getInvoiceId(){
 
-		return( $this->otherrefnum );
+		return( $this->custbody_pos_invoice );
 	}
 
 	public function setMultiShipTo( $bIsMultiShipTo ){

@@ -120,6 +120,7 @@ final class LivePos_LivePosOrder extends Stackable {
 						$this->worker->addData( array('posTotal' => $order->getPosTotal() ) );
 						$this->worker->addData( array('orderTotal' => $order->getTotal() ) );
 						$this->worker->addData( array('webItems' => $items->getWebItemsTotal() ) );
+						$this->worker->addData( array('invoiceId' => $order->getInvoiceId() ) );
 						
 		
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedJson( $customer, $order ) ) );
@@ -156,13 +157,22 @@ final class LivePos_LivePosOrder extends Stackable {
 
 					case( 'sale' ):
 
-						$fDiscountAmount = $oDiscount->getDiscountTotal( $order->getTotal() );
+						$this->worker->addData( array('discount_scope' => 'sale' ) );
+						$this->worker->addData( array('discount_type' => $oDiscount->getType() ) );
+						$this->worker->addData( array('discount_amount' => $oDiscount->getAmount() ) );
+						
+						(float) $fDiscountAmount = $oDiscount->getDiscountTotal( $order->getTotal() );
 						$order->setDiscount( $fDiscountAmount );
-						$this->worker->addData( array('SaleLevelDiscount' => $fDiscountAmount ) );
+						$this->worker->addData( array('discount_total' => $fDiscountAmount ) );
 						break;
 
 					case( 'item' ):
-						$this->worker->addData( array('ItemLevelDiscount' => $oDiscount->getAmount() . ' ' . $oDiscount->getType() ) );
+						$this->worker->addData( array('discount_scope' => 'item' ) );
+						$this->worker->addData( array('discount_type' => $oDiscount->getType() ) );
+						$this->worker->addData( array('discount_amount' => $oDiscount->getAmount() ) );						
+						(float) $fDiscountAmount = $oDiscount->getDiscountTotal( $order->getTotal() );
+						$this->worker->addData( array('discount_total' => $fDiscountAmount ) );
+						
 						$items->applyDiscount( $oDiscount );
 						$order->addItems( $items->getItemsArray() );
 						break;

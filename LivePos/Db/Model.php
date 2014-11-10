@@ -380,6 +380,36 @@ final class LivePos_Db_Model extends PDO
 			throw new Exception( 'Could NOT Get NetSuite Id for Skus From DB' );
 		}
 	}
+	
+	
+	/**
+	 * Enters Test Results Into Database
+	 *
+	 * @param array $aReceiptData
+	 * @access public
+	 * @return void
+	 */
+	public function insertTestResults( array $aTestResults )
+	{
+		try{
+	
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'SET_DEBUG_ORDERS' ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+				$sth->execute( $aTestResults );		
+	
+		}catch( Exception $e ){
+			$this->rollBack();
+			self::logError( $e );
+			throw new Exception( 'Could NOT Enter Test Result Data into Database' );
+		}
+	}
+	
+	
+	
 
 	/**
 	 * Enters New Receipt Into Database
