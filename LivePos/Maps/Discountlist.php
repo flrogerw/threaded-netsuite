@@ -15,6 +15,7 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 		parent::__construct();
 		if( !empty( $aDiscounts ) ){
 			$this->_getDiscountList( $aDiscounts );
+			$this->_popDiscounts();
 		}
 	}
 
@@ -37,7 +38,7 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 
 	public function getDiscountIds(){
 
-		return( array_keys( $this->_discountList ) );
+		return( array_filter( array_keys( $this->_discountList ) ) );
 	}
 
 	public function isDiscount( $iDiscountId ){
@@ -50,13 +51,13 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 	 * get all info from DB on cupons
 	 * @param boolean $bPopAll - get all coupons [false]
 	 */
-	public function popDiscounts( $bPopAll = false ){
+	private function _popDiscounts( $bPopAll = false ){
 
 		$sFunctionToUse = ( $bPopAll )? 'getAllDiscounts': 'getDiscounts';
 		$oModel = new LivePos_Db_Model();
 		$aDiscounts = $oModel->$sFunctionToUse( $this->getDiscountIds() );
 		$oModel = null;
-		$this->_getDiscountList( $aDiscounts );
+		$this->_getDiscountList( $aDiscounts, false );
 	}
 
 
@@ -77,16 +78,17 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 		return( array_values( $this->_discountList ) );
 	}
 
-	private function _getDiscountList( array $aDiscounts ){
+	private function _getDiscountList( array $aDiscounts, $bToMap = true ){
 		
-		array_walk( $aDiscounts, function($aData, $sKey){
+		array_walk( $aDiscounts, function($aData, $sKey) use ($bToMap){
 			
-			$aMappedDiscount = $this->_map( $aData, $this->_discountListMap );
+			$aMappedDiscount = ( $bToMap )? $this->_map( $aData, $this->_discountListMap ): $aData;
+
 			$discount = LivePos_Maps_MapFactory::create( 'discount',  $aMappedDiscount );			
 			
-			if( !$this->isDiscount( $discount->getId() ) ){
+			//if( !$this->isDiscount( $discount->getId() ) ){
 				$this->_discountList[ $discount->getId() ] = $discount;
-			}
+			//}
 		});
 	}
 }

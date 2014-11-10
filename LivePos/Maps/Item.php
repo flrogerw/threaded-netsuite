@@ -26,7 +26,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $giftcertrecipientemail;
 	public $giftcertrecipientname;
 	public $isclosed = 'F';
-	public $isresidential = 'T';
+	public $isresidential = 'F';
 	public $isestimate = 'F';
 	public $istaxable = 'T';
 	public $item;
@@ -55,14 +55,25 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	*/
-	public function __construct( array $aItem, $locationData ) {
+	public function __construct( array $aItem, $locationData, $bMergeItem = false ) {
 
 		parent::__construct();
-		$this->_aData = $aItem;
-		$this->_aLocationData = $locationData;
-		$this->_map();
-		$this->_setAddress();
-		$this->_logic();
+		
+		if( !$bMergeItem ){
+			
+			$this->_aData = $aItem;
+			$this->_aLocationData = $locationData;
+			$this->_map();
+			$this->_setAddress();
+			$this->_logic();
+		}else{
+			
+			$aItem = ( array_merge( get_object_vars( $this ), $aItem ) );
+			foreach( $aItem as $key => $value ) {
+				$this->$key = $value;
+			}
+			$this->_originalprice = $this->rate;
+		}
 	}
 
 	public function getSku(){
@@ -73,15 +84,13 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	 * Sets Price Back to PreDiscount Amount and Sets
 	 * discounttotal to the diference.
 	 */
-	public function removeDiscount( $bItemLevel = false, $sDiscountItem = NETSUITE_DEFAULT_DISCOUNT ){
+	public function applyDiscount( $fDiscountAmount, $sDiscountItem = NETSUITE_DEFAULT_DISCOUNT ){
 
-		if( $bItemLevel ){
-				
-			$this->discounttotal = ( ( $this->rate - $this->getPreDiscountPrice() ) * $this->quantity );
+
+			$this->discounttotal += $fDiscountAmount;
 			$this->discountitem = $sDiscountItem;
-		}
+		
 
-		$this->rate = $this->getPreDiscountPrice();
 	}
 
 	public function getPreDiscountPrice(){
@@ -91,11 +100,17 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 	public function setPreDiscountPrice( $fPrice ){
 
-		$this->_originalprice = (float) $fPrice;
+		$this->_originalprice = $this->rate;
+		$this->rate = (float) $fPrice;
+	}
+	
+	public function getPrice(){
+		
+		return( $this->rate );
 	}
 
 	public function getQuantity(){
-		
+
 		return( $this->quantity );
 	}
 
@@ -117,9 +132,9 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 		array_walk( array_filter($this->_aLocationData), function($value, $key) {
 
 			$sProperty = str_replace('location_', '',$key);
-			
-			if(property_exists($this, $sProperty)){
 				
+			if(property_exists($this, $sProperty)){
+
 				$this->$sProperty = $value;
 			}
 		});

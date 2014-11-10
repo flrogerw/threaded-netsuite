@@ -36,9 +36,25 @@ class LivePos_Maps_Discount extends LivePos_Maps_Map {
 		return( $this->discounttype );
 	}
 
+	public function getDiscountTotal( $fTotal ){
+
+		switch( $this->getType() ){
+				
+			case( 'percent' ):
+				$fReturn = $fTotal * ( $this->getAmount() * .01);
+				break;
+
+			case( 'price' ):
+				$fReturn = $this->getAmount();
+				break;
+		}
+
+		return( $fReturn );
+	}
+
 	public function getAmount(){
 
-		return( $this->discounttotal );
+		return( (float) $this->discounttotal );
 	}
 
 	public function getId(){

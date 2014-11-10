@@ -51,9 +51,27 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$this->_itemList[] = $item;
 		}
 	}
+	
+	public function addItem( LivePos_Maps_Item $oItem ){
+		
+		$this->_itemList[] = $oItem;
+	}
+	
+	public function getTotal(){
+		
+		$fTotal = 0;
+		
+		array_walk( $this->_itemList, function($oItem, $sKey) use (&$fTotal){
+			$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
+		});
+		
+			return( $fTotal );
+	}
+	
 	/**
 	 * Gets Total of Items Before Discount is Applied
 	 * @return number
+	 * @deprecated
 	 */
 	public function getPreDiscountTotal(){
 
@@ -90,10 +108,12 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 		return( $aItemsArray );
 	}
 
-	public function removeDiscount( $bItemLevel = false ){
+	public function applyDiscount( LivePos_Maps_Discount $discount ){
 
-		array_walk( $this->_itemList, function(&$oItem, $sKey) use ($bItemLevel){
-			$oItem->removeDiscount( $bItemLevel );
+		array_walk( $this->_itemList, function(&$oItem, $sKey) use ($discount){
+			
+			$fDiscountAmount = $discount->getDiscountTotal( $oItem->getPrice() );			
+			$oItem->applyDiscount( $fDiscountAmount );
 		});
 	}
 

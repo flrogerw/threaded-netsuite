@@ -22,7 +22,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $department;
 	public $discountitem;
 	public $discounttotal;
-	public $discountrate;
+	public $discountrate = 0;
 	public $entity;
 	public $giftcertificateitem = array();
 	public $handlingcost;
@@ -77,7 +77,9 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	}
 
 	public function addItems( array $items ){
+
 		$this->item = $items;
+		$this->setNewTotal();
 	}
 
 	public function getInvoiceId(){
@@ -116,7 +118,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public function setDiscount( $fDiscount, $sDiscountCode = NETSUITE_DEFAULT_DISCOUNT ){
 
 		//$this->discounttotal = $fDiscount;
-		$this->discountrate = ( $fDiscount * -1 );
+		$this->discountrate += ( $fDiscount * -1 );
 		$this->discountitem = $sDiscountCode;
 	}
 
@@ -127,11 +129,27 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		return( $this->_subtotal );
 	}
 
+	public function getTotal(){
+
+		return( $this->total );
+	}
+
+	public function getItems(){
+
+		return( $this->item );
+	}
+
 	/**
 	 *
 	 */
-	public function setNewTotal( $fTotal ){
-		$this->total = $fTotal;
+	public function setNewTotal(){
+
+		$this->total = 0;
+
+		array_walk( $this->getItems(), function( $aItem, $sKey ){
+			$this->total += ( $aItem['rate'] * $aItem['quantity'] );
+
+		});
 	}
 
 	public function getTax(){

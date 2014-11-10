@@ -29,16 +29,18 @@ final class LivePos_LivePosOrder extends Stackable {
 	protected $_orderId;
 	protected $_locationData;
 	protected $_orderType;
+	protected $_orderToMerge;
 
-	
-	
-	public function __construct( $sOrderId, $aOrder, $locationData ){
+
+
+	public function __construct( $sOrderId, $aOrder, $locationData, $sOrderToMerge = null ){
 
 		$this->_raworder =  current( json_decode( $aOrder['receipt_string'], true ) );
 		$this->orderType = $aOrder['receipt_type'];
 		$this->receiptId = $aOrder['receipt_id'];
 		$this->_locationData = $locationData;
 		$this->_orderId = $sOrderId;
+		$this->_orderToMerge = $sOrderToMerge;
 	}
 
 
@@ -86,15 +88,36 @@ final class LivePos_LivePosOrder extends Stackable {
 						}
 
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_raworder, $this->_locationData );
+
+
 						$order = LivePos_Maps_MapFactory::create( 'order', $this->_raworder, $this->_locationData, $this->_orderId );
+
 						$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_raworder['enumCouponDiscounts'] );
 						$payments = LivePos_Maps_MapFactory::create( 'paymentlist', $this->_raworder['enumPayments'] );
 						
 						$this->_processPayments( $order, $payments, $discounts );
-						$this->_processDiscounts( $items, $order, $discounts );
 
+						if( $discounts->hasDiscounts() ){
+
+							$items->popPreDiscountPrices();		
+						}
+
+						if( $this->_orderToMerge != null ){
+	
+							$aOrderToMerge = json_decode( $this->_orderToMerge, true );
+							$order->setMultiShipTo( true );
+								
+							array_walk( $aOrderToMerge['order']['item'], function( $aItem, $sKey ) use ( &$items ){
+									
+								$item = LivePos_Maps_MapFactory::create( 'item', $aItem, $this->_locationData, true );
+								$items->addItem( $item );
+							});
+						}
+						
 						$order->addItems( $items->getItemsArray() );
-
+						//$order->setNewTotal( $items->getTotal() );
+						$this->_processDiscounts( $order, $items, $discounts );
+						
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedJson( $customer, $order ) ) );
 						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
 						$this->worker->addData( array('web_items' => $items->hasWebItems ) );
@@ -116,39 +139,38 @@ final class LivePos_LivePosOrder extends Stackable {
 			}
 	}
 
-	private function _processDiscounts( LivePos_Maps_Itemlist $items, LivePos_Maps_Order $order, LivePos_Maps_Discountlist $discounts ){
+	private function _processDiscounts( LivePos_Maps_Order $order, LivePos_Maps_Itemlist $items, LivePos_Maps_Discountlist $discounts ){
 
 		$bItemLevel;
-
+		
 		if( $discounts->hasDiscounts() ){
-
-			$items->popPreDiscountPrices();
-			$order->setNewTotal( $items->getPreDiscountTotal() );
 
 			array_walk( $discounts->getDiscounts(), function( $oDiscount, $sKey ) use ( &$order, &$items, &$discounts, &$bItemLevel ){
 
 				// Check for 'use line item discount' flag
 				$sSwitchCompare = ( LIVEPOS_LINE_ITEM_DISCOUNTS )? $oDiscount->getScope(): 'sale';
-				
+
 				switch( $sSwitchCompare ){
 
 					case( 'sale' ):
-						
-						$order->setDiscount( $discounts->getDiscountTotal() );
+
+						$fDiscountAmount = $oDiscount->getDiscountTotal( $order->getTotal() );
+						$order->setDiscount( $fDiscountAmount );
 						$bItemLevel = false;
 						break;
 
 					case( 'item' ):
-
-						$bItemLevel = true;
-						break;
 						
+						$items->applyDiscount( $oDiscount );
+						$order->addItems( $items->getItemsArray() );
+						break;
+
 					case( 'category' ):
 						break;
 				}
 			});
 					
-				$items->removeDiscount( $bItemLevel );
+				//$items->removeDiscount( $bItemLevel );
 		}
 	}
 
@@ -167,13 +189,13 @@ final class LivePos_LivePosOrder extends Stackable {
 
 					$order->setGiftCert( $oPayment );
 					break;
-						
+
 				case( 1 ): // Cash
 				case( 3 ): // Check
 				case( 5 ): // Split -- Order Level Only
 				case( 9 ): // Custom Payment
 					break;
-					
+
 				case( 7 ): // Coupon
 					$discounts->updateDiscountTotal( $oPayment->getAmount() );
 					break;
@@ -185,7 +207,7 @@ final class LivePos_LivePosOrder extends Stackable {
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
 
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
-		//return(  json_encode( $aToEncrypt ) );
-		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
+		return(  json_encode( $aToEncrypt ) );
+		//return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 }

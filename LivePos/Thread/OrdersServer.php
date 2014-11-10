@@ -61,9 +61,11 @@ final class LivePos_Thread_OrdersServer {
 
 			$aOrderData = current( json_decode( $aOrder['receipt_string'], true ) );
 			$sOrderId = $this->_getOrderId( $aOrderData );
+			$iInvoiceId = $this->_getInvoiceId( $aOrderData );
 			$aLocation = $this->_getLocation( $aOrder['location_id'], $sOrderId );
 
-			$aWork[] = $tThread = $this->_pool->submit( new LivePos_LivePosOrder( $sOrderId, $aOrder, $aLocation ) );
+			$sOrderToMerge = ( isset( $this->_webOrders[ $iInvoiceId ] ) )? Netsuite_Crypt::decrypt( $this->_webOrders[ $iInvoiceId ] , true ): null;
+			$aWork[] = $tThread = $this->_pool->submit( new LivePos_LivePosOrder( $sOrderId, $aOrder, $aLocation, $sOrderToMerge ) );
 		}
 
 		$this->_pool->shutdown();
@@ -91,7 +93,7 @@ final class LivePos_Thread_OrdersServer {
 
 	/**
 	 * Returns Activa Order Id
-	 * 
+	 *
 	 * @access private
 	 * @param array $aOrderData
 	 * @return string
@@ -109,52 +111,57 @@ final class LivePos_Thread_OrdersServer {
 	private function _getWebOrders(){
 
 		$aSetToMerged = array();
-		$aErrorIds = array();
-		$aErrorMessages = array();
+		//$aErrorIds = array();
+		//$aErrorMessages = array();
 		$aWebOrders = $this->_model->getWebOrders();
 
 		if( !empty( $aWebOrders ) ){
 
-			array_walk( $aWebOrders, function( $aRawOrder, $sKey ) use ( &$aSetToMerged, &$aErrorIds, &$aErrorMessages ){
+			array_walk( $aWebOrders, function( $aRawOrder, $sKey ) use ( &$aSetToMerged /*,  &$aErrorIds, &$aErrorMessages */ ){
 
-				try{
+				/*
+				 try{
 
-					$aSetToMerged[] = $aRawOrder['queue_id'];
-					$aSalesOrder = json_decode( Netsuite_Crypt::decrypt( $aRawOrder['order_json'] ), true );
+				$aSetToMerged[] = $aRawOrder['queue_id'];
+				$aSalesOrder = json_decode( Netsuite_Crypt::decrypt( $aRawOrder['order_json'] ), true );
 
-					$customer = Netsuite_Record::factory()->customer( $aSalesOrder['customer'] );
+				$customer = Netsuite_Record::factory()->customer( $aSalesOrder['customer'] );
 
-					if( !$customer->isOk() ){
-						throw new Exception('Could Not Create Customer for LivePOS Merge');
-					}
+				if( !$customer->isOk() ){
+				throw new Exception('Could Not Create Customer for LivePOS Merge');
+				}
 
-					$salesOrder = Netsuite_Record::factory()->salesOrder( $aSalesOrder['order'], $customer );
+				$salesOrder = Netsuite_Record::factory()->salesOrder( $aSalesOrder['order'], $customer );
 
-					if( !$salesOrder->isOk() ){
-						throw new Exception('Could Not Create SalesOrder for LivePOS Merge');
-					}
+				if( !$salesOrder->isOk() ){
+				throw new Exception('Could Not Create SalesOrder for LivePOS Merge');
+				}
 
-					$aSetToMerged[] = $aRawOrder['queue_id'];
-					$this->_webOrders[ $aRawOrder['pos_number'] ] = $salesOrder;
+				$aSetToMerged[] = $aRawOrder['queue_id'];
+				$this->_webOrders[ $aRawOrder['pos_number'] ] = $salesOrder;
 
 				}catch ( Exception $e ){
 
-					$aErrorIds[] = $aRawOrder['queue_id'];
-					$aErrorMessages[ $aRawOrder['order_activa_id'] ] = $e->getMessage();
+				$aErrorIds[] = $aRawOrder['queue_id'];
+				$aErrorMessages[ $aRawOrder['order_activa_id'] ] = $e->getMessage();
 				}
+
+				*/
+				$aSetToMerged[] = $aRawOrder['queue_id'];			
+				$this->_webOrders[ $aRawOrder['pos_number'] ] = $aRawOrder['order_json'];
 			});
+			
+				//if( !empty( $aSetToMerged ) ){
 
-				if( !empty( $aSetToMerged ) ){
+				//$this->_model->updateToMerged( $aSetToMerged );
+				//}
 
-					$this->_model->updateToMerged( $aSetToMerged );
-				}
+				//if( !empty( $aErrorIds ) ){
 
-				if( !empty( $aErrorIds ) ){
-
-					$this->_model->updateToMergeError( $aErrorIds );
-					// -> -> -> -> UPDATE ERRORS <- <- <- <-
-					//$aErrorMessages
-				}
+				//$this->_model->updateToMergeError( $aErrorIds );
+				// -> -> -> -> UPDATE ERRORS <- <- <- <-
+				//$aErrorMessages
+				//}
 		}
 	}
 
