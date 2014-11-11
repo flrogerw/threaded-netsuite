@@ -1,4 +1,4 @@
-salesOrder = nlapiLoadRecord('salesorder', 801620);
+salesOrder = nlapiLoadRecord('salesorder', 802419);
 nlapiLogExecution('Debug', 'onAFterSubmit', 'load status '
 		+ salesOrder.getFieldValue('orderstatus'));
 

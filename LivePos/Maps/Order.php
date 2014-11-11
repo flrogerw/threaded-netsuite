@@ -18,6 +18,10 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_pos_invoice;
 	public $custbody_pos_ref_num;
 	public $custbody_pos_receipt;
+	public $custbody_pos_cash_total = 0;
+	public $custbody_pos_cc_total = 0;
+	public $custbody_pos_gc_total = 0;
+	public $custbody_pos_receipt_total = 0;
 	public $customform = 107;
 	public $department;
 	public $discountitem;
