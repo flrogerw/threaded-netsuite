@@ -104,7 +104,7 @@ class Netsuite_Netsuite extends Stackable {
 				$results = $this->_process('customer', $customer );
 
 				if( $results['success'] === true ){
-					
+						
 					$model = new Netsuite_Db_Model();
 					$activa = new Netsuite_Db_Activa();
 					$customer->entityid = $results['netsuite']['record_id'];
@@ -132,7 +132,7 @@ class Netsuite_Netsuite extends Stackable {
 
 
 	protected function _logResults() {
-		
+
 		$sSystemError = '';
 
 		$aResults = $this->worker->getData();
@@ -230,9 +230,17 @@ class Netsuite_Netsuite extends Stackable {
 				$aJsonReturn['json'] = $oRecord->getJSON();
 				break;
 
+			case( $record->status == 'warn' ):
+					
+				$aJsonReturn['netsuite']['record_id'] = $record->recordid;
+				$aJsonReturn['success'] = true;
+				$aJsonReturn['warn'] = $record->payload->details . ', ' . $oRecord->getWarnings();
+				$aJsonReturn['json'] = $oRecord->getJSON();
+				break;
+					
 			default:
 
-				$aJsonReturn['netsuite']['record_id'] = $record;
+				$aJsonReturn['netsuite']['record_id'] = $record->recordid;
 				$aJsonReturn['success'] = true;
 				$aJsonReturn['warn'] = $oRecord->getWarnings();
 				$aJsonReturn['json'] = $oRecord->getJSON();

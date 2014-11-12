@@ -205,8 +205,9 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 		// Set Shipping/ Billing Dates
 		$date = new DateTime( $this->custbody_pos_postranstime );
-		$this->custbody_pos_receipt_date = $this->trandate = $this->shipdate = $date->format('m/d/Y');
+		$this->trandate = $this->shipdate = $date->format('m/d/Y');
 		$this->custbody_pos_postranstime = $date->format('g:i a');
+		$this->custbody_pos_receipt_date = $date->format('m/d/Y h:i:s a');
 		
 		// Define Employee
 		$this->custbody_pos_employee = $this->_employeefirst . ' ' . $this->_employeelast;

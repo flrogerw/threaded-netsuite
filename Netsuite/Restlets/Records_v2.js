@@ -247,6 +247,7 @@ function createOrder(args) {
 	var fulfillLocations = [ 7, 11 ]
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
+	var response = {};
 
 	/*
 	 * if (order.hasOwnProperty('custbody_order_source_id')) { var isOrder =
@@ -279,10 +280,17 @@ function createOrder(args) {
 	setItems(record, order.item);
 	var iOrderId = nlapiSubmitRecord(record);
 
+	response.recordid = iOrderId;
+
 	if (bFulFill) {
-		fulfillOrder(iOrderId);
+		try {
+			fulfillOrder(iOrderId);
+		} catch (e) {
+			response.status = 'warn';
+			response.payload.details = 'Could Not Fulfill Order: ' + e.message;
+		}
+		return response;
 	}
-	return iOrderId;
 }
 
 function setGiftCertificates(record, gcDataArray) {
@@ -301,12 +309,12 @@ function setGiftCertificates(record, gcDataArray) {
 		filters.push(new nlobjSearchFilter("giftcertcode", null, "is",
 				gcDataArray[count]['giftcertcode']));
 	}
-	
+
 	var search = nlapiCreateSearch('giftcertificate', filters, columns);
-	
+
 	var resultset = search.runSearch();
 	var resultslice = resultset.getResults(0, 100);
-	
+
 	for ( var rs in resultslice) {
 		var resultObj = resultslice[rs];
 		certIdResults.push(resultObj.getId());
@@ -322,17 +330,19 @@ function setGiftCertificates(record, gcDataArray) {
 					certIdResults[index]);
 			record.setLineItemValue('giftcertredemption', 'giftcertcode',
 					counter, gcDataArray[count]['giftcertcode']);
-		}else{
-			///////////////////////   PUT DISCOUNT HERE   //////////////////////////////
-			
-			var discountAmount = parseInt( record.getFieldValue('discountrate') ) || 0;
-			var gcAmount = ( parseInt( record.getFieldValue('custbody_pos_gc_total') ) * -1 ) || 0;
+		} else {
+			// ///////////////////// PUT DISCOUNT HERE
+			// //////////////////////////////
+
+			var discountAmount = parseInt(record.getFieldValue('discountrate')) || 0;
+			var gcAmount = (parseInt(record
+					.getFieldValue('custbody_pos_gc_total')) * -1) || 0;
 			var newDiscountAmount = (gcAmount + discountAmount);
-			var discountItem = ( discountAmount > 0 )? 1164: 1165;
-			
-			record.setFieldValue('discountitem', discountItem );
-			record.setFieldValue('discountrate', newDiscountAmount );
-			
+			var discountItem = (discountAmount > 0) ? 1164 : 1165;
+
+			record.setFieldValue('discountitem', discountItem);
+			record.setFieldValue('discountrate', newDiscountAmount);
+
 		}
 	}
 	// nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ',
@@ -342,6 +352,7 @@ function setGiftCertificates(record, gcDataArray) {
 
 function createBongoContact(args) {
 
+	var response = {};
 	var record = nlapiCreateRecord('contact');
 	var contact = JSON.parse(args.data);
 	;
@@ -365,11 +376,13 @@ function createBongoContact(args) {
 
 	nlapiAttachRecord('contact', recordId, 'customer', contact.entityid, null)
 
-	return recordId;
+	response.recordid = recordId;
+	return response;
 }
 
 function createContact(args, contactCount) {
 
+	var response = {};
 	var record = nlapiCreateRecord('contact');
 	var contact = JSON.parse(args.data);
 
@@ -390,12 +403,14 @@ function createContact(args, contactCount) {
 			+ contact.lastname + ' - ' + contact.email);
 
 	var recordId = nlapiSubmitRecord(record);
-	return recordId;
+	response.recordid = recordId;
+	return response;
 
 }
 
 function createCustomer(args) {
 
+	var response = {};
 	var record = nlapiCreateRecord('customer');
 	var customer = JSON.parse(args.data);
 
@@ -422,7 +437,8 @@ function createCustomer(args) {
 		nlapiAttachRecord('contact', contactId, 'customer', recordId, null)
 	}
 
-	return recordId;
+	response.recordid = recordId;
+	return response;
 }
 
 function checkDuplicates(orderId) {
