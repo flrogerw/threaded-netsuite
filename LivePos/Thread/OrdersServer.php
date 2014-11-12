@@ -203,7 +203,7 @@ final class LivePos_Thread_OrdersServer {
 					':order_json' => $aWorkerData['encrypted'] );
 		}
 
-		//$this->_model->queueOrders( $aOrdersArray );
+		$this->_model->queueOrders( $aOrdersArray );
 		$this->_model->updateIgnoredOrders( $aIgnoredOrders );
 
 	}

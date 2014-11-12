@@ -10,25 +10,41 @@ class LivePos_Maps_Paymentlist extends LivePos_Maps_Map{
 	 *
 	 * @access public
 	 * @return void
-	*/
+	 */
 	public function __construct( array $aPayments ) {
 
 		parent::__construct();
 		$this->_aData = $aPayments;
 		$this->_getPaymentList();
 	}
-	
-	public function getPaymentByType( $sPaymentType ){
 
-		(int) $iTypeKey;
+	public function getPaymentsByTypeId( $iPaymentTypeId ){
+		
+		$aTempPayments = array();
 
-		array_walk( $this->_paymentList, function($oPayment, $sKey) use ( $sPaymentType, &$iTypeKey ){
-			if( $oPayment->getType() == $sPaymentType ){
-				$iTypeKey = $sKey;
-			}
+		array_walk( $this->_paymentList, function($oPayment, $sKey) use ( &$aTempPayments ){			
+				$aTempPayments[ $oPayment->getTypeId() ][] = $oPayment;
 		});
+		
+			$aReturn = ( empty( $aTempPayments[ $iPaymentTypeId ] ) )? array(): $aTempPayments[ $iPaymentTypeId ];
+			return( $aReturn );
+	}
 
-			return( $this->_paymentList[ $iTypeKey ] );
+
+	public function getTotalByType( $iPaymentTypeId ){
+
+		$aPayments = $this->getPaymentsByTypeId( $iPaymentTypeId );
+		$fTotal = 0;
+		
+		array_walk( $aPayments, function($oPayment, $sKey) use(&$fTotal){
+			$fTotal +=  $oPayment->getAmount();
+		});
+		
+		if( $iPaymentTypeId == 1 ){
+			$fTotal += $this->getTotalByType( 3 );
+		}
+
+			return( $fTotal );
 	}
 
 	private function _getPaymentList(){

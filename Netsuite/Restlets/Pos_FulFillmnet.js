@@ -1,15 +1,16 @@
-salesOrder = nlapiLoadRecord('salesorder', 802419);
-nlapiLogExecution('Debug', 'onAFterSubmit', 'load status '
-		+ salesOrder.getFieldValue('orderstatus'));
+function main(){}
+
+function fulfillOrder( iOrderId ){
+	
+salesOrder = nlapiLoadRecord('salesorder',  iOrderId );
+//nlapiLogExecution('Debug', 'fulfillOrder', 'load status ' + salesOrder.getFieldValue('orderstatus'));
 
 var location = salesOrder.getFieldValue('location');
-nlapiLogExecution('Debug', 'afterSubmit', 'header location - ' + location);
+
 if (location == '1') {
-	nlapiLogExecution('Debug', 'afterSubmit', 'Location is Corporate');
-	// return;
+	return;
 }
 var lineItemCount = salesOrder.getLineItemCount('item');
-nlapiLogExecution('Debug', 'onAfterSubmit', 'lineItemCount - ' + lineItemCount);
 
 // Start creating fulfillment
 var fulfillment = nlapiTransformRecord('salesorder', salesOrder.getId(),
@@ -20,19 +21,15 @@ for ( var i = 1; i <= lineItemCount; i++) {
 	try {
 
 		itemLocation = salesOrder.getLineItemValue('item', 'location', i);
-		nlapiLogExecution('Debug', 'onAfterSubmit', 'line item - ' + i
-				+ ' location - ' + itemLocation);
 
 		// Unfulfill line items that do not match the header location
 		if (itemLocation != location) {
 			fulfillment.setLineItemValue('item', 'itemreceive', i, 'F');
-			nlapiLogExecution('Debug', 'onAfterSubmit',
-					'Line does not match header location - ' + i);
 			continue;
 		}
 
 		itemType = fulfillment.getLineItemValue('item', 'itemtype', i);
-		nlapiLogExecution('Debug', 'onAfterSubmit', 'Item Type - ' + itemType);
+		
 		if (itemType != 'Kit') {
 			bin = getBinNumber(fulfillment.getLineItemValue('item', 'location',
 					i));
@@ -44,8 +41,9 @@ for ( var i = 1; i <= lineItemCount; i++) {
 	}
 }
 
+
 var fulfillmentId = nlapiSubmitRecord(fulfillment);
-nlapiLogExecution('Debug', 'onAfterSubmit', 'fulfillmentId - ' + fulfillmentId);
+}
 
 /*******************************************************************************
  * Returns binnumber based on location
@@ -53,16 +51,16 @@ nlapiLogExecution('Debug', 'onAfterSubmit', 'fulfillmentId - ' + fulfillmentId);
  * @param location
  ******************************************************************************/
 function getBinNumber(location) {
-	if (location == '7')
-		return 'BocaTC';
-	else if (location == '2')
-		return 'Delray';
-	else if (location == '9')
-		return 'Linq';
-	else if (location == '5')
-		return 'Miami';
-	else if (location == '4')
-		return 'Orlando';
-	else if (location == '8')
-		return 'Q1';
+
+switch(  location ){
+
+case(7):
+         return 'BocaTC';
+break;
+case(11):
+       return 'Culver';
+break;
+
+}
+	
 }

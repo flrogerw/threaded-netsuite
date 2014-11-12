@@ -130,7 +130,7 @@ function setAddress(entity, addresses) {
 		}
 	}
 	return (returnAddrBook);
-
+	// nlapiLogExecution('DEBUG', 'xxxxxx ', JSON.stringify( address ) );
 }
 
 function getAddressbook(record) {
@@ -215,9 +215,6 @@ function setItems(record, items) {
 		}
 	}
 
-	// nlapiLogExecution('DEBUG', 'NotMultiShip - Ship Address: ',
-	// record.getFieldValue('shipaddress'));
-
 	var addressbook = setAddress(record.getFieldValue('entity'),
 			entityAddressBook);
 
@@ -236,8 +233,6 @@ function setItems(record, items) {
 		}
 
 		if (record.getFieldValue('ismultishipto') == 'T') {
-			// record.setFieldValue('shippingcost', '');
-
 			var addrIndex = addressTextArray
 					.indexOf(md5(getAddressString(items[count])));
 			record.setLineItemValue('item', 'shipaddress', counter,
@@ -249,6 +244,7 @@ function setItems(record, items) {
 
 function createOrder(args) {
 
+	var fulfillLocations = [ 7, 11 ]
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
 
@@ -277,10 +273,16 @@ function createOrder(args) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
 
+	var bFulFill = (record.getFieldValue('orderstatus') == 'B' && fulfillLocations
+			.indexOf(parseInt(record.getFieldValue('location'))) != -1) ? true
+			: false;
 	setItems(record, order.item);
+	var iOrderId = nlapiSubmitRecord(record);
 
-	var isOk = nlapiSubmitRecord(record);
-	return isOk;
+	if (bFulFill) {
+		fulfillOrder(iOrderId);
+	}
+	return iOrderId;
 }
 
 function setGiftCertificates(record, gcDataArray) {
@@ -299,10 +301,12 @@ function setGiftCertificates(record, gcDataArray) {
 		filters.push(new nlobjSearchFilter("giftcertcode", null, "is",
 				gcDataArray[count]['giftcertcode']));
 	}
+	
 	var search = nlapiCreateSearch('giftcertificate', filters, columns);
+	
 	var resultset = search.runSearch();
-
 	var resultslice = resultset.getResults(0, 100);
+	
 	for ( var rs in resultslice) {
 		var resultObj = resultslice[rs];
 		certIdResults.push(resultObj.getId());
@@ -318,6 +322,17 @@ function setGiftCertificates(record, gcDataArray) {
 					certIdResults[index]);
 			record.setLineItemValue('giftcertredemption', 'giftcertcode',
 					counter, gcDataArray[count]['giftcertcode']);
+		}else{
+			///////////////////////   PUT DISCOUNT HERE   //////////////////////////////
+			
+			var discountAmount = parseInt( record.getFieldValue('discountrate') ) || 0;
+			var gcAmount = ( parseInt( record.getFieldValue('custbody_pos_gc_total') ) * -1 ) || 0;
+			var newDiscountAmount = (gcAmount + discountAmount);
+			var discountItem = ( discountAmount > 0 )? 1164: 1165;
+			
+			record.setFieldValue('discountitem', discountItem );
+			record.setFieldValue('discountrate', newDiscountAmount );
+			
 		}
 	}
 	// nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ',
@@ -349,6 +364,7 @@ function createBongoContact(args) {
 	var recordId = nlapiSubmitRecord(record);
 
 	nlapiAttachRecord('contact', recordId, 'customer', contact.entityid, null)
+
 	return recordId;
 }
 
@@ -372,6 +388,7 @@ function createContact(args, contactCount) {
 	var entityid = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
 	record.setFieldValue('entityid', entityid + ' ' + contact.firstname + ' '
 			+ contact.lastname + ' - ' + contact.email);
+
 	var recordId = nlapiSubmitRecord(record);
 	return recordId;
 

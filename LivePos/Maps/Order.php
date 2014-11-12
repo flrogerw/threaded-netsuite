@@ -85,6 +85,18 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->item = $items;
 		$this->setNewTotal();
 	}
+	
+	public function setCashTotal( $fCashTotal ){
+		$this->custbody_pos_cash_total += $fCashTotal;
+	}
+	
+	public function setCCTotal( $fCCTotal ){
+		$this->custbody_pos_cc_total += $fCCTotal;
+	}
+	
+	public function setGCTotal( $fGCTotal ){
+		$this->custbody_pos_gc_total += $fGCTotal;
+	}
 
 	public function getInvoiceId(){
 
@@ -170,6 +182,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->custbody_pos_postranstime = $date->format('g:i a');
 
 		// Set Total
+		$this->custbody_pos_receipt_total = $this->total;
 		$this->total = $this->_postotal = ( $this->total - $this->taxtotal );
 	}
 
