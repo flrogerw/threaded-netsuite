@@ -88,9 +88,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custbody_pos_receipt_total' => array('filter' => FILTER_VALIDATE_FLOAT),
 				
 			'custbody_pos_employee'  => array('filter' => FILTER_SANITIZE_STRING),
-			'custbody_pos_receipt_date'   => array('filter' => FILTER_VALIDATE_REGEXP,
-					'flags'  => FILTER_NULL_ON_FAILURE,
-					'options' => array('regexp' => "/^(0[1-9]|1[012])\/(20)\d\d$/" ) ),
+			'custbody_pos_receipt_date' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_location'  => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_shipping_charge'  => array('filter' => FILTER_VALIDATE_FLOAT,
 			'flags'  => FILTER_NULL_ON_FAILURE),			
