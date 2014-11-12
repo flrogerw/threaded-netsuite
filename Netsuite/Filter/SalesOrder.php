@@ -92,7 +92,8 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 					'flags'  => FILTER_NULL_ON_FAILURE,
 					'options' => array('regexp' => "/^(0[1-9]|1[012])\/(20)\d\d$/" ) ),
 			'custbody_pos_location'  => array('filter' => FILTER_SANITIZE_STRING),
-			'custbody_pos_shipping_charge'  => array('filter' => FILTER_VALIDATE_FLOAT),
+			'custbody_pos_shipping_charge'  => array('filter' => FILTER_VALIDATE_FLOAT,
+			'flags'  => FILTER_NULL_ON_FAILURE),			
 			'custbody_pos_shipped_tax'  => array('filter' => FILTER_VALIDATE_FLOAT),
 
 			'custbody_source_code' => array('filter' => FILTER_SANITIZE_STRING),

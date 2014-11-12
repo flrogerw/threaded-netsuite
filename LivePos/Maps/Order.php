@@ -109,7 +109,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->custbody_pos_shipped_tax += $fAmount;
 	}
 	
-	public function setShippingCharge( $fAmount ){
+	public function setShippingCharge( $fAmount = 0 ){
 		
 		$this->custbody_pos_shipping_charge += $fAmount;
 	}
