@@ -33,7 +33,7 @@ final class Netsuite_Db_Query
 
 	//protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' GROUP BY customer_activa_id ORDER BY queue_id LIMIT :limit";
 
-	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' AND pos_number IS NULL ORDER BY queue_id LIMIT :limit";
+	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' AND pos_number IS NULL GROUP BY customer_activa_id ORDER BY queue_id LIMIT :limit";
 	
 	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( order_json ) VALUES (:order_json)";
 
