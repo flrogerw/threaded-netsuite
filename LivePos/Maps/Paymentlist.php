@@ -18,14 +18,27 @@ class LivePos_Maps_Paymentlist extends LivePos_Maps_Map{
 		$this->_getPaymentList();
 	}
 
+	public function getGcIdList(){
+
+		$aGcIdList = array();
+
+		array_walk( $this->_paymentList, function($oPayment, $sKey) use ( &$aGcIdList ){
+			if( $oPayment->getTypeId() == 8 ){
+				$aGcIdList[] = $oPayment->getGiftCertId();
+			}
+		});
+
+			return( implode(',',$aGcIdList ) );
+	}
+
 	public function getPaymentsByTypeId( $iPaymentTypeId ){
-		
+
 		$aTempPayments = array();
 
-		array_walk( $this->_paymentList, function($oPayment, $sKey) use ( &$aTempPayments ){			
-				$aTempPayments[ $oPayment->getTypeId() ][] = $oPayment;
+		array_walk( $this->_paymentList, function($oPayment, $sKey) use ( &$aTempPayments ){
+			$aTempPayments[ $oPayment->getTypeId() ][] = $oPayment;
 		});
-		
+
 			$aReturn = ( empty( $aTempPayments[ $iPaymentTypeId ] ) )? array(): $aTempPayments[ $iPaymentTypeId ];
 			return( $aReturn );
 	}
@@ -35,14 +48,14 @@ class LivePos_Maps_Paymentlist extends LivePos_Maps_Map{
 
 		$aPayments = $this->getPaymentsByTypeId( $iPaymentTypeId );
 		$fTotal = 0;
-		
+
 		array_walk( $aPayments, function($oPayment, $sKey) use(&$fTotal){
 			$fTotal +=  $oPayment->getAmount();
 		});
-		
-		if( $iPaymentTypeId == 1 ){
-			$fTotal += $this->getTotalByType( 3 );
-		}
+
+			if( $iPaymentTypeId == 1 ){
+				$fTotal += $this->getTotalByType( 3 );
+			}
 
 			return( $fTotal );
 	}

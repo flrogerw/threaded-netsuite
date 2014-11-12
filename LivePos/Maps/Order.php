@@ -10,18 +10,24 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_order_source;
 	public $custbody_order_source_id;
 	public $custbody_source_code;
-	public $custbody_pos_trans_id;
-	public $custbody_pos_postranstime;
-	public $custbody_pos_auth_code;
+	public $custbody_pos_auth_code;	
+	public $custbody_pos_cash_total = 0;
 	public $custbody_pos_cc_exp_date;
 	public $custbody_pos_cc_number;
-	public $custbody_pos_invoice;
-	public $custbody_pos_ref_num;
-	public $custbody_pos_receipt;
-	public $custbody_pos_cash_total = 0;
 	public $custbody_pos_cc_total = 0;
-	public $custbody_pos_gc_total = 0;
+	public $custbody_pos_employee;
+	public $custbody_pos_gc_code;
+	public $custbody_pos_gc_total = 0;	
+	public $custbody_pos_invoice;
+	public $custbody_pos_location;
+	public $custbody_pos_postranstime;
+	public $custbody_pos_receipt;
+	public $custbody_pos_receipt_date;
 	public $custbody_pos_receipt_total = 0;
+	public $custbody_pos_ref_num;
+	public $custbody_pos_shipped_tax = 0;
+	public $custbody_pos_shipping_charge = 0;
+	public $custbody_pos_trans_id;
 	public $customform = 107;
 	public $department;
 	public $discountitem;
@@ -48,6 +54,9 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $total = 0;
 	public $trandate;
 
+	protected $_employeeid;
+	protected $_employeefirst;
+	protected $_employeelast;
 	protected $_postotal;
 	protected $_customer_firstname;
 	protected $_customer_lastname;
@@ -62,6 +71,10 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 			'strCustomerFirstName' => '_customer_firstname',
 			'strCustomerLastName' => '_customer_lastname',
 			'strPaymentTypeLabel' => '_paymentmethod_flag',
+			'intEmployeeID' => '_employeeid',
+			'strEmployeeFirstName' => '_employeefirst',
+			'strEmployeeLastName' => '_employeelast',
+			'strLocationName' => 'custbody_pos_location',
 			'dtTransactionDate' => 'custbody_pos_postranstime');
 
 
@@ -84,6 +97,21 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 		$this->item = $items;
 		$this->setNewTotal();
+	}
+
+	public function setPosGcCode( $sGcCode ){
+		
+		$this->custbody_pos_gc_code = $sGcCode;	
+	}
+	
+	public function setShippedTax( $fAmount ){
+		
+		$this->custbody_pos_shipped_tax += $fAmount;
+	}
+	
+	public function setShippingCharge( $fAmount ){
+		
+		$this->custbody_pos_shipping_charge += $fAmount;
 	}
 	
 	public function setCashTotal( $fCashTotal ){
@@ -177,11 +205,13 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 		// Set Shipping/ Billing Dates
 		$date = new DateTime( $this->custbody_pos_postranstime );
-		$this->trandate = $this->shipdate = $date->format('m/d/Y');
-
+		$this->custbody_pos_receipt_date = $this->trandate = $this->shipdate = $date->format('m/d/Y');
 		$this->custbody_pos_postranstime = $date->format('g:i a');
+		
+		// Define Employee
+		$this->custbody_pos_employee = $this->_employeefirst . ' ' . $this->_employeelast;
 
-		// Set Total
+		// Set Totals
 		$this->custbody_pos_receipt_total = $this->total;
 		$this->total = $this->_postotal = ( $this->total - $this->taxtotal );
 	}

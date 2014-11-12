@@ -88,10 +88,7 @@ final class LivePos_LivePosOrder extends Stackable {
 						}
 
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_raworder, $this->_locationData );
-
-
 						$order = LivePos_Maps_MapFactory::create( 'order', $this->_raworder, $this->_locationData, $this->_orderId );
-
 						$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_raworder['enumCouponDiscounts'] );
 						$payments = LivePos_Maps_MapFactory::create( 'paymentlist', $this->_raworder['enumPayments'] );
 
@@ -102,6 +99,7 @@ final class LivePos_LivePosOrder extends Stackable {
 							$items->popPreDiscountPrices();
 						}
 
+						// Process InStore/Shipped Orders
 						if( $this->_orderToMerge != null ){
 
 							$aOrderToMerge = json_decode( $this->_orderToMerge, true );
@@ -115,13 +113,18 @@ final class LivePos_LivePosOrder extends Stackable {
 						}
 
 						$order->addItems( $items->getItemsArray() );
+						
+						$order->setShippedTax( $items->getShippingTax() );
+						$order->setShippingCharge( $items->getShippingCharge() );
+						
 						$this->_processDiscounts( $order, $items, $discounts );
 
+						// DEBUG STUFF
 						$this->worker->addData( array('posTotal' => $order->getPosTotal() ) );
 						$this->worker->addData( array('orderTotal' => $order->getTotal() ) );
 						$this->worker->addData( array('webItems' => $items->getWebItemsTotal() ) );
 						$this->worker->addData( array('invoiceId' => $order->getInvoiceId() ) );
-
+						// END DEBUG
 
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedJson( $customer, $order ) ) );
 						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
@@ -202,7 +205,7 @@ final class LivePos_LivePosOrder extends Stackable {
 
 				case( 1 ): // Cash
 				case( 3 ): // Check
-						
+
 					break;
 				case( 5 ): // Split -- Order Level Only
 				case( 9 ): // Custom Payment
@@ -214,9 +217,11 @@ final class LivePos_LivePosOrder extends Stackable {
 			}
 		});
 
+			// Added for Reconsiliation between the 2 systems
 			$order->setCCTotal( $payments->getTotalByType( 2 ) );
 			$order->setGCTotal( $payments->getTotalByType( 8 ) );
 			$order->setCashTotal( $payments->getTotalByType( 1 ) );
+			$order->setPosGcCode( $payments->getGcIdList() );
 	}
 
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){

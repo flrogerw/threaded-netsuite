@@ -4,7 +4,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 	public $hasWebItems = false;
 
-	protected $_webSkus = array('Ship', 'Custom Art');
+	protected $_webSkus = array('Ship', 'Custom Art', 'Taxes');
 	protected $_itemList = array();
 
 	/**
@@ -15,7 +15,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 	protected $_listSkus = array();
 
 	protected $_productList = array();
-	
+
 	protected $_webItems = array();
 
 	/**
@@ -46,6 +46,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$item = LivePos_Maps_MapFactory::create( 'item', $aItem, $locationData );
 
 			if( in_array( $item->item, $this->_webSkus ) ){
+				
 				$this->_webItems[] = $item;
 				$this->hasWebItems = true;
 				continue;
@@ -54,32 +55,60 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$this->_itemList[] = $item;
 		}
 	}
-	
-	public function addItem( LivePos_Maps_Item $oItem ){
-		
-		$this->_itemList[] = $oItem;
+
+	public function getShippingCharge(){
+
+		$fTotal = 0;
+
+		array_walk( $this->_webItems, function($oItem, $sKey) use (&$fTotal){
+			
+			if( $oItem->item == 'Ship'){
+				$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
+			}
+		});
+
+			return( $fTotal );
 	}
 	
+	public function getShippingTax(){
+	
+		$fTotal = 0;
+	
+		array_walk( $this->_webItems, function($oItem, $sKey) use (&$fTotal){
+				
+			if( $oItem->item == 'Taxes'){
+				$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
+			}
+		});
+	
+			return( $fTotal );
+	}
+
+	public function addItem( LivePos_Maps_Item $oItem ){
+
+		$this->_itemList[] = $oItem;
+	}
+
 	public function getWebItemsTotal(){
 		$fTotal = 0;
-		
+
 		array_walk( $this->_webItems, function($oItem, $sKey) use (&$fTotal){
 			$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
 		});
 		return( $fTotal );
 	}
-	
+
 	public function getTotal(){
-		
+
 		$fTotal = 0;
-		
+
 		array_walk( $this->_itemList, function($oItem, $sKey) use (&$fTotal){
 			$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
 		});
-		
+
 			return( $fTotal );
 	}
-	
+
 	/**
 	 * Gets Total of Items Before Discount is Applied
 	 * @return number
@@ -123,8 +152,8 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 	public function applyDiscount( LivePos_Maps_Discount $discount ){
 
 		array_walk( $this->_itemList, function(&$oItem, $sKey) use ($discount){
-			
-			$fDiscountAmount = $discount->getDiscountTotal( $oItem->getPrice() );			
+
+			$fDiscountAmount = $discount->getDiscountTotal( $oItem->getPrice() );
 			$oItem->applyDiscount( $fDiscountAmount );
 		});
 	}

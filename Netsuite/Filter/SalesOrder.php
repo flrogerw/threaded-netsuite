@@ -72,7 +72,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custbody_pickticketnotes' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_trans_id'=> array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_postranstime' => array('filter' => FILTER_SANITIZE_STRING),
-				
+
 			'custbody_pos_auth_code' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_cc_exp_date' => array('filter' => FILTER_VALIDATE_REGEXP,
 					'flags'  => FILTER_NULL_ON_FAILURE,
@@ -83,9 +83,18 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custbody_pos_receipt' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_cash_total' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'custbody_pos_cc_total' => array('filter' => FILTER_VALIDATE_FLOAT),
+			'custbody_pos_gc_code'  => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_gc_total' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'custbody_pos_receipt_total' => array('filter' => FILTER_VALIDATE_FLOAT),
 				
+			'custbody_pos_employee'  => array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_receipt_date'   => array('filter' => FILTER_VALIDATE_REGEXP,
+					'flags'  => FILTER_NULL_ON_FAILURE,
+					'options' => array('regexp' => "/^(0[1-9]|1[012])\/(20)\d\d$/" ) ),
+			'custbody_pos_location'  => array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_shipping_charge'  => array('filter' => FILTER_VALIDATE_FLOAT),
+			'custbody_pos_shipped_tax'  => array('filter' => FILTER_VALIDATE_FLOAT),
+
 			'custbody_source_code' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_textrequired' => array('filter' => FILTER_VALIDATE_BOOLEAN),
 			'custbody_web_discount_code' => array('filter' => FILTER_SANITIZE_STRING),
