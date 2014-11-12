@@ -287,7 +287,10 @@ function createOrder(args) {
 			fulfillOrder(iOrderId);
 		} catch (e) {
 			response.status = 'warn';
-			response.payload.details = 'Could Not Fulfill Order: ' + e.message;
+			var warn = "Could Not Fulfill Order: " + e.message;
+			response.payload = {
+				"details" : warn
+			};
 		}
 		return response;
 	}

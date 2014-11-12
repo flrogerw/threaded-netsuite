@@ -20,7 +20,7 @@ final class Panel_Query
 	protected static $GET_SEARCH_RESULTS = "SELECT process_id, order_activa_id as activa_id,status, DATE_FORMAT(process_date, '%b %e %r') as process_date, customer_status, customer_warnings, customer_errors, order_status, order_warnings, order_errors FROM process_log WHERE order_activa_id LIKE ?";
 
 	protected static $GET_POS_CONVERSION_RESULTS = "SELECT * FROM livepos_debug_results";
-	protected static $GET_POS_TEST_RESULTS = "SELECT livepos_debug_results.invoice_id AS pos_invoice, process_log.order_id AS netsuite_id, livepos_test_orders.order_type AS test_type, process_log.order_errors  AS netsuite_error FROM livepos_test_orders JOIN process_log ON CONCAT('POS_',livepos_test_orders.receipt_id) = process_log.order_activa_id JOIN livepos_debug_results ON livepos_test_orders.receipt_id = livepos_debug_results.receipt_id";
+	protected static $GET_POS_TEST_RESULTS = "SELECT livepos_debug_results.invoice_id AS pos_invoice, process_log.order_id AS netsuite_id, livepos_test_orders.order_type AS test_type, process_log.order_errors  AS netsuite_error, process_log.order_warnings  AS netsuite_warnings FROM livepos_test_orders JOIN process_log ON CONCAT('POS_',livepos_test_orders.receipt_id) = process_log.order_activa_id JOIN livepos_debug_results ON livepos_test_orders.receipt_id = livepos_debug_results.receipt_id";
 
 	/**
 	 *
