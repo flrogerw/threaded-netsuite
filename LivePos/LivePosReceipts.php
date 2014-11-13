@@ -36,7 +36,6 @@ class LivePos_LivePosReceipts extends Stackable {
 					$this->_getReceiptType( $aResponse );
 					$this->worker->addData( array('code' => $aResponse['code']) );
 					$this->worker->addData( array('data' => $aResponse['data']) );
-					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
 				}else{
 
 					$aResponse = $call->getResponse();
@@ -51,8 +50,7 @@ class LivePos_LivePosReceipts extends Stackable {
 				$this->worker->addData( array('receiptId' => $this->_receiptId) );
 				$this->worker->addData( array('code' => $aResponse['code'] ));
 				$this->worker->addData( array('data' => $call->getResponse()) );
-				$this->_errors[] = $e->getMessage();
-				$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
+				$this->worker->addData( array('error' =>  $e->getMessage() ) );
 
 			}
 
