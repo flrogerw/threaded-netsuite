@@ -1,4 +1,27 @@
 <?php 
+/**
+ * LivePOS Order Object
+ *
+ * @package Netsuite
+ * @subpackage LivePOS
+ * @author gWilli
+ * @version 1.0
+ * @copyright 2014
+ * @name LivePOS Order
+ */
+/**
+ * LivePOS Receipt to Netsuite Record Process
+ *
+ * Thread for Processing Receipts into Netsuite.  Captures Order, Discount and Payment Information
+ * from LivePOS Receipt and Converts the Data into a Netsuite Order and Inserts into the Queue for Insertion
+ * into Netsuite.
+ *
+ * @uses Configure
+ * @uses Stackable
+ * @package Netsuite
+ * @subpackage LivePOS
+ * @final Can NOT Extend
+ */
 class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 	public $authcode;
