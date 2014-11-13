@@ -132,7 +132,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 			if(property_exists($this, $sProperty)){
 
-				$this->$sProperty = $value;
+				$this->$sProperty = ( !empty( $value ) )? $value: $this->$sProperty;
 			}
 		});
 	}

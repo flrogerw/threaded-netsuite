@@ -133,7 +133,7 @@ class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 	public function setMultiShipTo( $bIsMultiShipTo ){
 
-		$this->ismultishipto = ( $bIsMultiShipTo )? 'T': 'F';
+		$this->ismultishipto = ( $bIsMultiShipTo )? true: false;
 	}
 
 	public function setGiftCert( LivePos_Maps_Payment $oPayment ){

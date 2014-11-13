@@ -52,7 +52,7 @@ var fulfillmentId = nlapiSubmitRecord(fulfillment);
  ******************************************************************************/
 function getBinNumber(location) {
 
-switch(  location ){
+switch(  parseInt( location )  ){
 
 case(7):
          return 'BocaTC';
