@@ -105,6 +105,11 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 
 		return( $this->rate );
 	}
+	
+	public function setQuantity( $iNewQuantity ){
+		
+		$this->quantity = $iNewQuantity;
+	}
 
 	public function getQuantity(){
 

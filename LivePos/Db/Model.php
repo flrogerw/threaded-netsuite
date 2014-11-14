@@ -364,7 +364,7 @@ final class LivePos_Db_Model extends PDO
 			array_walk( $aSkus, function( $aSkus, $iKey ) use( &$aBindArgs){
 				$aBindArgs[':arg' . $iKey] = $aSkus;
 			});
-
+			
 				$sth->execute( $aBindArgs  );
 				$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );
 

@@ -46,7 +46,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$item = LivePos_Maps_MapFactory::create( 'item', $aItem, $locationData );
 
 			if( in_array( $item->item, $this->_webSkus ) ){
-				
+
 				$this->_webItems[] = $item;
 				$this->hasWebItems = true;
 				continue;
@@ -55,13 +55,50 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$this->_itemList[] = $item;
 		}
 	}
+	
+	
+	public function isOldStyle(){
+		
+		$bReturn = false;
+		
+		array_walk( $this->_webItems, function($oItem, $sKey) use (&$bReturn){
+
+			if( $oItem->item == 'Custom Art'){
+				$bReturn = true;
+			}
+		});
+		
+		return( $bReturn );
+	}
+	
+
+	public function mergeItem( LivePos_Maps_Item $item ){
+
+		$bMatched = false;
+
+		array_walk( $this->_itemList, function($oItem, $sKey) use ( $item, &$bMatched ){
+
+			if( $oItem->item == $item->item && !$bMatched ){
+
+				if( $oItem->getQuantity() > 1 ){
+					$oItem->setQuantity( ( $oItem->getQuantity() - 1 ) );
+				}else{
+					unset( $this->_itemList[ $sKey ] );
+				}
+				$bMatched = true;
+			}
+		});
+
+			$this->addItem( $item );
+
+	}
 
 	public function getShippingCharge(){
 
 		$fTotal = 0;
 
 		array_walk( $this->_webItems, function($oItem, $sKey) use (&$fTotal){
-			
+
 			if( $oItem->item == 'Ship'){
 				$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
 			}
@@ -69,18 +106,18 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 			return( $fTotal );
 	}
-	
+
 	public function getShippingTax(){
-	
+
 		$fTotal = 0;
-	
+
 		array_walk( $this->_webItems, function($oItem, $sKey) use (&$fTotal){
-				
+
 			if( $oItem->item == 'Taxes'){
 				$fTotal += ( $oItem->getPrice() * $oItem->getQuantity() );
 			}
 		});
-	
+
 			return( $fTotal );
 	}
 
@@ -193,7 +230,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			});
 
 				$model = new LivePos_Db_Model();
-				$aNsData = $model->skusToNsId( array_unique( $aSkusArray ) );
+				$aNsData = $model->skusToNsId( array_values( array_unique( $aSkusArray ) ) );
 
 				// Replace Skus
 				array_walk( $this->_itemList, function(&$oData, $sKey) use (&$aNsData){

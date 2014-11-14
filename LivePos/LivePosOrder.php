@@ -76,14 +76,13 @@ final class LivePos_LivePosOrder extends Stackable {
 						break;
 							
 					case( 0 ): // Sale
-							
-						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 
+						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 						// WEB Only Items or Empty Order
 						if( !$items->hasItems() ){
 
 							$this->worker->addData( array('ignore' => true ) );
-							$errors[] = 'WEB Only Items or Empty Item List';
+							$errors[] = 'WEB Only Items or Empty Item List: ' . implode(',', $items->getItemsArray());
 							break;
 						}
 
@@ -106,17 +105,27 @@ final class LivePos_LivePosOrder extends Stackable {
 							$order->setMultiShipTo( true );
 
 							array_walk( $aOrderToMerge['order']['item'], function( $aItem, $sKey ) use ( &$items ){
-									
+
 								$item = LivePos_Maps_MapFactory::create( 'item', $aItem, $this->_locationData, true );
-								$items->addItem( $item );
+
+								switch( $items->isOldStyle() ){
+
+									case( true ): // OLD STYLE WEBORDER ENTRY
+										$items->addItem( $item );
+										break;
+											
+									case( false ): // New Style... replace item with web order item
+										$items->mergeItem( $item );
+										break;
+								}
 							});
 						}
 
 						$order->addItems( $items->getItemsArray() );
-						
+
 						$order->setShippedTax( $items->getShippingTax() );
 						$order->setShippingCharge( $items->getShippingCharge() );
-						
+
 						$this->_processDiscounts( $order, $items, $discounts );
 
 						// DEBUG STUFF
@@ -227,7 +236,7 @@ final class LivePos_LivePosOrder extends Stackable {
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
 
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
-		//return(  json_encode( $aToEncrypt ) );
-		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
+		return(  json_encode( $aToEncrypt ) );
+		//return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 }
