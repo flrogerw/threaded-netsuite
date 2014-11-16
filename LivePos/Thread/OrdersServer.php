@@ -74,7 +74,7 @@ final class LivePos_Thread_OrdersServer {
 		if( DEBUG ){
 
 			foreach($this->_pool->workers as $worker) {
-				
+
 				$this->_logTestResults($worker->getData() );
 				print_r($worker->getData());
 			}
@@ -110,18 +110,18 @@ final class LivePos_Thread_OrdersServer {
 	private function _logTestResults( $worker ){
 
 
-			$aTestResult = array( ':receipt_id' => $worker['receiptId'],
-					':invoice_id' => $worker['invoiceId'],
-					'pos_total' => $worker['posTotal'],
-					'ns_total' => $worker['orderTotal'],
-					':discount_scope' => $worker['discount_scope'],
-					':discount_type' => $worker['discount_type'],
-					':discount_amount' => $worker['discount_amount'],
-					':discount_total' => $worker['discount_total'],
-					':webitems_total' => $worker['webItems'],
-					':ignored_reason' => $worker['error'] );
-		
-			$this->_model->insertTestResults( $aTestResult );
+		$aTestResult = array( ':receipt_id' => $worker['receiptId'],
+				':invoice_id' => $worker['invoiceId'],
+				'pos_total' => $worker['posTotal'],
+				'ns_total' => $worker['orderTotal'],
+				':discount_scope' => $worker['discount_scope'],
+				':discount_type' => $worker['discount_type'],
+				':discount_amount' => $worker['discount_amount'],
+				':discount_total' => $worker['discount_total'],
+				':webitems_total' => $worker['webItems'],
+				':ignored_reason' => $worker['error'] );
+
+		$this->_model->insertTestResults( $aTestResult );
 	}
 
 	/**
@@ -141,8 +141,10 @@ final class LivePos_Thread_OrdersServer {
 				$this->_webOrders[ $aRawOrder['pos_number'] ] = $aRawOrder['order_json'];
 			});
 		}
-		
-		$this->_model->updateToMerged( $aSetToMerged );
+
+		if( !empty( $aSetToMerged ) ){
+			$this->_model->updateToMerged( $aSetToMerged );
+		}
 	}
 
 
