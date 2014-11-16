@@ -292,8 +292,8 @@ function createOrder(args) {
 				"details" : warn
 			};
 		}
-		return response;
 	}
+	return response;
 }
 
 function setGiftCertificates(record, gcDataArray) {

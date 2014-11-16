@@ -209,13 +209,10 @@ class Netsuite_Netsuite extends Stackable {
 			$aJsonReturn['netsuite']['error'] = $oSetRecord->response;
 
 			return( $aJsonReturn );
-		}
-
-var_dump($oSetRecord->response);
-die();		
+		}	
 		
 		$record = ( !is_numeric( $oSetRecord->response ) )? json_decode( $oSetRecord->response ): $oSetRecord->response;
-
+		
 		switch( true ){
 
 			case( $record == null ):
