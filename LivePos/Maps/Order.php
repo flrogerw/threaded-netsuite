@@ -121,6 +121,11 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->item = $items;
 		$this->setNewTotal();
 	}
+	
+	public function setOrderId( $sOrderId ){
+		
+		$this->custbody_order_source_id = $sOrderId;
+	}
 
 	public function setPosGcCode( $sGcCode ){
 		

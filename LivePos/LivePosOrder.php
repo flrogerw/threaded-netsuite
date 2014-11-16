@@ -54,7 +54,6 @@ final class LivePos_LivePosOrder extends Stackable {
 			$fDiscountTotal = 0;
 			$errors = array();
 			$this->worker->addData( array('receiptId' => $this->receiptId) );
-			$this->worker->addData( array('order_id' => $this->_orderId ) );
 
 			try{
 
@@ -79,12 +78,12 @@ final class LivePos_LivePosOrder extends Stackable {
 
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 						// WEB Only Items or Empty Order
-						if( !$items->hasItems() ){
+						//if( !$items->hasItems() ){
 
-							$this->worker->addData( array('ignore' => true ) );
-							$errors[] = 'WEB Only Items or Empty Item List: ' . implode(',', $items->getItemsArray());
-							break;
-						}
+							//$this->worker->addData( array('ignore' => true ) );
+							//$errors[] = 'WEB Only Items or Empty Item List: ' . implode(',', $items->getItemsArray());
+							//break;
+						//}
 
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_raworder, $this->_locationData );
 						$order = LivePos_Maps_MapFactory::create( 'order', $this->_raworder, $this->_locationData, $this->_orderId );
@@ -103,6 +102,10 @@ final class LivePos_LivePosOrder extends Stackable {
 
 							$aOrderToMerge = json_decode( $this->_orderToMerge, true );
 							$order->setMultiShipTo( true );
+							
+							// Reset ID to Activa ID, TEMP until exposeure in receipt
+							$order->setOrderId( $aOrderToMerge['order']['custbody_order_source_id'] );
+							$this->_orderId = $aOrderToMerge['order']['custbody_order_source_id'];
 
 							array_walk( $aOrderToMerge['order']['item'], function( $aItem, $sKey ) use ( &$items ){
 
@@ -128,6 +131,7 @@ final class LivePos_LivePosOrder extends Stackable {
 
 						$this->_processDiscounts( $order, $items, $discounts );
 
+						$this->worker->addData( array('order_id' => $this->_orderId ) );
 						// DEBUG STUFF
 						$this->worker->addData( array('posTotal' => $order->getPosTotal() ) );
 						$this->worker->addData( array('orderTotal' => $order->getTotal() ) );
@@ -153,6 +157,7 @@ final class LivePos_LivePosOrder extends Stackable {
 
 				LivePos_Db_Model::logError( $e );
 				$this->worker->addData( array('error' => $e->getMessage() ) );
+				$this->worker->addData( array('ignore' => true ) );
 			}
 	}
 
@@ -236,7 +241,7 @@ final class LivePos_LivePosOrder extends Stackable {
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
 
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );
-		//return(  json_encode( $aToEncrypt ) );
-		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
+		return(  json_encode( $aToEncrypt ) );
+		//return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 }

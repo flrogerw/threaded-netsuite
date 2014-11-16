@@ -98,8 +98,9 @@ final class LivePos_Db_Model extends PDO
 	public function updateToMerged( array $aOrdersToMerge ){
 
 		try{
+			$aOrdersToMerge = array_values(array_unique( $aOrdersToMerge ));
 
-			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'SET_ORDERS_MERGED', null, count( array_unique( $aOrdersToMerge ) ) ) );
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'SET_ORDERS_MERGED', null, count( $aOrdersToMerge ) ) );
 
 			if ( !$sth ) {
 				throw new Exception( explode(',', $sth->errorInfo() ) );
@@ -107,7 +108,7 @@ final class LivePos_Db_Model extends PDO
 
 			$aBindArgs = array();
 
-			array_walk( array_unique( $aOrdersToMerge ), function( $sQueueId, $iKey ) use( &$aBindArgs){
+			array_walk( $aOrdersToMerge, function( $sQueueId, $iKey ) use( &$aBindArgs){
 				$aBindArgs[':arg' . $iKey] = $sQueueId;
 			});
 
@@ -121,8 +122,9 @@ final class LivePos_Db_Model extends PDO
 
 
 	public function getProducts( array $aSkus ){
-
+		
 		try{
+			$aSkus = array_values(array_unique( $aSkus ));
 
 			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_PRODUCTS', null, count(  $aSkus ) ) );
 
@@ -133,7 +135,7 @@ final class LivePos_Db_Model extends PDO
 			$aBindArgs = array();
 			$returnArray = array();
 
-			array_walk( array_unique( $aSkus ), function( $sSku, $iKey ) use( &$aBindArgs){
+			array_walk( $aSkus, function( $sSku, $iKey ) use( &$aBindArgs){
 				$aBindArgs[':arg' . $iKey] = $sSku;
 			});
 
@@ -143,7 +145,7 @@ final class LivePos_Db_Model extends PDO
 
 		}catch( Exception $e ){
 			self::logError( $e );
-			throw new Exception( 'Could NOT Get Product Data From the DB' );
+			throw new Exception( 'Could NOT Get Product Data From the DB: ' . implode( ',', $aSkus ) );
 		}
 	}
 

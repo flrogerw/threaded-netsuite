@@ -73,8 +73,6 @@ final class LivePos_Thread_OrdersServer {
 
 		if( DEBUG ){
 
-		
-
 			foreach($this->_pool->workers as $worker) {
 				
 				$this->_logTestResults($worker->getData() );
@@ -94,7 +92,6 @@ final class LivePos_Thread_OrdersServer {
 	private function _getInvoiceId( array $aOrderData ){
 
 		return( $aOrderData['intInvoiceNumber'] );
-
 	}
 
 	/**
@@ -144,6 +141,8 @@ final class LivePos_Thread_OrdersServer {
 				$this->_webOrders[ $aRawOrder['pos_number'] ] = $aRawOrder['order_json'];
 			});
 		}
+		
+		$this->_model->updateToMerged( $aSetToMerged );
 	}
 
 
