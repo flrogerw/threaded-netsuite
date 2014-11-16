@@ -11,7 +11,7 @@ final class LivePos_Db_Query
 {
 	//protected static $GET_CURRENT_ORDERS = "SELECT SQL_NO_CACHE order_activa_id, customer_id FROM process_log WHERE status = 'complete' AND order_activa_id IN (%s)";
 
-	protected static $GET_WEB_ORDERS = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, pos_number, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' AND pos_number IS NOT NULL";
+	protected static $GET_WEB_ORDERS = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, pos_number, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' AND pos_number > ''";
 	
 	protected static $INSERT_RECEIPT = "INSERT INTO livepos_receipts ( receipt_id, receipt_type, transaction_date, location_id, response_code, receipt_string, error_message ) VALUES (:receipt_id, :receipt_type, :transaction_date, :location_id, :response_code, :receipt_string, :error_message) ON DUPLICATE KEY UPDATE response_code = IF((@update_record := (response_code != 200)), :response_code, response_code), receipt_string = IF(@update_record, :receipt_string, receipt_string), times_run = IF(@update_record, (times_run + 1), times_run)";
 	
