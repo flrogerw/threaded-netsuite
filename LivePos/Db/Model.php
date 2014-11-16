@@ -404,7 +404,6 @@ final class LivePos_Db_Model extends PDO
 				$sth->execute( $aTestResults );		
 	
 		}catch( Exception $e ){
-			$this->rollBack();
 			self::logError( $e );
 			throw new Exception( 'Could NOT Enter Test Result Data into Database' );
 		}
