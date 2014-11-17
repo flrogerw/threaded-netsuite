@@ -37,6 +37,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $custbody_pos_ref_num;
 	public $custbody_pos_shipped_tax;
 	public $custbody_pos_shipping_charge;
+	public $custbody_pos_tax_total = 0;
 	public $custbody_pos_trans_id;	
 	public $custbody_source_code;
 	public $custbody_textrequired = false;

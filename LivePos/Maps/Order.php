@@ -50,6 +50,7 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_pos_ref_num;
 	public $custbody_pos_shipped_tax = 0;
 	public $custbody_pos_shipping_charge = 0;
+	public $custbody_pos_tax_total = 0;
 	public $custbody_pos_trans_id;
 	public $customform = 107;
 	public $department;
@@ -243,6 +244,7 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 		// Set Totals
 		$this->custbody_pos_receipt_total = $this->total;
 		$this->total = $this->_postotal = ( $this->total - $this->taxtotal );
+		$this->custbody_pos_tax_total = $this->taxtotal;
 	}
 
 	private function _setInternalSources( $locationData ){

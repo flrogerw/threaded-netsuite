@@ -91,7 +91,11 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custbody_pos_receipt_date' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_location'  => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_shipping_charge'  => array('filter' => FILTER_VALIDATE_FLOAT,
-			'flags'  => FILTER_NULL_ON_FAILURE),			
+			'flags'  => FILTER_NULL_ON_FAILURE),
+
+			'custbody_pos_tax_total' => array('filter' => FILTER_VALIDATE_FLOAT,
+			'flags'  => FILTER_NULL_ON_FAILURE),
+			
 			'custbody_pos_shipped_tax' => array('filter' => FILTER_VALIDATE_FLOAT,
 			'flags'  => FILTER_NULL_ON_FAILURE),
 
