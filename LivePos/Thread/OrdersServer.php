@@ -23,12 +23,34 @@ final class LivePos_Thread_OrdersServer {
 
 	private $_orders = array();
 	protected $_pool;
-	private $_locationsData = array();
-	private $_webOrders = array();
-	private $_model;
 
 	/**
 	 *
+	 * @var ArrayIterator
+	 */
+	private $_locationsData = array();
+
+	/**
+	 * Array of Orders Marked for Merging
+	 *
+	 * @access private
+	 * @var ArrayIterator
+	*/
+	private $_webOrders = array();
+
+	/**
+	 * Database Connection
+	 *
+	 * @access private
+	 * @var Resource
+	*/
+	private $_model;
+
+	/**
+	 * Standard Class Constructor
+	 *
+	 * @access public
+	 * @return void
 	 */
 	public function __construct(){
 
@@ -42,7 +64,9 @@ final class LivePos_Thread_OrdersServer {
 	}
 
 	/**
+	 * Returns true/false if there are orders to be processed.
 	 *
+	 * @access public
 	 * @return boolean
 	 */
 	public function hasOrders(){
@@ -71,11 +95,14 @@ final class LivePos_Thread_OrdersServer {
 		$this->_pool->shutdown();
 		$this->_queueOrders();
 
+		foreach($this->_pool->workers as $worker) {
+			$this->_logTestResults($worker->getData() );
+		}
+
 		if( DEBUG ){
 
 			foreach($this->_pool->workers as $worker) {
 
-				$this->_logTestResults($worker->getData() );
 				print_r($worker->getData());
 			}
 		}
@@ -107,8 +134,14 @@ final class LivePos_Thread_OrdersServer {
 		//return( $aOrderData['strActivaNumber'] );
 	}
 
+	/**
+	 * Logs the Conversion Results from LivePOS Receipt to NesSuite Order.
+	 *
+	 * @access private
+	 * @param array $worker
+	 * @return void
+	 */
 	private function _logTestResults( $worker ){
-
 
 		$aTestResult = array( ':receipt_id' => $worker['receiptId'],
 				':invoice_id' => $worker['invoiceId'],
@@ -125,8 +158,10 @@ final class LivePos_Thread_OrdersServer {
 	}
 
 	/**
+	 * Get Orders Marked as Web Orders from NetSuite Order Queue.
 	 *
-	 * @throws Exception
+	 * @access private
+	 * @return void
 	 */
 	private function _getWebOrders(){
 
@@ -149,10 +184,13 @@ final class LivePos_Thread_OrdersServer {
 
 
 	/**
+	 * Gets Location Data From the Database for Use in Order
+	 * Creation. (i.e. department, entity, lead, etc...)
 	 *
+	 * @access private
 	 * @param int $iLocationId
 	 * @param string $sOrderId
-	 * @return array $aTempLocation
+	 * @return array
 	 */
 	private function _getLocation( $iLocationId, $sOrderId ){
 
@@ -171,13 +209,22 @@ final class LivePos_Thread_OrdersServer {
 		return( $aTempLocation );
 	}
 
+	/**
+	 * Gets Receipts From the Database for Processing.
+	 *
+	 * @access private
+	 * @return void
+	 */
 	private function _getPosOrders(){
 
 		$this->_orders = $this->_model->getPosOrders( LIVEPOS_MAX_PROCESSED );
 	}
 
 	/**
+	 * Queue encrypted orders into NetSuite Database.
 	 *
+	 * @access private
+	 * @return void
 	 */
 	private function _queueOrders(){
 
@@ -206,6 +253,5 @@ final class LivePos_Thread_OrdersServer {
 
 		//$this->_model->queueOrders( $aOrdersArray );
 		$this->_model->updateIgnoredOrders( $aIgnoredOrders );
-
 	}
 }
