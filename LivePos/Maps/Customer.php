@@ -33,6 +33,15 @@ class LivePos_Maps_Customer extends LivePos_Maps_Map {
 	public function setEntityId( $iEntityId = 866094 ){
 		$this->entityid = $iEntityId;
 	}
+	
+	public function mergeCustomer( array $aCustomer ){
+		
+		$this->entityid = null;
+		
+		foreach( $aCustomer as $key => $value ) {
+			$this->$key = $value;
+		}
+	}
 		
 	private function _setInternalSources( $locationData ){
 		

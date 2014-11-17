@@ -102,6 +102,7 @@ final class LivePos_LivePosOrder extends Stackable {
 
 							$aOrderToMerge = json_decode( $this->_orderToMerge, true );
 							$order->setMultiShipTo( true );
+							$customer->mergeCustomer( $aOrderToMerge['customer'] );
 							
 							// Reset ID to Activa ID, TEMP until exposeure in receipt
 							$order->setOrderId( $aOrderToMerge['order']['custbody_order_source_id'] );
