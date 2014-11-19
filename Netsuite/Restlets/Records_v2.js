@@ -249,14 +249,20 @@ function createOrder(args) {
 	var order = JSON.parse(args.data);
 	var response = {};
 
+	// Check For Duplicate Orders
+	if (order.hasOwnProperty('custbody_order_source_id')) {
+
+		var isOrder = checkDuplicates(order.custbody_order_source_id);
+		if (isOrder > 0) {
+			response.recordid = isOrder;
+			return (response);
+		}
+	}
 	/*
-	 * if (order.hasOwnProperty('custbody_order_source_id')) { var isOrder =
-	 * checkDuplicates(order.custbody_order_source_id); if (isOrder != null) {
-	 * return (isOrder); } }
-	 * 
 	 * if (typeof order.addressbook !== 'undefined') { setAddress(order.entity,
 	 * order.addressbook); }
 	 */
+
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
 			if (fieldname != 'recordtype' && fieldname != 'item'
@@ -459,8 +465,8 @@ function checkDuplicates(orderId) {
 	var savedsearch = nlapiCreateSearch('transaction', filters, columns);
 	var results = runSearch(savedsearch);
 
-	var returnString = (results.length > 0) ? results[0]['id'] : null;
-	return JSON.stringify(returnString);
+	var iReturn = (results.length > 0) ? results[0]['id'] : 0;
+	return (iReturn);
 }
 
 /**
