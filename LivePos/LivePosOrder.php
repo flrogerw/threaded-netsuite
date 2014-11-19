@@ -80,9 +80,9 @@ final class LivePos_LivePosOrder extends Stackable {
 						// WEB Only Items or Empty Order
 						//if( !$items->hasItems() ){
 
-							//$this->worker->addData( array('ignore' => true ) );
-							//$errors[] = 'WEB Only Items or Empty Item List: ' . implode(',', $items->getItemsArray());
-							//break;
+						//$this->worker->addData( array('ignore' => true ) );
+						//$errors[] = 'WEB Only Items or Empty Item List: ' . implode(',', $items->getItemsArray());
+						//break;
 						//}
 
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_raworder, $this->_locationData );
@@ -103,7 +103,7 @@ final class LivePos_LivePosOrder extends Stackable {
 							$aOrderToMerge = json_decode( $this->_orderToMerge, true );
 							$order->setMultiShipTo( true );
 							$customer->mergeCustomer( $aOrderToMerge['customer'] );
-							
+
 							// Reset ID to Activa ID, TEMP until exposeure in receipt
 							$order->setOrderId( $aOrderToMerge['order']['custbody_order_source_id'] );
 							$this->_orderId = $aOrderToMerge['order']['custbody_order_source_id'];
@@ -227,7 +227,15 @@ final class LivePos_LivePosOrder extends Stackable {
 					break;
 
 				case( 7 ): // Coupon
+					
 					$discounts->updateDiscountTotal( $oPayment->getAmount() );
+						
+					if( !$discounts->isDiscount( $oPayment->getCouponCode() ) ){
+							
+						$discounts->addDiscount( $oPayment->getCouponCode() );
+					}
+						
+						
 					break;
 			}
 		});

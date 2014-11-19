@@ -258,6 +258,8 @@ final class LivePos_Db_Model extends PDO
 
 
 		try{
+			
+			$aDiscountIds = array_values(array_unique( $aDiscountIds ));
 
 			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_DISCOUNTS', null, count(  $aDiscountIds ) ) );
 
@@ -268,12 +270,16 @@ final class LivePos_Db_Model extends PDO
 			$aBindArgs = array();
 			$returnArray = array();
 
-			array_walk( array_unique( $aDiscountIds ), function( $aDiscountId, $iKey ) use( &$aBindArgs){
+			array_walk( $aDiscountIds, function( $aDiscountId, $iKey ) use( &$aBindArgs){
 				$aBindArgs[':arg' . $iKey] = $aDiscountId;
 			});
 
 				$sth->execute( $aBindArgs  );
-				$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+				$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );	
+
+				if( empty($aResults ) ) {
+					throw new Exception( 'A Coupon Code is Not in DB: ' . implode(',', $aBindArgs ) );
+				}
 				return( $aResults );
 
 		} catch( Exception $e ){

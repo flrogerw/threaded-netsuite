@@ -60,7 +60,16 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 		$this->_getDiscountList( $aDiscounts, false );
 	}
 
+	public function addDiscount( $sDiscountId ){
+		
+		$oModel = new LivePos_Db_Model();
+		$aDiscount = $oModel->getDiscounts( array( $sDiscountId ) );
+		
+		$oModel = null;		 
+		$discount = LivePos_Maps_MapFactory::create( 'discount',  $aDiscount );		
+		$this->_discountList[ $iDiscountId ] = $discount;
 
+	}
 
 	public function getCount(){
 
@@ -79,15 +88,15 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 	}
 
 	private function _getDiscountList( array $aDiscounts, $bToMap = true ){
-		
+
 		array_walk( $aDiscounts, function($aData, $sKey) use ($bToMap){
-			
+				
 			$aMappedDiscount = ( $bToMap )? $this->_map( $aData, $this->_discountListMap ): $aData;
 
-			$discount = LivePos_Maps_MapFactory::create( 'discount',  $aMappedDiscount );			
-			
+			$discount = LivePos_Maps_MapFactory::create( 'discount',  $aMappedDiscount );
+				
 			//if( !$this->isDiscount( $discount->getId() ) ){
-				$this->_discountList[ $discount->getId() ] = $discount;
+			$this->_discountList[ $discount->getId() ] = $discount;
 			//}
 		});
 	}

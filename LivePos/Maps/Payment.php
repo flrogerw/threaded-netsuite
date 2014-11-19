@@ -54,6 +54,11 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 		$this->_map();
 		$this->_logic();
 	}
+	
+	public function getCouponCode(){
+		
+		return( $this->couponcode );
+	}
 
 	public function getCcNumber(){
 		
@@ -61,12 +66,6 @@ class LivePos_Maps_Payment extends LivePos_Maps_Map {
 	}
 	
 	public function getGiftCertId(){
-		
-		//////////////////////  TEST ONLY  /////////////////////////
-		$gcCodes = array( 'store157','t9cnd82d','store231','Store31','z3es59at','store504','store505','store661','store680','store1501','SYYA4K5FQ' );		
-		$rand_key = array_rand($gcCodes);		
-		//return( $gcCodes[$rand_key] );
-		///////////////////////  TEST ONLY END   ///////////////////////////////
 		
 		return( $this->giftcertcode );
 	}
