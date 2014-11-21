@@ -94,7 +94,6 @@ final class Netsuite_Db_Activa extends PDO
         public function logProcess( array $aUpdateData ) {
 
                 try{
-
                         $sth = $this->prepare( Netsuite_Db_Query::getQuery( 'UPDATE_ACTIVA_STATUS' ) );
 
                         if ( !$sth ) {

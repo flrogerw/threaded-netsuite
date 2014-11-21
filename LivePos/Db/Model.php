@@ -5,15 +5,26 @@
  * @author gWilli
  * @version 1.0
  * @final Can NOT Extend
- * @copyright 2013
+ * @copyright 2014
  * @see PDO
- * @uses Netsuite_Db_Db
+ */
+/**
+ * LivePOS Database Model
+ *
+ * @package Netsuite
+ * @subpackage LivePOS
+ * @author gWilli
+ * @version 1.0
+ * @copyright 2014
+ * @uses PDO
+ * @uses Netsuite Db Db
+ * @name LivePos Db Model
  */
 final class LivePos_Db_Model extends PDO
 {
 
 	/**
-	 * Creates Parent DB Connection
+	 * Standard Object Constructor
 	 *
 	 * @access public
 	 * @return void
@@ -29,6 +40,13 @@ final class LivePos_Db_Model extends PDO
 		}
 	}
 
+	/**
+	 * Check for the Existence of Specific Location.
+	 * 
+	 * @param integer $iLocationId
+	 * @throws Exception
+	 * @return boolean
+	 */
 	public static function isValidLocation( $iLocationId ){
 
 		try{
@@ -49,7 +67,7 @@ final class LivePos_Db_Model extends PDO
 
 		}catch( Exception $e ){
 			self::logError( $e );
-			throw new Exception( 'Could NOT Get TaxCode From the DB' );
+			throw new Exception( 'Could NOT Validate Location From the DB' );
 		}
 	}
 
@@ -96,8 +114,13 @@ final class LivePos_Db_Model extends PDO
 	 * @return void
 	 */
 	public function updateToMerged( array $aOrdersToMerge ){
-
+		
 		try{
+			
+			if( empty( $aOrdersToMerge ) ){
+				return;
+			}
+			
 			$aOrdersToMerge = array_values(array_unique( $aOrdersToMerge ));
 
 			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'SET_ORDERS_MERGED', null, count( $aOrdersToMerge ) ) );
@@ -120,7 +143,13 @@ final class LivePos_Db_Model extends PDO
 		}
 	}
 
-
+	/**
+	 * Get Product Information Based on Skus Array
+	 *
+	 * @param array $aSkus
+	 * @access public
+	 * @return array
+	 */
 	public function getProducts( array $aSkus ){
 		
 		try{
@@ -153,7 +182,7 @@ final class LivePos_Db_Model extends PDO
 	 *
 	 *
 	 */
-	public function getEntity( $locationId ){
+	public function getEntity( $iLocationId ){
 
 		$dbResults = array();
 
@@ -165,7 +194,7 @@ final class LivePos_Db_Model extends PDO
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
 
-			$sth->execute( array( $locationId ) );
+			$sth->execute( array( $iLocationId ) );
 			$dbResults = $sth->fetch(PDO::FETCH_ASSOC);
 
 			if( empty($dbResults) ){

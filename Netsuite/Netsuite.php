@@ -75,8 +75,6 @@ class Netsuite_Netsuite extends Stackable {
 
 		$customer = Netsuite_Record::factory()->customer( $this->_order['customer'] );
 
-
-
 		if( !$customer->isOk() ){
 			$aJsonReturn['success'] = false;
 			$aJsonReturn['error'] = implode( ',', $customer->getErrors());
@@ -84,7 +82,6 @@ class Netsuite_Netsuite extends Stackable {
 			$this->worker->addData( array('customer' => $aJsonReturn ) );
 			return;
 		}
-
 
 		switch( true ){
 

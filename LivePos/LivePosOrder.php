@@ -77,14 +77,6 @@ final class LivePos_LivePosOrder extends Stackable {
 					case( 0 ): // Sale
 
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
-						// WEB Only Items or Empty Order
-						//if( !$items->hasItems() ){
-
-						//$this->worker->addData( array('ignore' => true ) );
-						//$errors[] = 'WEB Only Items or Empty Item List: ' . implode(',', $items->getItemsArray());
-						//break;
-						//}
-
 						$customer = LivePos_Maps_MapFactory::create( 'customer', $this->_raworder, $this->_locationData );
 						$order = LivePos_Maps_MapFactory::create( 'order', $this->_raworder, $this->_locationData, $this->_orderId );
 						$discounts = LivePos_Maps_MapFactory::create( 'discountlist', $this->_raworder['enumCouponDiscounts'] );

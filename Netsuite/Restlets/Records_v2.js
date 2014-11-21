@@ -340,8 +340,6 @@ function setGiftCertificates(record, gcDataArray) {
 			record.setLineItemValue('giftcertredemption', 'giftcertcode',
 					counter, gcDataArray[count]['giftcertcode']);
 		} else {
-			// ///////////////////// PUT DISCOUNT HERE
-			// //////////////////////////////
 
 			var discountAmount = parseInt(record.getFieldValue('discountrate')) || 0;
 			var gcAmount = (parseInt(record
@@ -442,8 +440,8 @@ function createCustomer(args) {
 	var recordId = nlapiSubmitRecord(record);
 
 	if (record.getFieldValue('isperson') == "F") {
-		var contactId = createContact(args, existingContact.length);
-		nlapiAttachRecord('contact', contactId, 'customer', recordId, null)
+		var contact = createContact(args, existingContact.length);
+		nlapiAttachRecord('contact', contact.recordid, 'customer', recordId, null)
 	}
 
 	response.recordid = recordId;

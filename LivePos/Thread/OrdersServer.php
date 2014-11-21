@@ -21,12 +21,27 @@
  */
 final class LivePos_Thread_OrdersServer {
 
+	/**
+	 * Holds Orders to be Processed
+	 *
+	 * @var array
+	 * @access private
+	 */
 	private $_orders = array();
+
+	/**
+	 * Holds Worker Threads
+	 *
+	 * @var Thread_Pool
+	 * @access protected
+	*/
 	protected $_pool;
 
 	/**
+	 * Holds Information about Locations
 	 *
-	 * @var ArrayIterator
+	 * @var array
+	 * @access private
 	 */
 	private $_locationsData = array();
 
@@ -34,9 +49,17 @@ final class LivePos_Thread_OrdersServer {
 	 * Array of Orders Marked for Merging
 	 *
 	 * @access private
-	 * @var ArrayIterator
+	 * @var Array
 	*/
 	private $_webOrders = array();
+
+	/**
+	 * Array of Orders Marked as Merged
+	 *
+	 * @access private
+	 * @var Array
+	*/
+	private $_webOrdersMerged = array();
 
 	/**
 	 * Database Connection
@@ -76,8 +99,10 @@ final class LivePos_Thread_OrdersServer {
 	}
 
 	/**
+	 * Sends Stackable Thread to Thread Pool for Processing.
 	 *
 	 * @return void
+	 * @access public
 	 */
 	public function poolOrders() {
 
@@ -87,12 +112,18 @@ final class LivePos_Thread_OrdersServer {
 			$sOrderId = $this->_getOrderId( $aOrderData );
 			$iInvoiceId = $this->_getInvoiceId( $aOrderData );
 			$aLocation = $this->_getLocation( $aOrder['location_id'], $sOrderId );
+			$sOrderToMerge = null;
 
-			$sOrderToMerge = ( isset( $this->_webOrders[ $iInvoiceId ] ) )? Netsuite_Crypt::decrypt( $this->_webOrders[ $iInvoiceId ] , true ): null;
+			if( isset( $this->_webOrders[ $iInvoiceId ] ) ){
+				$sOrderToMerge = Netsuite_Crypt::decrypt( $this->_webOrders[ $iInvoiceId ]['order_data'] , true );
+				$this->_webOrdersMerged[] = $this->_webOrders[ $iInvoiceId ]['queue_id'];
+			}				
+				
 			$aWork[] = $tThread = $this->_pool->submit( new LivePos_LivePosOrder( $sOrderId, $aOrder, $aLocation, $sOrderToMerge ) );
 		}
 
 		$this->_pool->shutdown();
+		$this->_model->updateToMerged( $this->_webOrdersMerged );
 		$this->_queueOrders();
 
 		foreach($this->_pool->workers as $worker) {
@@ -131,7 +162,7 @@ final class LivePos_Thread_OrdersServer {
 	private function _getOrderId( array $aOrderData ){
 
 		return( 'POS_' . $aOrderData['intReceiptNumber']);
-		//return( $aOrderData['strActivaNumber'] );
+		//return( $aOrderData['strActivaNumber'] );  WHEN BECOMES AVAILABLE
 	}
 
 	/**
@@ -158,7 +189,8 @@ final class LivePos_Thread_OrdersServer {
 	}
 
 	/**
-	 * Get Orders Marked as Web Orders from NetSuite Order Queue.
+	 * Get Orders Marked as Web Orders from NetSuite Order Queue
+	 * for Merging with LivePOS Receipt.
 	 *
 	 * @access private
 	 * @return void
@@ -172,13 +204,9 @@ final class LivePos_Thread_OrdersServer {
 
 			array_walk( $aWebOrders, function( $aRawOrder, $sKey ) use ( &$aSetToMerged ){
 
-				$aSetToMerged[] = $aRawOrder['queue_id'];
-				$this->_webOrders[ $aRawOrder['pos_number'] ] = $aRawOrder['order_json'];
+				$this->_webOrders[ $aRawOrder['pos_number'] ]['order_data'] = $aRawOrder['order_json'];
+				$this->_webOrders[ $aRawOrder['pos_number'] ]['queue_id'] = $aRawOrder['queue_id'];
 			});
-		}
-
-		if( !empty( $aSetToMerged ) ){
-			$this->_model->updateToMerged( $aSetToMerged );
 		}
 	}
 
@@ -197,7 +225,6 @@ final class LivePos_Thread_OrdersServer {
 		if( !isset( $this->_locationsData[ $iLocationId ] ) ){
 
 			$this->_locationsData[ $iLocationId ] = $this->_model->getEntity( $iLocationId );
-
 		}
 
 		$aTempLocation = $this->_locationsData[ $iLocationId ];
@@ -246,7 +273,6 @@ final class LivePos_Thread_OrdersServer {
 
 			$aOrdersArray[] = array(
 					':customer_activa_id' => $aWorkerData['entityId'],
-					//':order_activa_id' => ( $aWorkerData['web_items'] )? $aWorkerData['order_id'] .'-POS': $aWorkerData['order_id'],
 					':order_activa_id' => $aWorkerData['order_id'],
 					':order_json' => $aWorkerData['encrypted'] );
 		}
