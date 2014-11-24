@@ -45,8 +45,8 @@ function processOrders(){
 			$processOrder->poolOrders();
 			processOrders();
 		} else {
-			//sleep(5);
-			//Netsuite_Db_Model::resetStalledOrders();
+			sleep(5);
+			Netsuite_Db_Model::resetStalledOrders();
 			return;
 		}
 

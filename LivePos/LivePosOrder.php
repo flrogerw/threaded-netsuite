@@ -58,6 +58,11 @@ final class LivePos_LivePosOrder extends Stackable {
 			try{
 
 				switch( $this->orderType ){
+					
+					case( null ): // Error
+						$this->worker->addData( array('ignore' => true ) );
+						$errors[] = 'Order Type was NULL';
+						break;
 
 					case( 999 ): // Error
 						$this->worker->addData( array('ignore' => true ) );
