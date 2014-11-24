@@ -31,23 +31,26 @@ try{
 	Netsuite_Db_Model::logError( $e );
 }
 
-// Return 10 because that is what the MYSQL_UDF Trigger Expects as a Success Return
-return(10);
+return(10); // MYSQL_UDF Trigger Expects 10 as a Success Return
 exit();
 
-function processOrders(){
+function processOrders( $bResetOrders = false ){
 
 	try{
 		$processOrder = new Thread_Server();
 
-		if( $processOrder->hasOrders() ){
-			Netsuite_Db_Model::setPoolQueueLog( sizeof( $processOrder->orders ) );
-			$processOrder->poolOrders();
-			processOrders();
-		} else {
-			sleep(5);
-			Netsuite_Db_Model::resetStalledOrders();
-			return;
+		switch( true ){
+
+			case( $processOrder->hasOrders() ):
+				Netsuite_Db_Model::setPoolQueueLog( sizeof( $processOrder->orders ) );
+				$processOrder->poolOrders();
+				processOrders( true );
+				break;
+					
+			case( $bResetOrders === true ):
+				sleep(5);
+				Netsuite_Db_Model::resetStalledOrders();
+				break;
 		}
 
 	}catch( Exception $e ){
