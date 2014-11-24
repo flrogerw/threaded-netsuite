@@ -139,7 +139,6 @@ final class LivePos_Thread_OrdersServer {
 		}
 	}
 
-
 	/**
 	 * Returns LivePOS Invoice Id
 	 *

@@ -13,7 +13,7 @@ final class LivePos_Db_Query
 
 	protected static $GET_WEB_ORDERS = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, pos_number, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' AND pos_number > ''";
 	
-	protected static $INSERT_RECEIPT = "INSERT INTO livepos_receipts ( receipt_id, receipt_type, transaction_date, location_id, response_code, receipt_string, error_message ) VALUES (:receipt_id, :receipt_type, :transaction_date, :location_id, :response_code, :receipt_string, :error_message) ON DUPLICATE KEY UPDATE response_code = IF((@update_record := (response_code != 200)), :response_code, response_code), receipt_string = IF(@update_record, :receipt_string, receipt_string), times_run = IF(@update_record, (times_run + 1), times_run)";
+	protected static $INSERT_RECEIPT = "INSERT INTO livepos_receipts ( receipt_id, receipt_type, transaction_date, location_id, response_code, receipt_string, error_message ) VALUES (:receipt_id, :receipt_type, :transaction_date, :location_id, :response_code, :receipt_string, :error_message) ON DUPLICATE KEY UPDATE response_code = IF((@update_record := (response_code != 200)), :response_code, response_code), receipt_string = IF(@update_record, :receipt_string, receipt_string), receipt_type = IF(@update_record, :receipt_type, receipt_type), times_run = IF(@update_record, (times_run + 1), times_run)";
 	
 	protected static $INSERT_PRODUCT = "INSERT INTO livepos_products (product_id, product_sku, product_price, product_description) VALUES ( :product_id, :product_sku, :product_price, :product_description) ON DUPLICATE KEY UPDATE product_sku = :product_sku, product_price = :product_price, product_description = :product_description";
 	
@@ -23,7 +23,7 @@ final class LivePos_Db_Query
 	
 	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( customer_activa_id, order_activa_id, order_json ) VALUES ( :customer_activa_id, :order_activa_id, :order_json)";
 
-	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE receipt_id, location_id, receipt_type, receipt_string FROM livepos_receipts WHERE response_code = 200 AND sent_to_netsuite = 'pending' ORDER BY location_id, receipt_id LIMIT :limit";	
+	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE receipt_id, location_id, receipt_type, receipt_string FROM livepos_receipts WHERE response_code = 200 AND sent_to_netsuite = 'pending' AND receipt_type = 0 ORDER BY location_id, receipt_id ASC LIMIT :limit";	
 	
 	protected static $VALIDATE_LOCATION = "SELECT SQL_CACHE location_id FROM livepos_locations WHERE location_id = :location_id";
 
