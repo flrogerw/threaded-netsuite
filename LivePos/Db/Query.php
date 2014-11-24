@@ -23,7 +23,7 @@ final class LivePos_Db_Query
 	
 	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( customer_activa_id, order_activa_id, order_json ) VALUES ( :customer_activa_id, :order_activa_id, :order_json)";
 
-	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE receipt_id, location_id, receipt_type, receipt_string FROM livepos_receipts WHERE response_code = 200 AND sent_to_netsuite = 'pending' AND receipt_type = 0 ORDER BY location_id, receipt_id ASC LIMIT :limit";	
+	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE receipt_id, location_id, receipt_type, receipt_string FROM livepos_receipts WHERE response_code = 200 AND sent_to_netsuite = 'pending' ORDER BY location_id, receipt_id ASC LIMIT :limit";	
 	
 	protected static $VALIDATE_LOCATION = "SELECT SQL_CACHE location_id FROM livepos_locations WHERE location_id = :location_id";
 
