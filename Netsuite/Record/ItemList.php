@@ -5,7 +5,15 @@
  * $args = array( )
  */
 class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_Interface_INetsuite {
-
+	
+	/**
+	 * Array of Exception Netsuite Ids that need special Processing Rules.
+	 * 
+	 * @var array
+	 * @access public
+	 */
+	private $_discountExceptions = array();
+	
 	/**
 	 *
 	 * @var array
@@ -43,13 +51,6 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 	protected $_entity_id;
 
 	/**
-	 * Array of Exception SKUs that need special Processing Rules
-	 * @staticvar array
-	 * @access public
-	 */
-	public static $EXCEPTION_ITEMS = array();
-
-	/**
 	 *
 	 * Converts Single itemList Entry into Array of Arrays if Not Already One
 	 *
@@ -61,6 +62,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 		$this->_activa_id = $sActivaId;
 		$this->_entity_id = $iEntityId;
 		$this->_ismultishipto = $ismultishipto;
+		$this->_discountExceptions = Netsuite_Db_Model::getExceptionItems( 'discount' );
 		$iCount = count( array_filter( $aItemListData, 'is_array' ) );
 		$this->_itemListArray = ( $iCount == count( $aItemListData ) )? $aItemListData: array( $aItemListData );
 		$this->_validate( $iLocationId );
@@ -91,7 +93,7 @@ class Netsuite_Record_ItemList extends Netsuite_Record_Base implements Netsuite_
 			} else {
 				$this->_itemListEntries[] = $oItem->getItem();
 				// Check For Discount
-				if( $oItem->hasDiscount() ){
+				if( $oItem->hasDiscount() && !in_array( $oItem->item, $this->_discountExceptions ) ){
 					$this->_itemListEntries[] = $oItem->getDiscountItem( $oItem->discountitem, $this->_ismultishipto );
 				}
 			}

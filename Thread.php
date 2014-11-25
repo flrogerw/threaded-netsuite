@@ -2,7 +2,6 @@
 <?php
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
-
 try{
 	// See if Process is Already Running And Netsuite is Alive
 	$pid = new Netsuite_Pid( '/tmp', basename( __FILE__ ) );

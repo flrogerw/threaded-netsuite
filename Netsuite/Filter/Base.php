@@ -58,8 +58,6 @@ class Netsuite_Filter_Base{
 
 			switch( true ) {
 
-
-
 				case( is_array( $mValue ) ):
 
 					$mValue = self::optimizeValues( $mValue );
@@ -145,7 +143,7 @@ class Netsuite_Filter_Base{
 		}
 	}
 
-
+/*
 	protected function _xref() {
 
 		$oDb = new Netsuite_Db_Model();
@@ -166,7 +164,8 @@ class Netsuite_Filter_Base{
 			$this->_record[ $sSearch ] = $sInternalId;
 		}
 	}
-
+*/
+	
 	public function logError( $sError ) {
 		$this->_hasErrors = true;
 		$this->_errors['Critical'][] = $sError;

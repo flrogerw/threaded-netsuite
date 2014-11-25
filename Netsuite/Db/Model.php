@@ -21,6 +21,34 @@ final class Netsuite_Db_Model
 	public function __construct() {
 		$this->_dbHandle = Netsuite_Db_Db::getInstance();
 	}
+	
+	/**
+	 * Returns Item Exception Rules
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	public static function getExceptionItems( $sExceptionType = 'discount'){
+	
+		try{
+			
+			$connection = Netsuite_Db_Db::getInstance();
+			$sth = $connection->prepare( Netsuite_Db_Query::getQuery( 'GET_EXCEPTION_ITEMS', null ) );
+			
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+			
+			$sth->execute( array(  $sExceptionType ) );
+			$dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+			$aFlattenedResults =  iterator_to_array( new RecursiveIteratorIterator( new RecursiveArrayIterator( $dbResults ) ), false);
+			return( $aFlattenedResults );
+	
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get Exception Items From the DB' );
+		}
+	}
 
 	/**
 	 * Resets Stalled orders from Working to Pending 1 Time
@@ -58,12 +86,13 @@ final class Netsuite_Db_Model
 				throw new Exception( explode(',', $sth->errorInfo() ) );
 			}
 
-
 			$sth->execute(  array( ':orders_run' => (int) $iOrdersRun, ':netsuite_id' => NETSUITE_AUTH_EMAIL ) );
+			$connection = null;
 			return( true );
 
 
 		} catch( Exception $e ){
+			$connection = null;
 			self::logError( $e );
 			throw new Exception( 'Could NOT Set Pool Queue Log in the DB' );
 		}
@@ -505,7 +534,7 @@ final class Netsuite_Db_Model
 		}
 	}
 
-
+/*
 	public function getExceptionItems() {
 		try{
 
@@ -528,7 +557,7 @@ final class Netsuite_Db_Model
 
 	}
 
-
+*/
 
 	public function getItem( $sType, $sSearch, $sLocation = 'corporate' ) {
 		try{
@@ -580,7 +609,7 @@ final class Netsuite_Db_Model
 	}
 
 
-	/**
+	/*
 	 * Calls Cross Reference Table
 	 *
 	 * @param string $sType
@@ -589,7 +618,7 @@ final class Netsuite_Db_Model
 	 * @access public
 	 * @throws Exception
 	 * @return mixed int|string
-	 */
+	 
 	public function callXrefTable( $sType, $sSearch ) {
 
 		// Use Customer Table when Applicable
@@ -613,6 +642,7 @@ final class Netsuite_Db_Model
 			throw new Exception( 'Could NOT Get Xref Information From DB' );
 		}
 	}
+	*/
 
 	/**
 	 * Logs System Exceptions to DataBase

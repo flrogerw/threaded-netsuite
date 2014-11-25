@@ -29,12 +29,12 @@ final class Netsuite_Db_Query
 
 	protected static $GET_ITEM = "SELECT SQL_CACHE InternalID FROM [TABLE_PREFIX]_xref_dev WHERE Company = ? AND XrefType = ? AND XrefValue = ? AND Location = ?";
 
-	protected static $GET_EXCEPTION_ITEMS = "SELECT SQL_CACHE * FROM [TABLE_PREFIX]_sku_exceptions";
+	//protected static $GET_EXCEPTION_ITEMS = "SELECT SQL_CACHE * FROM [TABLE_PREFIX]_sku_exceptions";
 
 	//protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' GROUP BY customer_activa_id ORDER BY queue_id LIMIT :limit";
 
 	protected static $GET_ORDER_QUEUE = "SELECT SQL_NO_CACHE customer_activa_id, order_activa_id, queue_id, order_json FROM fotobar_order_queue WHERE order_status = 'pending' AND NULLIF(pos_number,'') IS NULL GROUP BY customer_activa_id ORDER BY queue_id LIMIT :limit";
-	
+
 	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( order_json ) VALUES (:order_json)";
 
 	protected static $UPDATE_ORDER_QUEUE = "UPDATE fotobar_order_queue SET order_status = :order_status, order_complete_date = :order_complete_date WHERE queue_id = :queue_id";
@@ -66,6 +66,8 @@ final class Netsuite_Db_Query
 	protected static $UPDATE_ACTIVA_STATUS = "UPDATE orders SET netsuite_status = :netsuite_status, netsuite_id = :netsuite_id WHERE id = :order_activa_id";
 
 	protected static $LOG_ERROR = "INSERT INTO error_log (message, file, line, trace) VALUES (:message,:file,:line,:trace)";
+
+	protected static $GET_EXCEPTION_ITEMS = "SELECT SQL_CACHE netsuite_id FROM item_exceptions WHERE exception_type = ?";
 
 	protected static $RESET_STALLED_ORDERS = "UPDATE fotobar_order_queue SET times_run = (@cur_value := times_run) + 1, order_status = 'pending' WHERE ( order_status = 'working' OR order_status = 'error' ) AND times_run < 2 AND order_working_date > DATE_SUB(NOW() , INTERVAL 12 HOUR)";
 

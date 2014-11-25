@@ -111,7 +111,7 @@ class Netsuite_Record_Item extends Netsuite_Record_Base implements Netsuite_Inte
 				'item' =>  $sDiscountType,
 				'rate' => $this->discounttotal,
 				'quantity' => 1,
-				'istaxable' => false,
+				'istaxable' => true,
 				'price' => -1
 		);
 
