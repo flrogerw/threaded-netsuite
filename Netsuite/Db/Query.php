@@ -67,7 +67,7 @@ final class Netsuite_Db_Query
 
 	protected static $LOG_ERROR = "INSERT INTO error_log (message, file, line, trace) VALUES (:message,:file,:line,:trace)";
 
-	protected static $RESET_STALLED_ORDERS = "UPDATE fotobar_order_queue SET times_run = (@cur_value := times_run) + 1, order_status = 'pending' WHERE ( order_status = 'working' OR order_status = 'error' ) AND times_run < 2 AND order_working_date < DATE_SUB(NOW() , INTERVAL 12 HOUR)";
+	protected static $RESET_STALLED_ORDERS = "UPDATE fotobar_order_queue SET times_run = (@cur_value := times_run) + 1, order_status = 'pending' WHERE ( order_status = 'working' OR order_status = 'error' ) AND times_run < 2 AND order_working_date > DATE_SUB(NOW() , INTERVAL 12 HOUR)";
 
 	/**
 	 *

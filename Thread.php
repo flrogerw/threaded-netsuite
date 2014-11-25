@@ -41,7 +41,7 @@ function processOrders( $bResetOrders = false ){
 
 		switch( true ){
 
-			case( $processOrder->hasOrders() ):
+			case( $processOrder->hasOrders() === true ):
 				Netsuite_Db_Model::setPoolQueueLog( sizeof( $processOrder->orders ) );
 				$processOrder->poolOrders();
 				processOrders( true );
@@ -50,6 +50,7 @@ function processOrders( $bResetOrders = false ){
 			case( $bResetOrders === true ):
 				sleep(5);
 				Netsuite_Db_Model::resetStalledOrders();
+				processOrders( false );
 				break;
 		}
 

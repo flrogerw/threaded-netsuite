@@ -24,7 +24,7 @@ class Netsuite_Filter_Item extends Netsuite_Filter_Base implements Netsuite_Inte
 
 	protected $_gcRequiredFields = array(
 			'giftcertfrom',
-			'giftcertmessage',
+			//'giftcertmessage',
 			'giftcertnumber',
 			'giftcertrecipientemail',
 			'giftcertrecipientname'
