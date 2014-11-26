@@ -152,7 +152,13 @@ final class LivePos_Db_Model extends PDO
 	 */
 	public function getProducts( array $aSkus ){
 		
+		
 		try{
+			
+			if( empty( $aSkus ) ){
+				return;
+			}
+			
 			$aSkus = array_values(array_unique( $aSkus ));
 
 			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_PRODUCTS', null, count(  $aSkus ) ) );
