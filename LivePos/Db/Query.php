@@ -41,6 +41,7 @@ final class LivePos_Db_Query
 	
 	protected static $SET_DEBUG_ORDERS = "INSERT INTO livepos_debug_results ( receipt_id, invoice_id, pos_total, ns_total, discount_scope, discount_type, discount_amount, discount_total, webitems_total, ignored_reason ) VALUES( :receipt_id,:invoice_id,:pos_total,:ns_total,:discount_scope,:discount_type,:discount_amount,:discount_total,:webitems_total,:ignored_reason )  ON DUPLICATE KEY UPDATE invoice_id = :invoice_id, pos_total = :pos_total, ns_total = :ns_total, discount_scope = :discount_scope, discount_type = :discount_type, discount_amount = :discount_amount, discount_total = :discount_total, webitems_total = :webitems_total, ignored_reason = :ignored_reason";
 	
+	protected static $GET_DISCOUNTED_ITEMS = "SELECT SQL_CACHE sku FROM livepos_discount_items where discount_code = ?";
 	
 	/**
 	 *

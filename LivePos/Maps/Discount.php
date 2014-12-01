@@ -8,6 +8,7 @@ class LivePos_Maps_Discount extends LivePos_Maps_Map {
 	public $discountend;
 	public $discountuse;
 	public $discounttype;
+	protected $_discounteditems = array();
 
 	protected $_mapArray = array(
 			'discount_code' =>'discountid',
@@ -30,6 +31,18 @@ class LivePos_Maps_Discount extends LivePos_Maps_Map {
 		$this->_aData = $aDiscount;
 		$this->_map();
 		$this->_logic();
+		$this->_getDiscountedItems();
+	}
+	
+	public function hasDiscountedItems(){
+		
+		$bReturn = ( !empty( $this->_discounteditems ) )? true: false;
+		return( $bReturn );
+	}
+	
+	public function getDiscountItems(){
+		
+		return( $this->_discounteditems );
 	}
 
 	public function getType(){
@@ -63,6 +76,13 @@ class LivePos_Maps_Discount extends LivePos_Maps_Map {
 
 	public function getScope(){
 		return( $this->discountscope );
+	}
+	
+	private function _getDiscountedItems(){
+		
+		$model = new LivePos_Db_Model();
+		$this->_discounteditems = $model->getDiscountedItems( $this->getId() );
+		$model = null;
 	}
 
 	private function _logic(){

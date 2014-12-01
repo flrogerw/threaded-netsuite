@@ -70,6 +70,31 @@ final class LivePos_Db_Model extends PDO
 			throw new Exception( 'Could NOT Validate Location From the DB' );
 		}
 	}
+	
+	public function getDiscountedItems( $iDiscountCode ){
+		
+		$dbResults = array();
+		
+		try{
+		
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'GET_DISCOUNTED_ITEMS' ) );
+		
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+		
+			$sth->execute( array( $iDiscountCode ) );
+			$dbResults = $sth->fetchAll(PDO::FETCH_ASSOC);
+			
+			$aFlattenedResults =  iterator_to_array( new RecursiveIteratorIterator( new RecursiveArrayIterator( $dbResults ) ), false);
+			
+			return( $aFlattenedResults );
+		
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get Discounted Items From DB' );
+		}
+	}
 
 	/**
 	 * Update Netsuite Queued Order to Merged for Orders with Both
@@ -151,8 +176,7 @@ final class LivePos_Db_Model extends PDO
 	 * @return array
 	 */
 	public function getProducts( array $aSkus ){
-		
-		
+				
 		try{
 			
 			if( empty( $aSkus ) ){

@@ -55,22 +55,22 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 			$this->_itemList[] = $item;
 		}
 	}
-	
-	
+
+
 	public function isOldStyle(){
-		
+
 		$bReturn = false;
-		
+
 		array_walk( $this->_webItems, function($oItem, $sKey) use (&$bReturn){
 
 			if( $oItem->item == 'Custom Art'){
 				$bReturn = true;
 			}
 		});
-		
-		return( $bReturn );
+
+			return( $bReturn );
 	}
-	
+
 
 	public function mergeItem( LivePos_Maps_Item $item ){
 
@@ -189,9 +189,12 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 	public function applyDiscount( LivePos_Maps_Discount $discount ){
 
 		array_walk( $this->_itemList, function(&$oItem, $sKey) use ($discount){
+				
+			if( empty( $discount->getDiscountItems() ) || in_array( $oItem->getSku() , $discount->getDiscountItems() ) ){
 
-			$fDiscountAmount = $discount->getDiscountTotal( $oItem->getPrice() );
-			$oItem->applyDiscount( $fDiscountAmount );
+				$fDiscountAmount = $discount->getDiscountTotal( $oItem->getPrice() );
+				$oItem->applyDiscount( $fDiscountAmount );
+			}					
 		});
 	}
 
