@@ -47,9 +47,9 @@ function processOrders( $bResetOrders = false ){
 				break;
 					
 			case( $bResetOrders === true ):
-				sleep(5);
-				Netsuite_Db_Model::resetStalledOrders();
-				processOrders( false );
+				//sleep(5);
+				//Netsuite_Db_Model::resetStalledOrders();
+				//processOrders( false );
 				break;
 		}
 

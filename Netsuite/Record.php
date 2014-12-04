@@ -9,6 +9,10 @@ class Netsuite_Record{
 	public static function factory() {
 		return new Netsuite_Record();
 	}
+	
+	public function refund(  array $refundArray ) {
+		return( new Netsuite_Record_Refund( $refundArray ) );
+	}
 
 	public function addressBook(  array $addressArray ) {
 		return( new Netsuite_Record_AddressBook( $addressArray ) );

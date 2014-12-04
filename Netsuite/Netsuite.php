@@ -36,11 +36,24 @@ class Netsuite_Netsuite extends Stackable {
 		});
 
 			try{
-				$this->worker->addData( array( 'queue_id' => $this->_queueId ) );
-				$customer = $this->_createCustomer();
 
-				if( $customer !== false  ){
-					$this->_createSalesOrder( $customer );
+				$this->worker->addData( array( 'queue_id' => $this->_queueId ) );
+
+				switch( true ){
+						
+					case( isset( $this->_order['refund'] ) ):
+						
+						$this->_createRefund();
+						break;
+						
+					default:
+						
+						$customer = $this->_createCustomer();
+
+						if( $customer !== false  ){
+							$this->_createSalesOrder( $customer );
+						}
+						break;
 				}
 
 			} catch( Exception $e ) {
@@ -50,6 +63,24 @@ class Netsuite_Netsuite extends Stackable {
 			}
 
 			$this->_logResults();
+	}
+	
+	protected function _createRefund(){
+		
+		$refund = Netsuite_Record::factory()->refund( $this->_order['refund'] );
+		
+		if( !$salesOrder->isOk() ){
+		
+			$aJsonReturn['success'] = false;
+			$aJsonReturn['error'] = implode( ',', $salesOrder->getErrors());
+			$aJsonReturn['warn'] = ( $salesOrder->hasWarnings() )? implode( ',', $salesOrder->getWarnings() ):null;
+			$aJsonReturn['json'] = json_encode( $this->_order['order'] );
+			$this->worker->addData( $aJsonReturn );
+			return;
+		}
+		
+		$results = $this->_process('refund', $salesOrder );
+		$this->worker->addData( array( 'refund' => $results ) );
 	}
 
 	protected function _createSalesOrder( $customer ){
@@ -101,7 +132,7 @@ class Netsuite_Netsuite extends Stackable {
 				$results = $this->_process('customer', $customer );
 
 				if( $results['success'] === true ){
-						
+
 					$model = new Netsuite_Db_Model();
 					$activa = new Netsuite_Db_Activa();
 					$customer->entityid = $results['netsuite']['record_id'];
@@ -206,10 +237,10 @@ class Netsuite_Netsuite extends Stackable {
 			$aJsonReturn['netsuite']['error'] = $oSetRecord->response;
 
 			return( $aJsonReturn );
-		}	
-		
+		}
+
 		$record = ( !is_numeric( $oSetRecord->response ) )? json_decode( $oSetRecord->response ): $oSetRecord->response;
-		
+
 		switch( true ){
 
 			case( $record == null ):

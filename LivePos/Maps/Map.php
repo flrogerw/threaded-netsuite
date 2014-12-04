@@ -27,31 +27,31 @@ class LivePos_Maps_Map {
 		$aReturn = array();
 		$iCounter = 0;
 			
-			foreach( $aData as $sKey=>$mValue ){
-					
-				switch( true ){
+		foreach( $aData as $sKey=>$mValue ){
+				
+			switch( true ){
 
-					case( is_array( $mValue && empty( $mValue ) ) ):
-					case( $mValue == null ):
-						continue;
-						break;
+				case( is_array( $mValue && empty( $mValue ) ) ):
+				case( $mValue == null ):
+					continue;
+					break;
 
-					case( is_array( $aData[$sKey] ) ):
-						$this->_map( $aData[$sKey], $aMapArray );
-						break;
+				case( is_array( $aData[$sKey] ) ):
+					$this->_map( $aData[$sKey], $aMapArray );
+					break;
 
-					case( $aMapArray != null && $aMapArray[$sKey] != null ):
-						$sParam = $aMapArray[$sKey];
-						$aReturn[ $iCounter ][ $sParam ] = $mValue;
-						break;
+				case( $aMapArray != null && $aMapArray[$sKey] != null ):
+					$sParam = $aMapArray[$sKey];
+					$aReturn[ $iCounter ][ $sParam ] = $mValue;
+					break;
 
-					case( property_exists( $this, $this->_mapArray[$sKey] ) ):
-						$sParam = $this->_mapArray[$sKey];
-						$this->$sParam = $mValue;
-						break;
-				}
+				case( property_exists( $this, $this->_mapArray[$sKey] ) ):
+					$sParam = $this->_mapArray[$sKey];
+					$this->$sParam = $mValue;
+					break;
 			}
-			$iCounter++;
+		}
+		$iCounter++;
 
 		return( $aReturn );
 	}
@@ -74,6 +74,10 @@ class LivePos_Maps_Map {
 
 			case('LivePos_Maps_Customer'):
 				return( json_encode( array('customer' => $this->getPublicVars() ) ) );
+				break;
+
+			case('LivePos_Maps_Refund'):
+				return( json_encode( array('refund' => $this->getPublicVars() ) ) );
 				break;
 
 			default:
