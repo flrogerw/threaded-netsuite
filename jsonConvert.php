@@ -3,12 +3,14 @@
 
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
-$subject = "12/01/2014";
-$pattern = "/^(0[1-9]|1[012])\/([012][0-9]|3[01])\/(20)\d\d$/";
-var_dump(preg_match($pattern, $subject));
 
+
+$xxx= '{"order":{"_source":"Fotobar","location":1,"department":1,"leadsource":-6,"custbody_order_source":1,"ccprocessor":1,"custbody_order_source_id":"F45108","trandate":"10\/22\/2013","taxtotal":2.76,"taxrate":6,"shippingcost":0,"handlingcost":0,"discounttotal":-1,"total":46.76,"pnrefnum":"4778730","paymentmethod":8,"_gcamount":0,"item":[{"description":"Polaroid 3.5 x 4.25","item":1150,"_fulfilled_by":10,"quantity":45,"custcol_page_count":45,"custcol_image_url":"http:\/\/www.polaroidfotobar.com\/pdf\/45108\/73130\/63056c81\/73130.pdf","rate":1,"shipmethod":10, "subtotal":45,"custcol_produce_in_store":false,"custcol_store_pickup":false,"discounttotal":0,"location":10,"addressee":""}],"ismultishipto":false,"shipmethod":10,"shipaddress":"Shantese Smith\nShantese Smith\n1610 Frankford street se 104\nWashington dc 20020","shipdate":"10\/25\/2013","customform":129,"custbody_pos_trans_id":"4778730","billaddress":"Shantese Smith\nShantese Smith\n1610 Frankford street se 104\nWashington dc 20020","custbody_web_discount_code":""},"customer":{"custentity_customer_source":1,"custentity_customer_source_id":"F52506","firstname":"shantese","lastname":"smith","email":"shantese1980@gmail.com","isperson":true,"custentity_fotomail":"shantese52506@myfotobar.com","_source":"Fotobar","custentitycustomer_department":1}}';
+
+echo( encrypt(  $xxx )  );
 
 die();
+
 
 $xxx = '[{"enumCouponDiscounts":[],"enumProductsSold":[{"intProductSoldUnits":-1,"dblProductSoldNetPrice":-70.0,"enumSerialNumbers":[],"dblProductSoldCurrentRegularPrice":70.0,"dblProductSoldCurrentCost":0.0,"dblProductSoldTotalTax1":-4.2,"dblProductSoldTotalTax2":0.0,"dblProductSoldTotalTax3":0.0,"intProductID":1921875,"strProductName":"4-in-1 Lens 5/5s","strProductSKU":"510421"}],"enumPayments":[{"strCheckState":null,"strCheckLicenseNumber":null,"strCheckNumber":null,"strAuthorizationCode":"","strAuthorizationTransactionID":"0","strCustomPaymentName":"","strGiftCardCode":"","strGiftCardPIN":null,"strCouponCode":"","bIsProcessedExternally":false,"strCreditCardExpiration":"","strCreditCardNumberLast4":"","strCreditCardTypeLabel":"","intCreditCardTypeID":0,"dblAmount":-74.2,"intPaymentTypeID":1,"strPaymentTypeLabel":"Cash","intReceiptNumber":0}],"enumEmployees":[{"intEmployeeID":81290,"strEmployeeExternalID":null,"strEmployeeFirstName":"Bruno","strEmployeeLastName":"Bretas"}],"enumGroups":[],"dblReturnedTotal":0.0,"bIsTaxExempted":false,"bValueAddedTax":false,"intTransactionTypeID":1,"intPaymentTypeID":1,"strCustomerFirstName":" x","strCustomerLastName":"x","strLocationAddress":"6000 Glades Road #1032C, Boca Raton, FL, 33431, US","strLocationName":"Boca Town Center","strLocationTimeZone":"(GMT-05:00) Eastern Time (US & Canada)","strLocationCurrency":"$","dtTransactionDate":"2014-12-01T17:51:19","intCustomerID":24870542,"intReferenceReceiptNumber":24358134,"strTransactionTypeLabel":"REFUND","strPaymentTypeLabel":"Cash","dblTax1":-4.2,"dblTax2":0.0,"dblTax3":0.0,"dblGrandTotal":-74.2,"intInvoiceNumber":17543566,"intReceiptNumber":24358161,"intLaneID":2,"intLocationID":27449}]';
 var_dump( json_decode(  $xxx ));

@@ -54,6 +54,7 @@ class Netsuite_Record_Refund extends Netsuite_Record_Base implements Netsuite_In
 	public function getRefund() {
 
 		$aRefund =  $this->_filter->optimizeValues( $this->_filter->getRecord() );
+		$aRefund['item'] =  $this->item;
 		return( $aRefund );
 	}
 
