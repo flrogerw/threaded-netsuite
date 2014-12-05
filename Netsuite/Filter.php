@@ -9,6 +9,10 @@ class Netsuite_Filter {
 	public static function factory() {
 		return new Netsuite_Filter();
 	}
+	
+	public function refund(  array $refundArray ) {
+		return( new Netsuite_Filter_Address( $refundArray ) );
+	}
 
 	public function address(  array $addressArray ) {
 		return( new Netsuite_Filter_Address( $addressArray ) );
