@@ -78,7 +78,6 @@ final class LivePos_LivePosOrder extends Stackable {
 						
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 						$refund = LivePos_Maps_MapFactory::create( 'refund', $this->_raworder, $this->_locationData, $items );
-						var_dump( $refund->getPublicVars() );
 						
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedRefundJson( $refund ) ) );
 						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
@@ -254,8 +253,8 @@ final class LivePos_LivePosOrder extends Stackable {
 	private function _getEncryptedRefundJson( LivePos_Maps_Refund $refund ){
 	
 		$aToEncrypt = array( 'refund' => $refund->getPublicVars() );
-		return(  json_encode( $aToEncrypt ) );
-		//return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
+		//return(  json_encode( $aToEncrypt ) );
+		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
 	
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){

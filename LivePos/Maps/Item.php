@@ -121,7 +121,8 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 		// Set Item to Match Store Location
 		$this->location = $this->_aLocationData['location_netsuite_id'];
 		$this->_sku = $this->item;
-		$this->rate = ( $this->_netprice / $this->quantity );
+		$this->quantity = abs( $this->quantity );
+		$this->rate = abs( $this->_netprice / $this->quantity );
 	}
 
 	/**

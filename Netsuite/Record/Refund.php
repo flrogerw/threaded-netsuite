@@ -55,6 +55,6 @@ class Netsuite_Record_Refund extends Netsuite_Record_Base implements Netsuite_In
 
 	public function getJSON() {
 
-		return( json_encode( $this->getSalesOrder() ) );
+		return( json_encode( $this->getRefund() ) );
 	}
 }

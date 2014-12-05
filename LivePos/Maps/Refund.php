@@ -60,6 +60,9 @@ final class LivePos_Maps_Refund extends LivePos_Maps_Map {
 		
 		$this->memo = 'Receipt Id: ' . $this->_refReceipt;
 		$this->item = $items->getItemsArray();
+		
+		$date = new DateTime( $this->trandate );
+		$this->trandate =  $date->format('m/d/Y');
 	}
 
 	private function _setInternalSources( $locationData ){
