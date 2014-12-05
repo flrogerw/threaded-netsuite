@@ -31,7 +31,7 @@ class Netsuite_Filter_Refund extends Netsuite_Filter_Base implements Netsuite_In
 			'paymentmethod' => array('filter' => FILTER_VALIDATE_INT),
 			'trandate' => array('filter' => FILTER_VALIDATE_REGEXP,
 					'flags'  => FILTER_NULL_ON_FAILURE,
-					'options' => array('regexp' => "/^(20)\d\d\/(0[1-9]|1[012])\/([012][0-9]|3[01])$/" ) )
+					'options' => array('regexp' => "/^(0[1-9]|1[012])\/([012][0-9]|3[01])\/(20)\d\d$/" ) )
 	);
 
 

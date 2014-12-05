@@ -30,7 +30,7 @@ final class LivePos_Maps_Refund extends LivePos_Maps_Map {
 	public $item = array();
 	public $location;
 	public $memo;
-	public $paymentmethod;
+	public $paymentmethod = 8;
 	public $trandate;
 
 

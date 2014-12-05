@@ -3,6 +3,12 @@
 
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
+$subject = "12/01/2014";
+$pattern = "/^(0[1-9]|1[012])\/([012][0-9]|3[01])\/(20)\d\d$/";
+var_dump(preg_match($pattern, $subject));
+
+
+die();
 
 $xxx = '[{"enumCouponDiscounts":[],"enumProductsSold":[{"intProductSoldUnits":-1,"dblProductSoldNetPrice":-70.0,"enumSerialNumbers":[],"dblProductSoldCurrentRegularPrice":70.0,"dblProductSoldCurrentCost":0.0,"dblProductSoldTotalTax1":-4.2,"dblProductSoldTotalTax2":0.0,"dblProductSoldTotalTax3":0.0,"intProductID":1921875,"strProductName":"4-in-1 Lens 5/5s","strProductSKU":"510421"}],"enumPayments":[{"strCheckState":null,"strCheckLicenseNumber":null,"strCheckNumber":null,"strAuthorizationCode":"","strAuthorizationTransactionID":"0","strCustomPaymentName":"","strGiftCardCode":"","strGiftCardPIN":null,"strCouponCode":"","bIsProcessedExternally":false,"strCreditCardExpiration":"","strCreditCardNumberLast4":"","strCreditCardTypeLabel":"","intCreditCardTypeID":0,"dblAmount":-74.2,"intPaymentTypeID":1,"strPaymentTypeLabel":"Cash","intReceiptNumber":0}],"enumEmployees":[{"intEmployeeID":81290,"strEmployeeExternalID":null,"strEmployeeFirstName":"Bruno","strEmployeeLastName":"Bretas"}],"enumGroups":[],"dblReturnedTotal":0.0,"bIsTaxExempted":false,"bValueAddedTax":false,"intTransactionTypeID":1,"intPaymentTypeID":1,"strCustomerFirstName":" x","strCustomerLastName":"x","strLocationAddress":"6000 Glades Road #1032C, Boca Raton, FL, 33431, US","strLocationName":"Boca Town Center","strLocationTimeZone":"(GMT-05:00) Eastern Time (US & Canada)","strLocationCurrency":"$","dtTransactionDate":"2014-12-01T17:51:19","intCustomerID":24870542,"intReferenceReceiptNumber":24358134,"strTransactionTypeLabel":"REFUND","strPaymentTypeLabel":"Cash","dblTax1":-4.2,"dblTax2":0.0,"dblTax3":0.0,"dblGrandTotal":-74.2,"intInvoiceNumber":17543566,"intReceiptNumber":24358161,"intLaneID":2,"intLocationID":27449}]';
 var_dump( json_decode(  $xxx ));

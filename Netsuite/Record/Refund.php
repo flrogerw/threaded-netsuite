@@ -17,6 +17,10 @@ class Netsuite_Record_Refund extends Netsuite_Record_Base implements Netsuite_In
 		try{
 
 			$aRefund = ( array_merge( get_object_vars( $this ), $aRefund ) );
+			
+			foreach( $aRefund as $key => $value ) {
+				$this->$key = $value;
+			}
 
 			if( !$this->_validate( $this->getFields() ) ) {
 				return;
