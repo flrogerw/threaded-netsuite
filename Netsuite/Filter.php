@@ -11,7 +11,7 @@ class Netsuite_Filter {
 	}
 	
 	public function refund(  array $refundArray ) {
-		return( new Netsuite_Filter_Address( $refundArray ) );
+		return( new Netsuite_Filter_Refund( $refundArray ) );
 	}
 
 	public function address(  array $addressArray ) {

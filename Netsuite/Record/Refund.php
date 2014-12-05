@@ -18,8 +18,6 @@ class Netsuite_Record_Refund extends Netsuite_Record_Base implements Netsuite_In
 
 			$aRefund = ( array_merge( get_object_vars( $this ), $aRefund ) );
 
-			$this->_setValues( $aRefund );
-
 			if( !$this->_validate( $this->getFields() ) ) {
 				return;
 			}
@@ -34,17 +32,6 @@ class Netsuite_Record_Refund extends Netsuite_Record_Base implements Netsuite_In
 		}
 	}
 
-	
-	protected function _setValues( array $aRefund ) {
-
-		try{
-
-
-		} catch( Exception $e ) {
-			self::logError( 'Could NOT Create Refund: ' . $e->getMessage() );
-			return;
-		}
-	}
 
 	protected function _validate( $aRefund ) {
 

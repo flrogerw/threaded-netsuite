@@ -18,9 +18,6 @@ class Netsuite_Filter_Base{
 	protected $_warnings;
 	protected $_record;
 
-	protected $_xRefFields = array(
-			'paymentmethod' => 'PaymentMethod'
-	);
 
 	// Some NS values use 'null' to flag actions.  Enter the NS param name to avoid unsetting empty values.
 	public static $_noOptimize = array(
@@ -143,28 +140,6 @@ class Netsuite_Filter_Base{
 		}
 	}
 
-/*
-	protected function _xref() {
-
-		$oDb = new Netsuite_Db_Model();
-
-		foreach( $this->_xRefFields as $sSearch => $mType ) {
-
-			if( !isset( $this->_record[ $sSearch ] ) ) {
-				continue;
-			}
-
-			$sInternalId = $oDb->callXrefTable( $mType, $this->_record[ $sSearch ], NETSUITE_COMPANY );
-
-			if( $sInternalId == null ){
-				$this->logError( "Missing Id Ref: type->$mType, XrefValue->{$this->_record[ $sSearch ]}, company->" . NETSUITE_COMPANY);
-				continue;
-			}
-
-			$this->_record[ $sSearch ] = $sInternalId;
-		}
-	}
-*/
 	
 	public function logError( $sError ) {
 		$this->_hasErrors = true;

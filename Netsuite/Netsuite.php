@@ -72,9 +72,9 @@ class Netsuite_Netsuite extends Stackable {
 		if( !$refund->isOk() ){
 
 			$aJsonReturn['success'] = false;
-			$aJsonReturn['error'] = implode( ',', $refund->getErrors());
+			$aJsonReturn['error'] = implode( ',', $refund->getErrors() );
 			$aJsonReturn['warn'] = ( $refund->hasWarnings() )? implode( ',', $refund->getWarnings() ):null;
-			$aJsonReturn['json'] = json_encode( $this->_order['order'] );
+			$aJsonReturn['json'] = json_encode( $this->_order['refund'] );
 			$this->worker->addData( $aJsonReturn );
 			return;
 		}
