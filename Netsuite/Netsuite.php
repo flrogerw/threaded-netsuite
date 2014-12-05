@@ -40,14 +40,14 @@ class Netsuite_Netsuite extends Stackable {
 				$this->worker->addData( array( 'queue_id' => $this->_queueId ) );
 
 				switch( true ){
-						
+
 					case( isset( $this->_order['refund'] ) ):
-						
+
 						$this->_createRefund();
 						break;
-						
+
 					default:
-						
+
 						$customer = $this->_createCustomer();
 
 						if( $customer !== false  ){
@@ -64,22 +64,22 @@ class Netsuite_Netsuite extends Stackable {
 
 			$this->_logResults();
 	}
-	
+
 	protected function _createRefund(){
-		
+
 		$refund = Netsuite_Record::factory()->refund( $this->_order['refund'] );
-		
-		if( !$salesOrder->isOk() ){
-		
+
+		if( !$refund->isOk() ){
+
 			$aJsonReturn['success'] = false;
-			$aJsonReturn['error'] = implode( ',', $salesOrder->getErrors());
-			$aJsonReturn['warn'] = ( $salesOrder->hasWarnings() )? implode( ',', $salesOrder->getWarnings() ):null;
+			$aJsonReturn['error'] = implode( ',', $refund->getErrors());
+			$aJsonReturn['warn'] = ( $refund->hasWarnings() )? implode( ',', $refund->getWarnings() ):null;
 			$aJsonReturn['json'] = json_encode( $this->_order['order'] );
 			$this->worker->addData( $aJsonReturn );
 			return;
 		}
-		
-		$results = $this->_process('refund', $salesOrder );
+
+		$results = $this->_process('refund', $refund );
 		$this->worker->addData( array( 'refund' => $results ) );
 	}
 
