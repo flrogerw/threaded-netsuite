@@ -25,17 +25,15 @@ function getAddressObj(addressText, defaultBill, defaultShip) {
 	addrObj.city = cityStateZip.join(' ');
 
 	// Check for Addr3
-	if (addArray.length == 6) {
+	if (addArray.length == 5) {
 		addrObj.addr3 = addArray.pop();
 	}
 	// Check for Addr2
-	if (addArray.length == 5) {
+	if (addArray.length == 4) {
 		addrObj.addr2 = addArray.pop();
 	}
 
 	// Finish Populating Address Object
-
-	addrObj.addr2 = addArray.pop();
 	addrObj.addr1 = addArray.pop();
 	addrObj.addressee = addArray.pop();
 	addrObj.attention = addArray.join(' ');

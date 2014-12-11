@@ -167,6 +167,7 @@ class Netsuite_Netsuite extends Stackable {
 		$sIsSuccess = ( $aResults['customer']['success'] == true && $aResults['order']['success'] == true )? 'complete': 'error';
 		$sCustomerStatus = ( $aResults['customer']['success'] == true )? 'success': 'fail';
 		$sOrderStatus = ( $aResults['order']['success'] == true )? 'success': 'fail';
+		$sRefundStatus = ( $aResults['refund']['success'] == true )? 'success': 'fail';
 
 		switch( true )
 		{

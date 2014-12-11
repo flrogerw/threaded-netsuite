@@ -55,13 +55,45 @@ function getBinNumber(location) {
 
 	switch (parseInt(location)) {
 
+	case (2):
+		return 'Delray';
+		break;
+	
 	case (7):
 		return 'BocaTC';
 		break;
+		
+	case (9):
+		return 'Linq';
+		break;
+		
 	case (11):
 		return 'Culver';
 		break;
-
+		
+	case (12):
+		return 'Topanga';
+		break;
+		
+	case (13):
+		return 'SantaAnita';
+		break;
+		
+	case (14):
+		return 'VF';
+		break;
+		
+	case (15):
+		return 'Oakridge';
+		break;
+		
+	case (16):
+		return 'SFCentre';
+		break;	
+		
+	case (17):
+		return 'Roseville';
+		break;
 	}
 
 }

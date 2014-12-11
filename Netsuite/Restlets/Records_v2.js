@@ -244,7 +244,7 @@ function setItems(record, items) {
 
 function createOrder(args) {
 
-	var fulfillLocations = [ 7, 11 ]
+	var fulfillLocations = [ 7, 11, 12, 13, 14, 15, 16 ];
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
 	var response = {};
@@ -340,6 +340,8 @@ function setGiftCertificates(record, gcDataArray) {
 			record.setLineItemValue('giftcertredemption', 'giftcertcode',
 					counter, gcDataArray[count]['giftcertcode']);
 		} else {
+			// ///////////////////// PUT DISCOUNT HERE
+			// //////////////////////////////
 
 			var discountAmount = parseInt(record.getFieldValue('discountrate')) || 0;
 			var gcAmount = (parseInt(record
@@ -441,7 +443,8 @@ function createCustomer(args) {
 
 	if (record.getFieldValue('isperson') == "F") {
 		var contact = createContact(args, existingContact.length);
-		nlapiAttachRecord('contact', contact.recordid, 'customer', recordId, null)
+		nlapiAttachRecord('contact', contact.recordid, 'customer', recordId,
+				null)
 	}
 
 	response.recordid = recordId;
