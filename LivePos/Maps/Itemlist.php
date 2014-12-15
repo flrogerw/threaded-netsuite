@@ -73,7 +73,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 
 	public function mergeItem( LivePos_Maps_Item $item ){
-
+	
 		$bMatched = false;
 
 		array_walk( $this->_itemList, function($oItem, $sKey) use ( $item, &$bMatched ){
@@ -180,8 +180,13 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 		$aItemsArray = array();
 
 		foreach( $this->_itemList as $oItem ){
+			
+			$aItemVars = $oItem->getPublicVars();
+			if( !isset( $aItemVars['rate'] ) ){
+				$aItemVars['rate'] = 0;
+			}
 
-			$aItemsArray[] = $oItem->getPublicVars();
+			$aItemsArray[] = $aItemVars;
 		}
 		return( $aItemsArray );
 	}

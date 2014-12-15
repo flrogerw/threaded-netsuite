@@ -11,6 +11,12 @@ function getAddressString(address) {
 	return (addressString.join('\n'))
 }
 
+function decodeHtmlEntity(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+	return String.fromCharCode(dec);
+	});
+	}
+
 function getAddressObj(addressText, defaultBill, defaultShip) {
 
 	// Reverse Engineering for Address Elements from AddressText

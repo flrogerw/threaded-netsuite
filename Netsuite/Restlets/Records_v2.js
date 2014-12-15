@@ -19,8 +19,7 @@ function Records(datain) {
 			}
 		}
 
-		var args = JSON
-				.parse(decode64(decodeURIComponent(request_fields['rq'])));
+		var args = JSON.parse(decodeHtmlEntity(decode64(decodeURIComponent(request_fields['rq']))));
 
 		switch (request_fields['method'].toLowerCase()) {
 

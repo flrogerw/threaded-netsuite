@@ -123,6 +123,7 @@ final class LivePos_LivePosOrder extends Stackable {
 											
 									case( false ): // New Style... replace item with web order item
 										$items->mergeItem( $item );
+										
 										break;
 								}
 							});

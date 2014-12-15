@@ -34,7 +34,7 @@ class LivePos_Maps_Item extends LivePos_Maps_Map {
 	public $phone;
 	public $price = -1;
 	public $quantity = 0;
-	public $rate;
+	public $rate = 0;
 	public $shipaddress;
 	public $shipmethod = 10;
 	public $state;
