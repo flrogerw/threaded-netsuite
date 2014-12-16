@@ -139,7 +139,8 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 
 			$this->entity = $this->_customer->entityid;
 			$this->_tmp_items_list = $aSalesOrder['item'];
-
+			$this->custbody_web_discount_code = $this->_promocode;
+			
 
 			// Set Bill && Ship Address String
 			if( !empty( $this->addressbook ) ){

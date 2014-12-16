@@ -69,9 +69,19 @@ final class LivePos_LivePosOrder extends Stackable {
 						$errors[] = 'Error Code 999';
 						break;
 
-					case( 2 ): // EXCHANGE ???
-						$this->worker->addData( array('ignore' => true ) );
-						$errors[] = 'Exchange';
+					case( 2 ): // EXCHANGE - Swap for Different Item
+					case( 3 ): // EXCHANGE - One for One Exchange
+						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
+						$exchange = LivePos_Maps_MapFactory::create( 'exchange', $this->_raworder, $this->_locationData, $items );
+
+						var_dump($exchange);
+						
+						die();
+						
+						
+						$this->worker->addData( array('encrypted' => $this->_getEncryptedExchangeJson( $exchange ) ) );
+						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
+						$this->worker->addData( array('order_id' => $this->_orderId ) );
 						break;
 
 					case( 1 ): // REFUND
