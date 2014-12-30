@@ -28,7 +28,7 @@ class Netsuite_Crypt {
 		mcrypt_generic_deinit( $td );
 		mcrypt_module_close( $td );
 	
-		return( $decrypted );
+		return( htmlspecialchars_decode($decrypted, ENT_QUOTES ) );
 	
 	}
 	

@@ -58,7 +58,7 @@ final class LivePos_LivePosOrder extends Stackable {
 			try{
 
 				switch( $this->orderType ){
-					
+						
 					case( null ): // Error
 						$this->worker->addData( array('ignore' => true ) );
 						$errors[] = 'Order Type was NULL';
@@ -69,26 +69,29 @@ final class LivePos_LivePosOrder extends Stackable {
 						$errors[] = 'Error Code 999';
 						break;
 
-					case( 2 ): // EXCHANGE - Swap for Different Item
 					case( 3 ): // EXCHANGE - One for One Exchange
+						$this->worker->addData( array('ignore' => true ) );
+						$errors[] = 'One for One Exchange';
+						break;
+
+					case( 2 ): // EXCHANGE - Swap for Different Item
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 						$exchange = LivePos_Maps_MapFactory::create( 'exchange', $this->_raworder, $this->_locationData, $items );
 
 						var_dump($exchange);
-						
 						die();
-						
-						
+
+
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedExchangeJson( $exchange ) ) );
 						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
 						$this->worker->addData( array('order_id' => $this->_orderId ) );
 						break;
 
 					case( 1 ): // REFUND
-						
+
 						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
 						$refund = LivePos_Maps_MapFactory::create( 'refund', $this->_raworder, $this->_locationData, $items );
-						
+
 						$this->worker->addData( array('encrypted' => $this->_getEncryptedRefundJson( $refund ) ) );
 						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
 						$this->worker->addData( array('order_id' => $this->_orderId ) );
@@ -133,7 +136,7 @@ final class LivePos_LivePosOrder extends Stackable {
 											
 									case( false ): // New Style... replace item with web order item
 										$items->mergeItem( $item );
-										
+
 										break;
 								}
 							});
@@ -241,20 +244,20 @@ final class LivePos_LivePosOrder extends Stackable {
 					break;
 
 				case( 7 ): // Coupon
-					
-					$discounts->updateDiscountTotal( $oPayment->getAmount() );
 						
+					$discounts->updateDiscountTotal( $oPayment->getAmount() );
+
 					if( !$discounts->isDiscount( $oPayment->getCouponCode() ) ){
 							
 						$discounts->addDiscount( $oPayment->getCouponCode() );
 					}
-						
-						
+
+
 					break;
 			}
 		});
 
-			// Added for Reconsiliation between the 2 systems
+			// Added for Reconciliation between the 2 systems
 			$order->setCCTotal( $payments->getTotalByType( 2 ) );
 			$order->setGCTotal( $payments->getTotalByType( 8 ) );
 			$order->setCashTotal( $payments->getTotalByType( 1 ) );
@@ -262,12 +265,12 @@ final class LivePos_LivePosOrder extends Stackable {
 	}
 
 	private function _getEncryptedRefundJson( LivePos_Maps_Refund $refund ){
-	
+
 		$aToEncrypt = array( 'refund' => $refund->getPublicVars() );
 		//return(  json_encode( $aToEncrypt ) );
 		return( Netsuite_Crypt::encrypt( json_encode( $aToEncrypt ) ) );
 	}
-	
+
 	private function _getEncryptedJson( LivePos_Maps_Customer $customer, LivePos_Maps_Order $order ){
 
 		$aToEncrypt = array( 'order' => $order->getPublicVars(), 'customer' => $customer->getPublicVars() );

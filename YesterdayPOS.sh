@@ -11,6 +11,14 @@ sleep 61
 #Oakridge
 /usr/local/share/threaded-netsuite/LivePos.php  -l 27889 -d yesterday -t receipts
 
+sleep 61
 
+#Valley Fair
+/usr/local/share/threaded-netsuite/LivePos.php  -l 27890 -d yesterday -t receipts
+
+sleep 61
+
+#Santa Anita
+/usr/local/share/threaded-netsuite/LivePos.php  -l 27645 -d yesterday -t receipts
 
 /usr/local/share/threaded-netsuite/LivePos.php -t orders
