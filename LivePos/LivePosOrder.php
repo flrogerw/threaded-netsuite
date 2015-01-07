@@ -58,7 +58,7 @@ final class LivePos_LivePosOrder extends Stackable {
 			try{
 
 				switch( $this->orderType ){
-						
+
 					case( null ): // Error
 						$this->worker->addData( array('ignore' => true ) );
 						$errors[] = 'Order Type was NULL';
@@ -69,22 +69,10 @@ final class LivePos_LivePosOrder extends Stackable {
 						$errors[] = 'Error Code 999';
 						break;
 
+					case( 2 ): // EXCHANGE - Swap for Different Item
 					case( 3 ): // EXCHANGE - One for One Exchange
 						$this->worker->addData( array('ignore' => true ) );
-						$errors[] = 'One for One Exchange';
-						break;
-
-					case( 2 ): // EXCHANGE - Swap for Different Item
-						$items = LivePos_Maps_MapFactory::create( 'itemlist', $this->_raworder['enumProductsSold'], $this->_locationData );
-						$exchange = LivePos_Maps_MapFactory::create( 'exchange', $this->_raworder, $this->_locationData, $items );
-
-						var_dump($exchange);
-						die();
-
-
-						$this->worker->addData( array('encrypted' => $this->_getEncryptedExchangeJson( $exchange ) ) );
-						$this->worker->addData( array('entityId' => $this->_locationData['location_entity'] ) );
-						$this->worker->addData( array('order_id' => $this->_orderId ) );
+						$errors[] = 'Exchange';
 						break;
 
 					case( 1 ): // REFUND
@@ -244,7 +232,7 @@ final class LivePos_LivePosOrder extends Stackable {
 					break;
 
 				case( 7 ): // Coupon
-						
+
 					$discounts->updateDiscountTotal( $oPayment->getAmount() );
 
 					if( !$discounts->isDiscount( $oPayment->getCouponCode() ) ){

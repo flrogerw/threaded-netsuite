@@ -1,10 +1,34 @@
 #!/usr/bin/php
 <?php 
-
+/**
+ * 1
+ * After hours of negotiating you finally convince me that lunch, while not a great idea, it isnt the end of the world.  Our first hurdle...
+ * getting off property without being seen together.  We pour over reams of google map printouts and do miriads of reverse tri-anglation calculations
+ * and finally agree to just pick me up on the corner.
+ *    At first you could feel a small but understandable amount of aprehension in the conversation, but after a few jokes and a near miss with a bus, we both settle
+ *    in for an hour of uninterupted time together away from prying eyes. After just a few minuets of driving, I direct you to a small parking lot across from our destination and instruct you to park.
+ *    As we begin to cross the street I see a car coming towards us, I instinctly reach out and grab your hand and lead you to safety. As the car passes
+ *    you comment on how that would have been a perfect oportunity to get rid of you.  to which I reply, i like manual strangulation."it is more personal".
+ *    we are still lauging when we reach the door where we realize we are still holdng hands.  With a resounding "EWWWWWW" you pull it back and wipe it on your jeans.
+ *    I laugh and open the door for you.
+ *    
+ *    2
+ *    Once inside, we wander around commenting and wise cracking at the wide variety of crap they sell.  After some debate, we settle on a couple of slices of pizza and water.
+ *    we find a table outside and settle in.  As I finish my first sip of water, I explain my phobia for eating in front of strangers and you laugh and take a huge bite off your slice and
+ *    chew with your mouth open. We laugh and find ourself caught in an awkward extended stare.  This was just the first of several we would have during lunch.
+ *    So many so we hear the people at the next table comment on 'How cute it is'.  We realize the time and get up to leave, I offer you my hand and you refuse, laughing "Not this time sailor'.
+ *    
+ *    3
+ *    We spend the ride back patting ourselves one the back for not ending up in the back seat and re affirming one another that we can pull this off.  we laugh at the old lady in the check out lane
+ *    at the market that had the shit stains in her shorts that we didnt think the other one had seen.  You tell me a little about 'him' and I tell you about 'her' and before we knew it you were pulling over
+ *    to drop me off at the corner.  As I jump out I remind you that this is a one time thing and we have our last 'uncomfortable stare'.  As you pull off, you nearly side swipe a car driving by.  I laugh and
+ *    remind myself to tease you about it later.
+ * 
+ * 
+ */
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' );
 
-
-$xxx = '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';
+$xxx = 'nx3arHBVbhV2elo6n7cdf46hqZw+di9SKB7KIWI/3fIcHnt2nct1bT4rX2uvEPpzlV7Agzj9Zgv+QB8Ir7mPBu1gCbbgeV+r7Tc9xy4uXRUYAAwIkNvd7bEb4jIzQnUWfA3L+OofUBdog7gwGnhtANL6njySGchuN3Fg9NfABmGht9L/cM9EQV4vz/HmO+qyEcslcXPlHR1qvhQ6Gu6JFD3FzOWTlFuYQ+jjuZ/er0Teg1P9+PFYpA84NH50Qsj4KXjkjjrQZkMCt+kLRPOE31yEo3fvpYQtrH55NLFWL5cay1RZ+qQZnBE7rGDEy57D0/pwNMCltVJH1i2Ho3zyJA1eq6iJkrtQSgCrYClktJP7BPmutLnYQLA8f9XXMS8TcJaekjtZY33+rcSdJyvn9gCsH7L5I+FL9eBPueqZmU6Cm/bLjzEVKDC8DzIJJsJOKj1NRv7hEAd4uzzv297u4emZdHzgXcy+AdIeZ3xhv0dGldHXRfWdAGmTmBoPRF6wE1YyzSRPMMqwGdp4BgeuL09kVc61ezjXv3xhk+s/1QomVInEpOm4pQZryFMOXttSTOavWahxy5FdJYhvKW/ljkXsXFsIeeSoMRJpUT/t3pIa1jG1AhcM9eC2bbG0kU9Vi2qTCqrDt6AO+LdJQ90vE/GHzwTNkv0J6kVKp3Wru4q8FJ4WWTbPmnP58aQ9I6WA6+ogT8hR8Idzg9cT7+plNAVJuoOEuG+Km2QOcHQMeIP2hwvo0EGfO63DslOEODzKd9MLy5TRcerZt7KXAn/Uy/9pXcutcSEB/alj6VEhP10YbjviIF/lGsqe7xYAWC2/D1Ob+y+Rx1huuZsNrHf3vHRhs5wrr/w46BG/2oY2tr84A66RDz+YhzLo5f0aJrhe+6xNrWe1BKrS1/j+pfjIrExqj5wpwSH9C0/2I1Dl+z2ts8RL1ln/myB4Doi1AZDxmwZXJzv3vta7+6l7nXuDno9Vp+LyBehppdrRAGoc2s8FEMHcQZCNfZWJq47a9+p0t0rTo+MP/vme7hSBuF9bw6BHj8sTSuopGFxHbIoimiQKq8kyrRpxj5889qlb62Wt0Ouxg4Dhnx3lgvUot8T5lYenx6o2T/IL3NxAmgLYJwY3GfQEzIbIgbkPxq4ecZUPhdNSN9JPmJsXDdUIvw9BJ0tGKVrf6zfk9HttmZhIg1ZCdrxTKMcM6sGNPBjD8hg/YvCSovE+fraKHaiN7sDo5v/JKgxr35HbYQDL+NaMrMPbU7Ykj6LVwZlX/ytY6EkFw/H5bW24Ni7MDtNxctwrXoencxuDpyag/M3QqUE07OP6TplneBJAVB5p+aTzqPLrgmf3tNyZO90yDY+DF/FNwHvAbGciUBUGH7bi9smiOVSgkvgWIqtYlh2t6b9jx2r6F9nIosjFTNjpY8WoQzKZVjc8+KftJv4gRJndNwStkNB/unaP4wWKoB2ZWyM3sHKMO+UG5KqJnjv4gybdjJK0hrm+5+56vQEfvd7nPaWF5z+/bYasZsM8gFM6LJwYaKFIKoLXRg4bke6HY3Vk5nkuy01ZA5WPXRcs2wok6XK0btGMOyMj8fuJs0l27Kdawb49gKN8v/Q8Ajn2RW59hWBDu0rSjrrkvF4NVO+933CtG1GLnX3atqtSDEJmWTVoBq3IoCm8BHPd+ImtwO8MN1Iccn3AZvKD4LXV8zvHYErRnfpKqiJmKCw+tAE+fUC1rV1O8v5zEBOJdqfQKsolyfVQL/bFsJ9ZJLAGJj2LeaDkFk5qFus9LkmGPARBWSDJ24WTBL5b38v9mlm1PiniGQIKAWG/OTdXH91LNwkDYnTWZH3CKyqBZPJjoKSYXu6xkbdcIfrC5bPKMcksp2NxY5AQmIr6V1ouPR3b8UQRiJW4HYYDQ8kE3VcC6IUSTYz9GauqZRMVFkRWndTZQLUS5XXrJQ==';
 echo(  decrypt(   $xxx  ) );
 
 

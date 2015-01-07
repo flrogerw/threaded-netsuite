@@ -46,13 +46,44 @@ final class LivePos_Maps_Exchange extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	 */
-	public function __construct( array $aExchange, $locationData, LivePos_Maps_Itemlist $items ) {
+	public function __construct( array $aExchange ) {
 	
 		parent::__construct();
 		$this->_aData = $aExchange;
-		$this->_map();
-		$this-> _setInternalSources( $locationData );
-		$this->_logic( $items );
+		//$this->_map();
+		//$this-> _setInternalSources( $locationData );
+		//$this->_logic( $items );
+	}
+	
+	public function getRefundJson(){
+		
+		$aRefund = $this->_aData;
+		
+		
+		// intProductSoldUnits
+		
+		
+		
+		return( $this->_aData['enumProductsSold'] );
+		//return( json_encode( $this->_aData ) );
+		
+	}
+	
+	public function getSaleJson(){
+	
+		$aSalesOrder = $this->_aData;
+		$aItems = array();
+		
+		foreach( $aSalesOrder['enumProductsSold'] as $value ){
+			
+			if( $value['intProductSoldUnits'] > 0 ){
+				$aItems[] = $value;
+			}
+		}
+		
+		$aSalesOrder['enumProductsSold'] = $aItems;
+
+		return( json_encode( $aSalesOrder ) );
 	}
 	
 	private function _logic( $items ){
