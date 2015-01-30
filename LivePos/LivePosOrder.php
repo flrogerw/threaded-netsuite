@@ -250,6 +250,7 @@ final class LivePos_LivePosOrder extends Stackable {
 			$order->setGCTotal( $payments->getTotalByType( 8 ) );
 			$order->setCashTotal( $payments->getTotalByType( 1 ) );
 			$order->setPosGcCode( $payments->getGcIdList() );
+			$order->setPosPromoCode( $oPayment->getCouponCode() );
 	}
 
 	private function _getEncryptedRefundJson( LivePos_Maps_Refund $refund ){

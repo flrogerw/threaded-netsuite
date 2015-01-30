@@ -44,6 +44,7 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_pos_invoice;
 	public $custbody_pos_location;
 	public $custbody_pos_postranstime;
+	public $custbody_pos_promo_code;
 	public $custbody_pos_receipt;
 	public $custbody_pos_receipt_date;
 	public $custbody_pos_receipt_total = 0;
@@ -126,6 +127,11 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public function setOrderId( $sOrderId ){
 		
 		$this->custbody_order_source_id = $sOrderId;
+	}
+	
+	public function setPosPromoCode( $sPromoCode ){
+		
+		$this->custbody_pos_promo_code = $sPromoCode;
 	}
 
 	public function setPosGcCode( $sGcCode ){

@@ -81,6 +81,7 @@ class Netsuite_Filter_SalesOrder extends Netsuite_Filter_Base implements Netsuit
 			'custbody_pos_invoice' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_ref_num' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_receipt' => array('filter' => FILTER_SANITIZE_STRING),
+			'custbody_pos_promo_code' => array('filter' => FILTER_SANITIZE_STRING),
 			'custbody_pos_cash_total' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'custbody_pos_cc_total' => array('filter' => FILTER_VALIDATE_FLOAT),
 			'custbody_pos_gc_code'  => array('filter' => FILTER_SANITIZE_STRING),

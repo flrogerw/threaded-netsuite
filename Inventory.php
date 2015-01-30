@@ -2,7 +2,7 @@
 <?php
 /**
  * Add Suspended Sale Class and Example Code
- * 
+ *
  * @author gWilli
  * @version 1.0
  */
@@ -11,119 +11,71 @@ require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' ); // Has LivePOS 
 
 /**
  * Store Location Id
- */
+*/
 $iLocationId = 28225;
 
-/**
- * Store Employee Id
- */
-$iEmployeeId = 87759;
+//$iLocationId = 27449;
 
-/**
-* Activa Order Id
- */
-$sFotobarId = 'FDEV12345';
+$call = new LivePOS();
 
-/**
- * Customer email
- */
-$sCustoemrEmail = 'roger@roger17.jp';
+//$aInventory = array( 'intLocationID' => $iLocationId );
+//$call->sendRequest('GetLocationInventory', $call->getSessionId(), $aInventory);
+//var_dump( json_decode($call->getDataString()) );
 
-/**
- * Customer LivePOS ID
- */
-$iCustomerId = null;
+//$call->sendRequest('GetProductCategories', $call->getSessionId());
+//foreach( json_decode($call->getDataString()) as $crap ){
+//	echo( $crap->strProductCategoryName . ' / ' .  $crap->intProductCategoryID . "\n" );
+//}
 
-
-$call = new LivePos();
-
-// Test for Existence in DB before Calling 'AddCustomer'
-if( $iCustomerId == null ){
-	
-	$aCustomer = array( 'strEmail' => $sCustoemrEmail );
-	$call->sendRequest('AddCustomer', $call->getSessionId(), $aCustomer);
-	
-	if( $call->isOk() ){
-		
-		$aParsedCustomer = $call->ParseCustomer();
-		$iCustomerId = $aParsedCustomer->intResultID;
-
-		var_dump( $call->getResponse() );
-		//WRITE CUSTOMER ID TO DB HERE
-		
-	} else{
-
-		throw new Exception( $call->getMessage() );
-	}
-
-} else{
-	
-	$iCustomerId = DB_RESULT; // Use DB Result as $iCustomerId
-}
-
-	$aSuspendedSale = array(
-			'intClientID' => $iCustomerId,
-			'strReferenceCode' => $sFotobarId,
-			'intLaneID' => 1,
-			'bIsLocationTaxExempt' => false,
-			'intLocationID' => $iLocationId,
-			'enumEmployees' => array( array('intEmployeeID' => $iEmployeeId, 'dblEmployeeSalesPercentage' => 100)),
-			'enumProducts' => array( array(
-					'intProductID' => 1922251,
-					'intProductUnits' => 1,
-					'dblProductPrice' => 1,
-					'bIsTaxExempt' => false,
-					'dblTaxPerc1' => 0.095,
-					'dblTaxPerc2' => 0.00,
-					'dblTaxPerc3' => 0.00,
-					'enumSerialNumbers' => array()))
-	);
-
-	$call->sendRequest('AddSuspendedSale', $call->getSessionId(), $aSuspendedSale );
-
-	if( $call->isOk() ){
-		
-		# IT WORKED!   DO SOMETHING SUPER BITCHEN HERE
-		var_dump( $call->getResponse() );
-		
-	}else{
-		
-		# UH OH SHITE BROKE!
-		throw new Exception( $call->getMessage() );
-	}
+$InventoryItem = array(
+		'intLocationID' => $iLocationId,
+		'intProductID' =>,
+		'intMinimumUnits' =>,
+		'intUnitsAvailable' =>,
+		'dblProductPrice' =>,
+		'dblProductTax1' =>,
+		'dblProductTax2' =>,
+		'dblProductTax3' =>,
+		'dblMinimumPrice' =>,
+		'bAlertIfBelowMinimumUnits' =>,
+		'bAutoPurchaseOrderIfBelowMinimumUnits' =>,
+		'bIsFixedPrice' =>,
+		'bIsTaxExempted' =>
+		);
 
 
-	
-	
+$call->sendRequest('UpdateLocationInventory', $call->getSessionId(), $InventoryItem );
+
 
 /**
- * LivePOS API Stuff
- * 
+ * Posts Suspended Sale to LivePOS
+ * Also Creates LivePOS Customer if Needed
+ *
  * @author gWilli
  * @version 1.0
  * @uses Configure.php
- */
-class LivePos {
+*/
+class LivePOS {
 
 	/**
 	 * Holds Call Response
-	 * 
+	 *
 	 * @var array
 	 * @access private
 	 */
 	private $_response = array();
-	
+
 	/**
 	 * Flag for Errors
-	 * 
+	 *
 	 * @var boolean
 	 * @access private
-	 */
+	*/
 	private $_hasErrors = false;
-	
+
 	/**
 	 * Holds Authorization Response
-	 * 
+	 *
 	 * @access private
 	 * @var string
 	 */
@@ -131,7 +83,7 @@ class LivePos {
 
 	/**
 	 * Standard Object Constructor
-	 * 
+	 *
 	 * @param boolean $bCreateAuth
 	 * @throws Exception
 	 */
@@ -193,7 +145,7 @@ class LivePos {
 		$oMessage = json_decode( $this->_response['data'] );
 		return( $oMessage->Message );
 	}
-	
+
 	/**
 	 * Returns Entire Response Array
 	 *
@@ -203,6 +155,11 @@ class LivePos {
 	public function getResponse(){
 
 		return( $this->_response );
+	}
+
+	public function getDataString(){
+
+		return( $this->_response['data'] );
 	}
 
 	/**
@@ -229,7 +186,7 @@ class LivePos {
 		$header = array('APISessionKey: ' . $sSessionId,
 				'Content-Type: application/json',
 				'Content-length: '. $iContentLength,
-		        'Accept: */*');
+		'Accept: */*');
 
 		return( $header );
 	}
