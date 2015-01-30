@@ -31,6 +31,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $custbody_pos_invoice;
 	public $custbody_pos_location;
 	public $custbody_pos_postranstime;
+	public $custbody_pos_promo_code;
 	public $custbody_pos_receipt;
 	public $custbody_pos_receipt_date;
 	public $custbody_pos_receipt_total = 0;
