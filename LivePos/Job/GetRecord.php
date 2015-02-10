@@ -144,4 +144,22 @@ final class LivePos_Job_GetRecord {
 		$this->_hasErrors = true;
 		curl_close($cURL);
 	}
+	
+	public function getDataString(){
+	
+		return( $this->_response['data'] );
+	}
+	
+	/**
+	 * Returns the Message Part of the Response
+	 * Includes More Verbose Error Message
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function getMessage(){
+	
+		$oMessage = json_decode( $this->_response['data'] );
+		return( $oMessage->Message );
+	}
 }

@@ -22,12 +22,31 @@ $iEmployeeId = 87759;
 /**
 * Activa Order Id
  */
-$sFotobarId = 'FDEV12345';
+$sFotobarId = 'FDEV12366';
 
 /**
  * Customer email
+ * MUST BE DISTINCT
  */
-$sCustoemrEmail = 'roger@roger17.jp';
+$sCustoemrEmail = 'roger@roger26.jp';
+
+/**
+ * Customer First Name
+ * 
+ */
+$sFirstName = 'Bob';
+
+/**
+ * Customer Last Name
+ *
+ */
+$sLastName = 'Smith';
+
+/**
+ * Customer Fone Number
+ * MUST BE DISTINCT
+ */
+$sPhoneNumber = '1297807890';
 
 /**
  * Customer LivePOS ID
@@ -40,7 +59,13 @@ $call = new LivePos();
 // Test for Existence in DB before Calling 'AddCustomer'
 if( $iCustomerId == null ){
 	
-	$aCustomer = array( 'strEmail' => $sCustoemrEmail );
+	$aCustomer = array('strPhone' => $sPhoneNumber,
+	'strEmail' => $sCustoemrEmail,
+	'strFirstName' => $sFirstName,
+	'strLastName' => $sLastName,
+	'strNotes' => '');
+	
+	//$aCustomer = array( 'strEmail' => $sCustoemrEmail );
 	$call->sendRequest('AddCustomer', $call->getSessionId(), $aCustomer);
 	
 	if( $call->isOk() ){

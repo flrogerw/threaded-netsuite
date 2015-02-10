@@ -229,7 +229,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 			return;
 		}
 
-		$this->shipmethod = $this->_tmp_items_list[0]['shipmethod'];
+		$this->shipmethod = ( intval( $this->shipmethod ) > 0 )? $this->shipmethod: $this->_tmp_items_list[0]['shipmethod'];
 		return( $oItemList->getItemList() );
 	}
 }
