@@ -243,7 +243,7 @@ function setItems(record, items) {
 
 function createOrder(args) {
 
-	var fulfillLocations = [ 7, 11, 12, 13, 14, 15, 16, 17 ];
+	var fulfillLocations = [ 2, 7, 11, 12, 13, 14, 15, 16, 17 ];
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
 	var response = {};

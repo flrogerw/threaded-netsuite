@@ -160,7 +160,7 @@ final class LivePos_Thread_OrdersServer {
 	 */
 	private function _getOrderId( array $aOrderData ){
 
-		$sOrderId = ( isset( $aOrderData['strReferenceCode'] )  )? $aOrderData['strReferenceCode']: 'POS_' . $aOrderData['intReceiptNumber'];
+		$sOrderId = ( isset( $aOrderData['strReferenceCode'] ) && $aOrderData['strReferenceCode'] != '' )? $aOrderData['strReferenceCode']: 'POS_' . $aOrderData['intReceiptNumber'];
 		return( $sOrderId );
 	}
 

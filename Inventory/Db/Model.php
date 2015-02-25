@@ -40,6 +40,27 @@ final class Inventory_Db_Model extends PDO
 		}
 	}
 	
+	public function getLivePosCategories(){
+		
+		try{
+		
+			$sth = $this->prepare( Inventory_Db_Query::getQuery( 'GET_LIVEPOS_CATEGORIES' ) );
+		
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+		
+			$sth->execute();
+			$dbResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+			$aFlattenedResults =  iterator_to_array( new RecursiveIteratorIterator( new RecursiveArrayIterator( $dbResults ) ), false);
+			return( $aFlattenedResults );
+		
+		}catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get LivePOS Categories From the DB' );
+		}
+	}
+	
 	public function getLivePosLocations() {
 	
 		try{

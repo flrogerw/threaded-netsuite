@@ -13,6 +13,8 @@ final class Inventory_Db_Query
 	protected static $INSERT_INVENTORY = "INSERT INTO inventory ( store_name, product_id, ns_count, pos_count ) VALUES ( :store_name, :product_id, :ns_count, :pos_count)";
 	
 	protected static $GET_LIVEPOS_LOCATIONS = "SELECT SQL_NO_CACHE location_id, location_netsuite_id, location_name FROM livepos_locations WHERE location_pos = 'livepos'";
+
+	protected static $GET_LIVEPOS_CATEGORIES = "SELECT SQL_NO_CACHE category_id FROM livepos_categories WHERE category_usage = 'active'";
 	
 	/**
 	 *
