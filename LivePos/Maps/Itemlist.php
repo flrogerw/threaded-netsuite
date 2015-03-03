@@ -80,9 +80,10 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 			if( $oItem->item == $item->item && !$bMatched ){
 
-				if( $oItem->getQuantity() > 1 ){
-					$oItem->setQuantity( ( $oItem->getQuantity() - 1 ) );
-				}else{
+				if( $oItem->getQuantity() > 0 ){
+					$oItem->setQuantity( ( $oItem->getQuantity() - $item->getQuantity() ) );
+				}
+				if( $oItem->getQuantity() < 1 ){
 					unset( $this->_itemList[ $sKey ] );
 				}
 				$bMatched = true;
@@ -90,7 +91,6 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 		});
 
 			$this->addItem( $item );
-
 	}
 
 	public function getShippingCharge(){
