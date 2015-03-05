@@ -228,7 +228,10 @@ final class LivePos_LivePosOrder extends Stackable {
 
 					break;
 				case( 5 ): // Split -- Order Level Only
+					break;
 				case( 9 ): // Custom Payment
+					
+					$order->setCustomPaymentTotal( $oPayment );
 					break;
 
 				case( 7 ): // Coupon

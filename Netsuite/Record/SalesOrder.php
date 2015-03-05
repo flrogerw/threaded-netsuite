@@ -24,6 +24,7 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 	public $custbody_pos_cash_total = 0;
 	public $custbody_pos_cc_exp_date;
 	public $custbody_pos_cc_number;
+	public $custbody_pos_custom_total;
 	public $custbody_pos_gc_code;
 	public $custbody_pos_cc_total = 0;
 	public $custbody_pos_employee;

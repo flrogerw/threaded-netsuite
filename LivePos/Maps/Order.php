@@ -38,6 +38,7 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 	public $custbody_pos_cc_exp_date;
 	public $custbody_pos_cc_number;
 	public $custbody_pos_cc_total = 0;
+	public $custbody_pos_custom_total;
 	public $custbody_pos_employee;
 	public $custbody_pos_gc_code;
 	public $custbody_pos_gc_total = 0;	
@@ -122,6 +123,11 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 
 		$this->item = $items;
 		$this->setNewTotal();
+	}
+	
+	public function setCustomPaymentTotal( LivePos_Maps_Payment $oPayment  ){
+		
+		$this->custbody_pos_custom_total = $oPayment->getAmount();		
 	}
 	
 	public function setOrderId( $sOrderId ){

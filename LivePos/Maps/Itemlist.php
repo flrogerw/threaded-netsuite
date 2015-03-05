@@ -83,6 +83,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 				if( $oItem->getQuantity() > 0 ){
 					$oItem->setQuantity( ( $oItem->getQuantity() - $item->getQuantity() ) );
 				}
+				
 				if( $oItem->getQuantity() < 1 ){
 					unset( $this->_itemList[ $sKey ] );
 				}
