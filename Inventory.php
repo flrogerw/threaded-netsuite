@@ -13,9 +13,9 @@ try {
 
 	$model = new Inventory_Db_Model();
 	$aPosCategories  = $model->getLivePosCategories();
-	$aLocations = $model->getLivePosLocations();
+	//$aLocations = $model->getLivePosLocations();
 	//$aPosCategories = array( 61589, 61830, 61866, 61867, 61868, 61864, 62692 );
-	//$aLocations = array( array( 'location_netsuite_id' => 2, 'location_id' => 28225, 'location_name' => 'Delray') );
+	$aLocations = array( array( 'location_netsuite_id' => 2, 'location_id' => 28225, 'location_name' => 'Delray') );
 
 	foreach( $aLocations as $aLocation ){
 
@@ -62,7 +62,7 @@ try {
 
 					case( $aPosItemInventory[ $sSku ]['units_available'] != intval($iItemCount) ):
 
-						$InventoryItem = new Inventory_Maps_InventoryItem( $aPosInventory[ $aPosItemInventory[ $sSku ]['parent_key'] ] );
+						$InventoryItem = new Inventory_Maps_InventoryItem( $aPosInventory[ $aPosItemInventory[ $sSku ]['parent_key'] ], intval($iItemCount) );
 						$aLivePosUpdate[] = $InventoryItem->getPublicVars( false );
 						break;
 
@@ -81,8 +81,8 @@ try {
 
 			ob_flush();
 
-			//$aInventoryChunkedArray = array_chunk( $aLivePosUpdate, LIVEPOS_MAX_INVENTORY_THREADS );
-			//processInventory( $aInventoryChunkedArray );
+			$aInventoryChunkedArray = array_chunk( $aLivePosUpdate, LIVEPOS_MAX_INVENTORY_THREADS );
+			processInventory( $aInventoryChunkedArray );
 		}
 
 
@@ -107,7 +107,7 @@ function processInventory( $aInventoryChunkedArray ){
 	$processInventory->poolInventory();
 
 	if( !empty( $aInventoryChunkedArray ) ){
-		//sleep(61);
+		sleep(61);
 		processInventory( $aInventoryChunkedArray );
 	}
 }

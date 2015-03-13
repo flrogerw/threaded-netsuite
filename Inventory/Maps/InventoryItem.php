@@ -40,7 +40,7 @@ class Inventory_Maps_InventoryItem extends LivePos_Maps_Map {
 	 * @access public
 	 * @return void
 	 */
-	public function __construct( array $aInventoryItem ) {
+	public function __construct( array $aInventoryItem, $fNewCount ) {
 		
 		
 		foreach( get_object_vars( $this ) as $key => $value ){
@@ -55,14 +55,15 @@ class Inventory_Maps_InventoryItem extends LivePos_Maps_Map {
 			$this->$key = $value;
 		}
 */
-		$this->logic();
+		$this->logic( $fNewCount );
 		parent::__construct();
 	}
 
-	private function logic(){
+	private function logic( $fNewCount ){
 
 		// Over Rides '0' Value
 		$this->dblMinimumPrice = ( $this->dblMinimumPrice == 0 )? 0.01: $this->dblMinimumPrice;
+		$this->intUnitsAvailable = $fNewCount;
 	}
 
 }

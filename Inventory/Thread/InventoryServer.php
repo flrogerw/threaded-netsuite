@@ -32,11 +32,22 @@ class Inventory_Thread_InventoryServer {
 		}
 
 		$this->_pool->shutdown();
+		
+		foreach( $this->_pool->workers as $worker ) {
+			
+			$aWorkerData = $worker->getData();
+			if( $aWorkerData['code'] != 200 ){
+				
+			}
+		}
+		
 		//$this->_logProductInventory();
+		
+		
 
 		if( DEBUG ){
 			foreach($this->_pool->workers as $worker) {
-				print_r($worker->getData());
+				//print_r($worker->getData());
 			}
 		}
 	}
