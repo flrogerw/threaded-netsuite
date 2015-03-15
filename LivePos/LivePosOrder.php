@@ -130,7 +130,7 @@ final class LivePos_LivePosOrder extends Stackable {
 							});
 							
 							// Catch Non Payed For Items per George 3/15/15
-							if( !$items->hasMergerErrors() ){
+							if( $items->hasMergerErrors() ){
 								$mergerErrorItems = $items->getNonMergedItems();
 								//$order->setFulFillmentTo( 'A' );
 								Utils_Email::sendEmail( 'TEST', 'rogerw@polaroidfotbar.com', 'merge@polaroidfotobar.com', 'Shit Broke' );

@@ -7,7 +7,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 	protected $_webSkus = array('Ship', 'Custom Art', 'Taxes');
 	protected $_itemList = array();
 	protected $_nonMergedItems = array();
-	protected $_mergeErrors = false;
+	protected $_mergeErrors = true;
 
 	/**
 	 * List of the PreDiscount Skus of Items in List
