@@ -95,7 +95,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 		});
 		
 		if( !$bMatched ){
-			$this->_nonMergedItems[] = $item; //->item;
+			$this->_nonMergedItems[] = $item->item;
 			$this->_mergeErrors = true;
 		}
 
