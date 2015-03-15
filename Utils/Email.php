@@ -14,7 +14,7 @@ final class Utils_Email{
 		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) ); 
 		$sFrom = 'MergeError@polaroidfotobar.com';
 		$aSkus = $model->nsIdToSku( $aEmailData );
-		$sBody = 'The Following Items Failed to Merge: ' . implode(',', $aSkus );
+		$sBody = 'The Following Items Were NOT in the LivePOS Receipt: ' . implode(',', $aSkus );
 		
 		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
 	}

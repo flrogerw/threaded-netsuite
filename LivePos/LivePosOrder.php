@@ -132,13 +132,14 @@ final class LivePos_LivePosOrder extends Stackable {
 							
 							// Catch Non Payed For Items per George 3/15/15
 							if( $items->hasMergerErrors() ){
+								
 								$mergerErrorItems = $items->getNonMergedItems();
 								$order->setFulFillmentTo( 'A' );
 								Utils_Email::sendMergeEmail( $this->_orderId, $sPosOriginalId, $mergerErrorItems );
 							}
 						}
 						
-						Utils_Email::sendMergeEmail( $this->_orderId, 'POS_123456', array('337','314') );
+						//Utils_Email::sendMergeEmail( $this->_orderId, 'POS_123456', array('337','314') );
 						
 						$order->addItems( $items->getItemsArray() );
 
