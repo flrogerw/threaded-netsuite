@@ -11,7 +11,7 @@ final class Utils_Email{
 		
 		$model = new Utils_Model();
 		$sSubject = "Merge Errors for $sActivaId / $sPosId";
-		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) ); 
+		$sReceipients = implode(",", $model->getEmailNotifications( array('admin', 'customer_service') ) ); 
 		$sFrom = 'MergeError@polaroidfotobar.com';
 		$aSkus = $model->nsIdToSku( $aEmailData );
 		$sBody = 'The Following Items Were NOT in the LivePOS Receipt: ' . implode(',', $aSkus );
