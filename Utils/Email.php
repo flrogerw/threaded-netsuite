@@ -1,5 +1,5 @@
 <?php
-
+set_include_path(get_include_path() . PATH_SEPARATOR . '/usr/share/pear/');
 include 'Mail.php';
 include 'Mail/mime.php' ;
 
