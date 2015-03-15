@@ -13,7 +13,7 @@ final class Utils_Email{
 		$sSubject = "Merge Errors for $sActivaId / $sPosId";
 		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) ); 
 		$sFrom = 'MergeError@polaroidfotobar.com';
-		$sBody = 'hhhhhhh';
+		$sBody = implode(',', $aEmailData);
 		
 		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
 	}
