@@ -135,7 +135,6 @@ final class LivePos_LivePosOrder extends Stackable {
 								$mergerErrorItems = $items->getNonMergedItems();
 								$order->setFulFillmentTo( 'A' );
 								Utils_Email::sendMergeEmail( $this->_orderId, $sPosOriginalId, $mergerErrorItems );
-								//Utils_Email::sendEmail( 'TEST', 'rogerw@polaroidfotbar.com', 'merge@polaroidfotobar.com', 'Shit Broke' );
 							}
 						}
 						
