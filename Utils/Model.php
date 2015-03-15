@@ -64,7 +64,7 @@ final class Utils_Model extends PDO
 
 		} catch( Exception $e ){
 			self::logError( $e );
-			throw new Exception( 'Could NOT Get NetSuite Id for Skus From DB' );
+			throw new Exception( 'Could NOT Get Notification Emails From DB' );
 		}
 	}
 
