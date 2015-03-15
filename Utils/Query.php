@@ -12,7 +12,7 @@ final class Utils_Query
 	
 	protected static $GET_EMAIL_NOTIFICATION = "SELECT SQL_NO_CACHE notification_address FROM email_notification WHERE notification_level IN (%s)";
 
-	
+	protected static $NSID_TO_SKU = "SELECT SQL_CACHE sku FROM skus WHERE netsuite_id IN (%s)";
 	/**
 	 *
 	 * @param string $TablePrefix

@@ -18,7 +18,7 @@ final class LivePos_Db_Query
 	protected static $INSERT_PRODUCT = "INSERT INTO livepos_products (product_id, product_sku, product_price, product_description) VALUES ( :product_id, :product_sku, :product_price, :product_description) ON DUPLICATE KEY UPDATE product_sku = :product_sku, product_price = :product_price, product_description = :product_description";
 	
 	protected static $SKU_TO_NSID = "SELECT SQL_CACHE sku, netsuite_id, fulfilled_by FROM skus WHERE sku IN (%s)";
-
+	
 	protected static $GET_ENTITY = "SELECT SQL_CACHE *, CONCAT_WS('\\n',location_attention,location_addressee, location_addr1,location_addr2,location_addr3,CONCAT_WS(' ',location_city, location_state, location_zip, location_country)) AS location_addresstxt FROM livepos_locations WHERE location_id = ?";
 	
 	protected static $QUEUE_ORDER = "INSERT INTO fotobar_order_queue ( customer_activa_id, order_activa_id, order_json ) VALUES ( :customer_activa_id, :order_activa_id, :order_json)";

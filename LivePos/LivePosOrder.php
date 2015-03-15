@@ -138,7 +138,7 @@ final class LivePos_LivePosOrder extends Stackable {
 							}
 						}
 						
-						Utils_Email::sendMergeEmail( $this->_orderId, 'POS_123456', array('234','345') );
+						Utils_Email::sendMergeEmail( $this->_orderId, 'POS_123456', array('237','314') );
 						
 						$order->addItems( $items->getItemsArray() );
 

@@ -448,6 +448,34 @@ final class LivePos_Db_Model extends PDO
 		}
 	}
 	
+	public function nsIdToSku( array $aNsIds ){
+	
+		try{
+	
+			$sth = $this->prepare( LivePos_Db_Query::getQuery( 'NSID_TO_SKU', null, count( $aNsIds ) ) );
+	
+			if ( !$sth ) {
+				throw new Exception( explode(',', $sth->errorInfo() ) );
+			}
+	
+			$aBindArgs = array();
+	
+			array_walk( $aNsIds, function( $iId, $iKey ) use( &$aBindArgs){
+				$aBindArgs[':arg' . $iKey] = $iId;
+			});
+					
+				$sth->execute( $aBindArgs  );
+				$aResults = $sth->fetchAll( PDO::FETCH_ASSOC );
+				$aFlattenedResults =  iterator_to_array( new RecursiveIteratorIterator( new RecursiveArrayIterator( $aResults ) ), false);
+				
+				return( $aFlattenedResults );
+	
+		} catch( Exception $e ){
+			self::logError( $e );
+			throw new Exception( 'Could NOT Get NetSuite Id for Skus From DB' );
+		}
+	}
+	
 	
 	/**
 	 * Enters Test Results Into Database
