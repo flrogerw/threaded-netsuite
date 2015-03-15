@@ -15,7 +15,7 @@ final class Utils_Email{
 		$sFrom = 'MergeError@polaroidfotobar.com';
 		$sBody = 'hhhhhhh';
 		
-		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody)
+		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
 	}
 
 	public function sendEmail( $sSubject, $sReceipients, $sFrom, $sBody, $sAttachmentPath = null ){
