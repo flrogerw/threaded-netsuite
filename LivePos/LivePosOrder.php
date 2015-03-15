@@ -139,8 +139,6 @@ final class LivePos_LivePosOrder extends Stackable {
 							}
 						}
 						
-						//Utils_Email::sendMergeEmail( $this->_orderId, 'POS_123456', array('337','314') );
-						
 						$order->addItems( $items->getItemsArray() );
 
 						$order->setShippedTax( $items->getShippingTax() );

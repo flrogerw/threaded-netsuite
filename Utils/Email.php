@@ -18,6 +18,17 @@ final class Utils_Email{
 		
 		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
 	}
+	
+	public static function sendInventoryEmail( $iLocationId, $sEmailData ){
+	
+		$model = new Utils_Model();
+		$sSubject = "Inventory Update Error for Location $iLocationId";
+		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) );
+		$sFrom = 'InventoryError@polaroidfotobar.com';
+		$sBody = 'The Following Location Did NOT Update Inventory: ' . $sEmailData;
+	
+		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
+	}
 
 	public function sendEmail( $sSubject, $sReceipients, $sFrom, $sBody, $sAttachmentPath = null ){
 

@@ -77,9 +77,8 @@ try {
 
 		if( !empty( $aLivePosUpdate )){
 
-			var_dump($aLivePosUpdate);
-
-			ob_flush();
+			//var_dump($aLivePosUpdate);
+			//ob_flush();
 
 			$aInventoryChunkedArray = array_chunk( $aLivePosUpdate, LIVEPOS_MAX_INVENTORY_THREADS );
 			processInventory( $aInventoryChunkedArray );
@@ -91,6 +90,7 @@ try {
 
 }catch( Exception $e ){
 	Inventory_Db_Model::logError( $e );
+	Utils_Email::sendInventoryEmail( $aLocationId, $e->getMessage() );
 	var_dump($e);
 }
 
@@ -99,7 +99,7 @@ try {
 ########################################################################################################################
 
 
-function processInventory( $aInventoryChunkedArray ){
+function processInventory( $aInventoryChunkedArray, $iLocationId ){
 
 	try{
 		$aCurrentArray = array_shift( $aInventoryChunkedArray);
@@ -109,10 +109,10 @@ function processInventory( $aInventoryChunkedArray ){
 
 		if( !empty( $aInventoryChunkedArray ) ){
 			sleep(61);
-			processInventory( $aInventoryChunkedArray );
+			processInventory( $aInventoryChunkedArray, $iLocationId );
 		}
 	}catch( Exception $e ){
-		var_dump( $e->getMessage() );
-		####  EMAIL HERE
+		
+		Utils_Email::sendInventoryEmail( $iLocationId, $e->getMessage() );
 	}
 }
