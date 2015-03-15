@@ -136,6 +136,8 @@ final class LivePos_LivePosOrder extends Stackable {
 								Utils_Email::sendEmail( 'TEST', 'rogerw@polaroidfotbar.com', 'merge@polaroidfotobar.com', 'Shit Broke' );
 							}
 						}
+						
+						Utils_Email::sendEmail( 'TEST', 'rogerw@polaroidfotbar.com', 'merge@polaroidfotobar.com', 'Shit Broke' );
 
 						$order->addItems( $items->getItemsArray() );
 
