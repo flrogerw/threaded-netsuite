@@ -104,6 +104,7 @@ final class LivePos_LivePosOrder extends Stackable {
 						// Process InStore/Shipped Orders
 						if( $this->_orderToMerge != null ){
 
+							$sPosOriginalId = $this->_orderId;
 							$aOrderToMerge = json_decode( $this->_orderToMerge, true );
 							$order->setMultiShipTo( true );
 							$customer->mergeCustomer( $aOrderToMerge['customer'] );
@@ -132,13 +133,14 @@ final class LivePos_LivePosOrder extends Stackable {
 							// Catch Non Payed For Items per George 3/15/15
 							if( $items->hasMergerErrors() ){
 								$mergerErrorItems = $items->getNonMergedItems();
-								//$order->setFulFillmentTo( 'A' );
-								Utils_Email::sendEmail( 'TEST', 'rogerw@polaroidfotbar.com', 'merge@polaroidfotobar.com', 'Shit Broke' );
+								$order->setFulFillmentTo( 'A' );
+								Utils_Email::sendMergeEmail( $this->_orderId, $sPosOriginalId, $mergerErrorItems );
+								//Utils_Email::sendEmail( 'TEST', 'rogerw@polaroidfotbar.com', 'merge@polaroidfotobar.com', 'Shit Broke' );
 							}
 						}
 						
-						Utils_Email::sendEmail( 'TEST', 'rogerw@polaroidfotobar.com', 'merge@polaroidfotobar.com', 'Shit Broke' );
-
+						Utils_Email::sendMergeEmail( $this->_orderId, 'POS_123456', $mergerErrorItems );
+						
 						$order->addItems( $items->getItemsArray() );
 
 						$order->setShippedTax( $items->getShippingTax() );

@@ -125,6 +125,11 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->setNewTotal();
 	}
 	
+	public function setFulFillmentTo( $sStatus = 'B' ){
+		
+		$this->orderstatus = $sStatus;
+	}
+	
 	public function setCustomPaymentTotal( LivePos_Maps_Payment $oPayment  ){
 		
 		$this->custbody_pos_custom_total = $oPayment->getAmount();		

@@ -6,8 +6,19 @@ include 'Mail/mime.php' ;
 
 
 final class Utils_Email{
+	
+	public static function sendMergeEmail( $sActivaId, $sPosId, array $aEmailData ){
+		
+		$model = new Utils_Model();
+		$sSubject = "Merge Errors for $sActivaId / $sPosId";
+		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) ); 
+		$sFrom = 'MergeError@polaroidfotobar.com';
+		$sBody = 'hhhhhhh';
+		
+		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody)
+	}
 
-	public static function sendEmail( $sSubject, $sReceipients, $sFrom, $sBody, $sAttachmentPath = null ){
+	public function sendEmail( $sSubject, $sReceipients, $sFrom, $sBody, $sAttachmentPath = null ){
 
 		$text = strip_tags( $sBody );
 		$html = $sBody;
