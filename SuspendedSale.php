@@ -17,7 +17,8 @@ $iLocationId = 28225;
 /**
  * Store Employee Id
  */
-$iEmployeeId = 87759;
+#$iEmployeeId = 87759;
+$iEmployeeId = 88943;
 
 /**
 * Activa Order Id
@@ -28,7 +29,7 @@ $sFotobarId = 'FDEV00001';
  * Customer email
  * MUST BE DISTINCT
  */
-$sCustoemrEmail = 'roger@roger27.jp';
+$sCustoemrEmail = 'roger@roger97.jp';
 
 /**
  * Customer First Name
@@ -46,7 +47,7 @@ $sLastName = 'Smith';
  * Customer Fone Number
  * MUST BE DISTINCT
  */
-$sPhoneNumber = '0000000001';
+$sPhoneNumber = '6999977001';
 
 /**
  * Customer LivePOS ID

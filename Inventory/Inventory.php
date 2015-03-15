@@ -7,7 +7,7 @@ class Inventory_Inventory extends Stackable {
 	protected $_errors = array();
 
 	public function __construct( $aProduct, $sSessionId ){
-
+		
 		$this->_product = $aProduct;
 		$this->_sessionId = $sSessionId;
 	}
@@ -31,12 +31,16 @@ class Inventory_Inventory extends Stackable {
 					//$product = LivePos_Maps_MapFactory::create( 'product', json_decode( $aResponse['data'], true ) );
 						
 					$this->worker->addData( array('code' => $aResponse['code']) );
+					$this->worker->addData( array('product' => $this->_product['intProductID']) );
+					$this->worker->addData( array('location' => $this->_product['intLocationID']) );
 					//$this->worker->addData( array('product' => $product->getPublicVars() ) );
 					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
 				}else{
 
 					$aResponse = $call->getResponse();
 					//$this->worker->addData( array('productId' => $this->_productId ) );
+					$this->worker->addData( array('product' => $this->_product['intProductID']) );
+					$this->worker->addData( array('location' => $this->_product['intLocationID']) );
 					$this->worker->addData( array('code' => $aResponse['code']) );
 					$this->worker->addData( array('error' => implode( ',', $call->getErrors() ) ) );
 				}

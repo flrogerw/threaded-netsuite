@@ -86,7 +86,7 @@ try {
 		}
 
 
-		echo("{$aLocation['location_id']} \n");
+		//echo("{$aLocation['location_id']} \n");
 	}
 
 }catch( Exception $e ){
@@ -101,13 +101,18 @@ try {
 
 function processInventory( $aInventoryChunkedArray ){
 
-	$aCurrentArray = array_shift( $aInventoryChunkedArray);
-	$call = new LivePos_Job_GetRecord();
-	$processInventory = new Inventory_Thread_InventoryServer( $aCurrentArray, $call->getSessionId() );
-	$processInventory->poolInventory();
+	try{
+		$aCurrentArray = array_shift( $aInventoryChunkedArray);
+		$call = new LivePos_Job_GetRecord();
+		$processInventory = new Inventory_Thread_InventoryServer( $aCurrentArray, $call->getSessionId() );
+		$processInventory->poolInventory();
 
-	if( !empty( $aInventoryChunkedArray ) ){
-		sleep(61);
-		processInventory( $aInventoryChunkedArray );
+		if( !empty( $aInventoryChunkedArray ) ){
+			sleep(61);
+			processInventory( $aInventoryChunkedArray );
+		}
+	}catch( Exception $e ){
+		var_dump( $e->getMessage() );
+		####  EMAIL HERE
 	}
 }

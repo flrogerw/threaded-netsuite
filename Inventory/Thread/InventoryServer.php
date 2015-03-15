@@ -37,17 +37,15 @@ class Inventory_Thread_InventoryServer {
 			
 			$aWorkerData = $worker->getData();
 			if( $aWorkerData['code'] != 200 ){
-				
+				throw new Exception( "Inventory Update Failed for Location/Product: {$aWorkerData['location']}/{$aWorkerData['product']}" );
 			}
 		}
 		
 		//$this->_logProductInventory();
 		
-		
-
 		if( DEBUG ){
 			foreach($this->_pool->workers as $worker) {
-				//print_r($worker->getData());
+				print_r($worker->getData());
 			}
 		}
 	}

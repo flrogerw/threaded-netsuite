@@ -6,6 +6,8 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 	protected $_webSkus = array('Ship', 'Custom Art', 'Taxes');
 	protected $_itemList = array();
+	protected $_nonMergedItems = array();
+	protected $_mergeErrors = false;
 
 	/**
 	 * List of the PreDiscount Skus of Items in List
@@ -82,6 +84,7 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 
 				if( $oItem->getQuantity() > 0 ){
 					$oItem->setQuantity( ( $oItem->getQuantity() - $item->getQuantity() ) );
+					$this->addItem( $item );
 				}
 				
 				if( $oItem->getQuantity() < 1 ){
@@ -90,8 +93,21 @@ class LivePos_Maps_Itemlist extends LivePos_Maps_Map{
 				$bMatched = true;
 			}
 		});
+		
+		if( !$bMatched ){
+			$this->_nonMergedItems[] = $item; //->item;
+			$this->_mergeErrors = true;
+		}
 
-			$this->addItem( $item );
+			//$this->addItem( $item );
+	}
+	
+	public function hasMergerErrors(){
+		return( $this->_mergeErrors );
+	}
+	
+	public function getNonMergedItems(){
+		return( $this->_nonMergedItems );
 	}
 
 	public function getShippingCharge(){
