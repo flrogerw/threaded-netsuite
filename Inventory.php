@@ -90,7 +90,7 @@ try {
 
 }catch( Exception $e ){
 	Inventory_Db_Model::logError( $e );
-	Utils_Email::sendInventoryEmail( $aLocationId, $e->getMessage() );
+	Utils_Email::sendInventoryEmail( $e->getMessage() );
 	var_dump($e);
 }
 
@@ -99,7 +99,7 @@ try {
 ########################################################################################################################
 
 
-function processInventory( $aInventoryChunkedArray, $iLocationId ){
+function processInventory( $aInventoryChunkedArray ){
 
 	try{
 		$aCurrentArray = array_shift( $aInventoryChunkedArray);
@@ -109,10 +109,10 @@ function processInventory( $aInventoryChunkedArray, $iLocationId ){
 
 		if( !empty( $aInventoryChunkedArray ) ){
 			sleep(61);
-			processInventory( $aInventoryChunkedArray, $iLocationId );
+			processInventory( $aInventoryChunkedArray );
 		}
 	}catch( Exception $e ){
 		
-		Utils_Email::sendInventoryEmail( $iLocationId, $e->getMessage() );
+		Utils_Email::sendInventoryEmail( $e->getMessage() );
 	}
 }

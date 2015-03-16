@@ -37,7 +37,7 @@ class Inventory_Thread_InventoryServer {
 			
 			$aWorkerData = $worker->getData();
 			if( $aWorkerData['code'] != 200 ){
-				throw new Exception( "Inventory Update Failed for Location/Product: {$aWorkerData['location']}/{$aWorkerData['product']}" );
+				throw new Exception( "Inventory Update Failed for Location/Product: {$aWorkerData['location']}/{$aWorkerData['product']} with Error Code: {$aWorkerData['code']}" );
 			}
 		}
 		
