@@ -15,7 +15,7 @@ try {
 	$aPosCategories  = $model->getLivePosCategories();
 	//$aLocations = $model->getLivePosLocations();
 	//$aPosCategories = array( 61589, 61830, 61866, 61867, 61868, 61864, 62692 );
-	$aLocations = array( array( 'location_netsuite_id' => 9, 'location_id' => 28225, 'location_name' => 'Delray') );
+	$aLocations = array( array( 'location_netsuite_id' => 2, 'location_id' => 28225, 'location_name' => 'Delray') );
 
 	foreach( $aLocations as $aLocation ){
 
