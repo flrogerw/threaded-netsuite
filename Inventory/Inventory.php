@@ -34,7 +34,7 @@ class Inventory_Inventory extends Stackable {
 					$this->worker->addData( array('product' => $this->_product['intProductID']) );
 					$this->worker->addData( array('location' => $this->_product['intLocationID']) );
 					//$this->worker->addData( array('product' => $product->getPublicVars() ) );
-					$this->worker->addData( array('error' => implode( ',', $this->_errors ) ) );
+					$this->worker->addData( array('error' => $this->getMessage() ) );
 				}else{
 
 					$aResponse = $call->getResponse();
