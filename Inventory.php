@@ -32,12 +32,18 @@ try {
 			$aPosInventory = json_decode( $call->getDataString(), true );
 
 			foreach( $aPosInventory as $iKey => $aItem ){
+				
+				if( $aItem["dblProductPrice" ] == 0 ){
+					continue;
+					var_dump($aItem['strProductSKU']);
+				}
+				
 
 				if( in_array( $aItem['intProductCategoryID'], $aPosCategories ) ){
 
 					$aPosItemInventory[ $aItem['strProductSKU'] ] = array( 'units_available' => $aItem['intUnitsAvailable'], 'parent_key' => $iKey );
 				}
-			}
+			}			
 		}else{
 			throw new Exception( "Could Not Get PosInventory from LivePOS for {$aLocation['location_id']}: " . $call->getErrors() );
 		}
