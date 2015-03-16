@@ -71,8 +71,6 @@ final class LivePos_Job_GetRecord {
 		for( $i=0; $i<3; $i++ ) {
 
 			$curl_result = curl_exec($cURL);
-			
-			var_dump($curl_result);
 
 			if ( curl_errno($cURL) == 0 ) {
 
@@ -82,6 +80,7 @@ final class LivePos_Job_GetRecord {
 				if( $this->_response['code'] != 200 ){
 					$this->_hasErrors = true;
 					$this->_response['error'][] = 'Response Code: ' . $this->_response['code'];
+					$this->_response['error'][] = 'Message: ' . $this->getMessage();
 				}
 
 				curl_close($cURL);
