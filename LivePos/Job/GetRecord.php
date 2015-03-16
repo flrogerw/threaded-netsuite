@@ -82,7 +82,7 @@ final class LivePos_Job_GetRecord {
 				if( $this->_response['code'] != 200 ){
 					$this->_hasErrors = true;
 					$this->_response['error'][] = 'Response Code: ' . $this->_response['code'];
-					$this->_response['error'][] = 'Message: ' . $this->getMessage();
+					$this->_response['error'][] = 'Message: ' . implode(',', json_decode( $curl_result, true )  );
 				}
 
 				curl_close($cURL);
