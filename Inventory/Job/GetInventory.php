@@ -62,8 +62,6 @@ final class Inventory_Job_GetInventory {
 		for( $i=0; $i<3; $i++ ) {
 
 			$curl_result = curl_exec($cURL);
-			
-			var_dump($curl_result);
 
 			if ( curl_errno($cURL) == 0 ) {
 				curl_close($cURL);
