@@ -22,6 +22,7 @@ try {
 
 		$aLivePosUpdate = array();
 		$aPosItemInventory = array();
+		$bIsSuccess = true;
 		
 		$aLocationsReport[ $aLocation['location_id'] ]['zero_price_items'] = array();
 		$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = 0;
@@ -95,13 +96,16 @@ try {
 			processInventory( $aInventoryChunkedArray );
 		}
 
+		if( $bIsSuccess === true ){
 		Utils_Email::sendInventoryEmail( $aLocationsReport );
 		//echo("{$aLocation['location_id']} \n");
+		}
 	}
 
 }catch( Exception $e ){
 	Inventory_Db_Model::logError( $e );
 	Utils_Email::sendInventoryErrorEmail( $e->getMessage() );
+	$bIsSuccess = false;
 }
 
 
