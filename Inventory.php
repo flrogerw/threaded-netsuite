@@ -22,6 +22,8 @@ try {
 
 		$aLivePosUpdate = array();
 		$aPosItemInventory = array();
+		
+		$aLocationsReport[ $aLocation['location_id'] ]['zero_price_items'] = array();
 		$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = 0;
 
 		// ###### GET POS INVENTORY
