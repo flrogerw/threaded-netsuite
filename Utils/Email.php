@@ -19,7 +19,26 @@ final class Utils_Email{
 		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
 	}
 	
-	public static function sendInventoryEmail( $sEmailData ){
+	
+	public static function sendInventoryEmail( array $aEmailData ){
+	
+		$model = new Utils_Model();
+		$sSubject = "Inventory Update Success";
+		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) );
+		$sFrom = 'InventorySuccess@polaroidfotobar.com';
+		$sBody = '';
+		
+		foreach( $aEmailData as $iLocationId => $aLocationData ){
+			$sBody .= "Location: " . $iLocationId . "<br>";
+			$sBody .= "Items Updated: " . $aLocationData['item_count'] . "<br>";
+			$sBody .= "Zero Priced Items Skipped: " . implode(', ', $aLocationData['zero_price_items']) . "<br><br>";
+		}
+	
+		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
+	}
+	
+	
+	public static function sendInventoryErrorEmail( $sEmailData ){
 	
 		$model = new Utils_Model();
 		$sSubject = "Inventory Update Error";

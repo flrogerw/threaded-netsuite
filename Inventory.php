@@ -11,16 +11,18 @@ try {
 
 	require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' ); // Has LivePOS Login Credentials
 
+	$aLocationsReport = array();
 	$model = new Inventory_Db_Model();
 	$aPosCategories  = $model->getLivePosCategories();
 	//$aLocations = $model->getLivePosLocations();
 	//$aPosCategories = array( 61589, 61830, 61866, 61867, 61868, 61864, 62692 );
-	$aLocations = array( array( 'location_netsuite_id' => 2, 'location_id' => 28225, 'location_name' => 'Delray') );
+	$aLocations = array( array( 'location_netsuite_id' => 9, 'location_id' => 28225, 'location_name' => 'Delray') );
 
 	foreach( $aLocations as $aLocation ){
 
 		$aLivePosUpdate = array();
 		$aPosItemInventory = array();
+		$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = 0;
 
 		// ###### GET POS INVENTORY
 		$aLocationId = array( 'intLocationID' => $aLocation['location_id'] );
@@ -32,18 +34,17 @@ try {
 			$aPosInventory = json_decode( $call->getDataString(), true );
 
 			foreach( $aPosInventory as $iKey => $aItem ){
-				
+
 				if( $aItem["dblProductPrice" ] == 0 ){
+					$aLocationsReport[ $aLocation['location_id'] ]['zero_price_items'][] = $aItem["strProductSKU"];
 					continue;
-					var_dump($aItem['strProductSKU']);
 				}
-				
 
 				if( in_array( $aItem['intProductCategoryID'], $aPosCategories ) ){
 
 					$aPosItemInventory[ $aItem['strProductSKU'] ] = array( 'units_available' => $aItem['intUnitsAvailable'], 'parent_key' => $iKey );
 				}
-			}			
+			}
 		}else{
 			throw new Exception( "Could Not Get PosInventory from LivePOS for {$aLocation['location_id']}: " . $call->getErrors() );
 		}
@@ -82,7 +83,8 @@ try {
 		}
 
 		if( !empty( $aLivePosUpdate )){
-
+			$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = sizeof( $aLivePosUpdate );
+			
 			var_dump($aLivePosUpdate);
 			ob_flush();
 
@@ -90,14 +92,13 @@ try {
 			processInventory( $aInventoryChunkedArray );
 		}
 
-
+		Utils_Email::sendInventoryEmail( $aLocationsReport );
 		//echo("{$aLocation['location_id']} \n");
 	}
 
 }catch( Exception $e ){
 	Inventory_Db_Model::logError( $e );
-	Utils_Email::sendInventoryEmail( $e->getMessage() );
-	var_dump($e);
+	Utils_Email::sendInventoryErrorEmail( $e->getMessage() );
 }
 
 
@@ -118,7 +119,7 @@ function processInventory( $aInventoryChunkedArray ){
 			processInventory( $aInventoryChunkedArray );
 		}
 	}catch( Exception $e ){
-		
-		Utils_Email::sendInventoryEmail( $e->getMessage() );
+
+		Utils_Email::sendInventoryErrorEmail( $e->getMessage() );
 	}
 }
