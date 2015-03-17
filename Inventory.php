@@ -127,7 +127,7 @@ function processInventory( $aInventoryChunkedArray ){
 		}
 	}catch( Exception $e ){
 
-		throw new Exception( 'Prcess INventory Faild: ' . $e->getMessage() );
+		throw new Exception( 'Process Inventory Failed: ' . $e->getMessage() );
 		//Utils_Email::sendInventoryErrorEmail( $e->getMessage() );
 	}
 }
