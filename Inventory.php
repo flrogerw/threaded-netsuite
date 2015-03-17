@@ -26,7 +26,7 @@ try {
 		
 		$aLocationsReport[ $aLocation['location_id'] ]['zero_price_items'] = array();
 		$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = 0;
-		$aLocationsReport[ $aLocation['location_id'] ][ 'store_name' ] = $aLocation['location_name'];
+		$aLocationsReport[ $aLocation['location_id'] ][ 'location_name' ] = $aLocation['location_name'];
 
 		// ###### GET POS INVENTORY
 		$aLocationId = array( 'intLocationID' => $aLocation['location_id'] );
@@ -127,6 +127,7 @@ function processInventory( $aInventoryChunkedArray ){
 		}
 	}catch( Exception $e ){
 
-		Utils_Email::sendInventoryErrorEmail( $e->getMessage() );
+		throw new Exception( 'Prcess INventory Faild: ' . $e->getMessage() );
+		//Utils_Email::sendInventoryErrorEmail( $e->getMessage() );
 	}
 }
