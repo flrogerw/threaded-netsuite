@@ -29,7 +29,7 @@ final class Utils_Email{
 		$sBody = '';
 		
 		foreach( $aEmailData as $iLocationId => $aLocationData ){
-			$sBody .= "Location: " . $iLocationId . "<br>";
+			$sBody .= "Location: " . $iLocationId . ' / ' . $aLocationData['location_name'] . "<br>";
 			$sBody .= "Items Updated: " . $aLocationData['item_count'] . "<br>";
 			$sBody .= "Zero Priced Items Skipped: " . implode(', ', $aLocationData['zero_price_items']) . "<br><br>";
 		}

@@ -25,6 +25,7 @@ try {
 		
 		$aLocationsReport[ $aLocation['location_id'] ]['zero_price_items'] = array();
 		$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = 0;
+		$aLocationsReport[ $aLocation['location_id'] ][ 'store_name' ] = $aLocation['location_name'];
 
 		// ###### GET POS INVENTORY
 		$aLocationId = array( 'intLocationID' => $aLocation['location_id'] );
