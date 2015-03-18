@@ -115,7 +115,6 @@ try {
 
 function processInventory( $aInventoryChunkedArray ){
 
-	//try{
 		$aCurrentArray = array_shift( $aInventoryChunkedArray);
 		$call = new LivePos_Job_GetRecord();
 		$processInventory = new Inventory_Thread_InventoryServer( $aCurrentArray, $call->getSessionId() );
@@ -125,9 +124,4 @@ function processInventory( $aInventoryChunkedArray ){
 			sleep(61);
 			processInventory( $aInventoryChunkedArray );
 		}
-	//}catch( Exception $e ){
-		//Inventory_Db_Model::logError( $e );
-		//throw new Exception( 'Process Inventory Failed: ' . $e->getMessage() );
-		//Utils_Email::sendInventoryErrorEmail( $e->getMessage() );
-	//}
 }
