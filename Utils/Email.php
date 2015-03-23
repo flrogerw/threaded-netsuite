@@ -21,6 +21,7 @@ final class Utils_Email{
 	
 	public static function sendRefNumError( $sOrderID ){
 		
+		$model = new Utils_Model();
 		$sSubject = "Missing POS Reference Number";
 		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) );
 		$sFrom = 'BadRefNumber@polaroidfotobar.com';
