@@ -70,6 +70,10 @@ final class LivePos_LivePosOrder extends Stackable {
 						break;
 
 					case( 2 ): // EXCHANGE - Swap for Different Item
+						$this->worker->addData( array('ignore' => true ) );
+						$errors[] = 'Exchange';
+						break;
+						
 					case( 3 ): // EXCHANGE - One for One Exchange
 						$this->worker->addData( array('ignore' => true ) );
 						$errors[] = 'Exchange';

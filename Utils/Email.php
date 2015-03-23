@@ -19,6 +19,15 @@ final class Utils_Email{
 		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
 	}
 	
+	public static function sendRefNumError( $sOrderID ){
+		
+		$sSubject = "Missing POS Reference Number";
+		$sReceipients = implode(",", $model->getEmailNotifications( array('admin') ) );
+		$sFrom = 'BadRefNumber@polaroidfotobar.com';
+		$sBody = 'The Following Order had NO Value for The CC Authorization Code: ' . $sOrderID;
+		self::sendEmail($sSubject, $sReceipients, $sFrom, $sBody);
+	}
+	
 	
 	public static function sendInventoryEmail( array $aEmailData ){
 	

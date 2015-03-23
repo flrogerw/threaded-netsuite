@@ -98,7 +98,6 @@ try {
 
 		if( $bIsSuccess === true ){
 		Utils_Email::sendInventoryEmail( $aLocationsReport );
-		//echo("{$aLocation['location_id']} \n");
 		}
 	}
 

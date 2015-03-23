@@ -198,6 +198,10 @@ final class LivePos_Maps_Order extends LivePos_Maps_Map {
 		$this->custbody_pos_cc_number = $oPayment->getCcNumber();
 		$this->custbody_pos_auth_code = $oPayment->getAuthCode();
 		$this->custbody_pos_ref_num = $oPayment->getTransactionId();
+		
+		if( intval( $this->custbody_pos_ref_num ) == 0 || $this->custbody_pos_ref_num == '' ){
+			Utils_Email::sendRefNumError( $this->custbody_order_source_id);
+		}
 	}
 
 	public function setPaymentType( $sPaymentType ){
