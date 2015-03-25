@@ -214,8 +214,10 @@ class Netsuite_Record_SalesOrder extends Netsuite_Record_Base implements Netsuit
 				$this->logError( 'Could NOT Create Gift Certificate( '. sizeof( $aErrors ) .' Errors): ' .  implode( ', ', $aErrors ) );
 				return;
 			}
-			$aCerts[] = $oCert;
+			$aCerts['codes'][] = $oCert;
 		}
+		
+		$aCerts['applied'] = $this->_gcamount;
 		$this->giftcertificateitem = $aCerts;
 	}
 
