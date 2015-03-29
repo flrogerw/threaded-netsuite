@@ -16,7 +16,9 @@ try {
 	$aPosCategories  = $model->getLivePosCategories();
 	//$aLocations = $model->getLivePosLocations();
 	//$aPosCategories = array( 61589, 61830, 61866, 61867, 61868, 61864, 62692 );
-	$aLocations = array( array( 'location_netsuite_id' => 2, 'location_id' => 28225, 'location_name' => 'Boca Raton') );
+	$aLocations = array( array( 'location_netsuite_id' => 2, 'location_id' => 28225, 'location_name' => 'Delray'),
+				array( 'location_netsuite_id' => 7, 'location_id' => 28225, 'location_name' => 'Boca Raton')
+	 );
 
 	foreach( $aLocations as $aLocation ){
 
@@ -88,9 +90,13 @@ try {
 
 		if( !empty( $aLivePosUpdate )){
 			$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = sizeof( $aLivePosUpdate );
+			$aLocationsReport[ $aLocation['location_id'] ][ 'ns_item_count' ] = sizeof( $aNsItemInventory );
+			$aLocationsReport[ $aLocation['location_id'] ][ 'pos_item_count' ] = sizeof( $aPosInventory );
 			
+			if( DEBUG ){
 			var_dump($aLivePosUpdate);
 			ob_flush();
+			}
 
 			$aInventoryChunkedArray = array_chunk( $aLivePosUpdate, LIVEPOS_MAX_INVENTORY_THREADS );
 			processInventory( $aInventoryChunkedArray );

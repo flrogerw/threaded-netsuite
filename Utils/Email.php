@@ -40,6 +40,8 @@ final class Utils_Email{
 		
 		foreach( $aEmailData as $iLocationId => $aLocationData ){
 			$sBody .= "Location: " . $iLocationId . ' / ' . $aLocationData['location_name'] . "<br>";
+			$sBody .= "Netsuite Products: " . $aLocationData['ns_item_count'] . "<br>";
+			$sBody .= "LivePOS Products: " . $aLocationData['pos_item_count'] . "<br>";
 			$sBody .= "Items Updated: " . $aLocationData['item_count'] . "<br>";
 			$sBody .= "Zero Priced Items Skipped: " . implode(', ', $aLocationData['zero_price_items']) . "<br><br>";
 		}
