@@ -224,7 +224,7 @@ function setItems(record, items) {
 	var addressbook = setAddress(record.getFieldValue('entity'),
 			entityAddressBook);
 
-nlapiLogExecution('DEBUG', 'xxxxxx ', JSON.stringify( entityAddressBook ) );
+//nlapiLogExecution('DEBUG', 'xxxxxx ', JSON.stringify( entityAddressBook ) );
 
 	for (i in addressbook) {
 		var address = addressbook[i];
@@ -290,7 +290,7 @@ function createOrder(args) {
 	 * if (typeof order.addressbook !== 'undefined') { setAddress(order.entity,
 	 * order.addressbook); }
 	 */
-nlapiLogExecution('DEBUG', 'xxxxxx ', order.billaddress );
+//nlapiLogExecution('DEBUG', 'xxxxxx ', order.billaddress );
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
 			if (fieldname != 'recordtype' && fieldname != 'item'
@@ -304,14 +304,15 @@ nlapiLogExecution('DEBUG', 'xxxxxx ', order.billaddress );
 		}
 	}
 
-	if (order.hasOwnProperty('giftcertificateitem')) {
-		setGiftCertificates(record, order.giftcertificateitem);
-	}
-
 	var bFulFill = (record.getFieldValue('orderstatus') == 'B' && fulfillLocations
 			.indexOf(parseInt(record.getFieldValue('location'))) != -1) ? true
 			: false;
 	setItems(record, order.item);
+
+if (order.hasOwnProperty('giftcertificateitem')) {
+		setGiftCertificates(record, order.giftcertificateitem);
+	}
+
 	var iOrderId = nlapiSubmitRecord(record);
 
 	response.recordid = iOrderId;
@@ -359,7 +360,7 @@ function setGiftCertificates(record, gcData) {
 		certIdResults.push(resultObj.getId());
 		certCodeResults.push(resultObj.getValue('giftcertcode'));
 	}
-
+//nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ',JSON.stringify(certCodeResults));
        
 	for (count in gcDataArray) {
 
@@ -373,10 +374,8 @@ function setGiftCertificates(record, gcData) {
 		case( index != -1 ):  // Valid Netsuite Cert
 
 			record.insertLineItem('giftcertredemption', counter);
-			record.setLineItemValue('giftcertredemption', 'authcode', counter,
-			certIdResults[index]);
-			record.setLineItemValue('giftcertredemption', 'giftcertcode',
-			counter, gcDataArray[count]['giftcertcode']);
+			record.setLineItemValue('giftcertredemption', 'authcode', counter, certIdResults[index]);
+			record.setLineItemValue('giftcertredemption', 'giftcertcode', counter, gcDataArray[count]['giftcertcode']);
 			break;
 
 		case(  parseInt(record.getFieldValue('custbody_pos_gc_total')) > 0 ): // LivePOS Cert
@@ -394,28 +393,19 @@ function setGiftCertificates(record, gcData) {
 		default:
 
 			var discountAmount = parseFloat(record.getFieldValue('discountrate')) || 0;
-
-
 			var gcAmount = ( gcData.applied  < 0 )? gcData.applied: 0;
-                        
-
-
 			var newDiscountAmount = (gcAmount + discountAmount);
 			var discountItem = (discountAmount > 0) ? 1164 : 1165;
 
 			record.setFieldValue('discountitem', discountItem);
 			record.setFieldValue('discountrate', newDiscountAmount);
-                        breakFromForLoop = true;
+                       // breakFromForLoop = true;
 			break;
 
 	}
 
 
 }
-
-	// nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ',
-	// JSON
-	// .stringify(certCodeResults));
 }
 
 function createBongoContact(args) {
