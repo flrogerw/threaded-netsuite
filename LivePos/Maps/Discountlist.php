@@ -48,7 +48,7 @@ class LivePos_Maps_Discountlist extends LivePos_Maps_Map {
 	}
 
 	/**
-	 * get all info from DB on cupons
+	 * get all info from DB on coupons
 	 * @param boolean $bPopAll - get all coupons [false]
 	 */
 	private function _popDiscounts( $bPopAll = false ){

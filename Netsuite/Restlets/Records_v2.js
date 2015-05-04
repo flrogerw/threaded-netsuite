@@ -40,10 +40,10 @@ function Records(datain) {
 			return createOrder(args);
 			break;
 
-case( 'refund' ):
+		case ('refund'):
 
-return createRefund(args);
-break;
+			return createRefund(args);
+			break;
 
 		default:
 			throw nlapiCreateError('Bad Verb', 'System does not understand: '
@@ -136,7 +136,7 @@ function setAddress(entity, addresses) {
 	}
 
 	return (returnAddrBook);
-	
+
 }
 
 function getAddressbook(record) {
@@ -224,7 +224,8 @@ function setItems(record, items) {
 	var addressbook = setAddress(record.getFieldValue('entity'),
 			entityAddressBook);
 
-//nlapiLogExecution('DEBUG', 'xxxxxx ', JSON.stringify( entityAddressBook ) );
+	// nlapiLogExecution('DEBUG', 'xxxxxx ', JSON.stringify( entityAddressBook )
+	// );
 
 	for (i in addressbook) {
 		var address = addressbook[i];
@@ -250,47 +251,41 @@ function setItems(record, items) {
 	}
 }
 
+function createRefund(args) {
 
-function createRefund( args ){
+	var refund = JSON.parse(args.data);
+	var response = {};
 
-var refund = JSON.parse(args.data);
-var response = {};
+	var creditmemoId = createCreditMemo(refund);
 
-var creditmemoId = createCreditMemo( refund );
+	var refundId = createCustomerRefund(refund, creditmemoId);
 
-var refundId = createCustomerRefund( refund, creditmemoId );
+	response.recordid = refundId;
 
-response.recordid = refundId;
-
-return( response );
+	return (response);
 }
-
 
 function createOrder(args) {
 
-	var fulfillLocations = [ 7, 11 ]
+	var fulfillLocations = [ 7, 9, 11, 13, 12, 15, 14,16, 17, 2 ];
 	var record = nlapiCreateRecord('salesorder');
 	var order = JSON.parse(args.data);
 	var response = {};
 
 	// Check For Duplicate Orders
 
-/*
-	if (order.hasOwnProperty('custbody_order_source_id')) {
-
-		var isOrder = checkDuplicates(order.custbody_order_source_id);
-		if (isOrder > 0) {
-			response.recordid = isOrder;
-			return (response);
-		}
-	}
-
-*/
+	/*
+	 * if (order.hasOwnProperty('custbody_order_source_id')) {
+	 * 
+	 * var isOrder = checkDuplicates(order.custbody_order_source_id); if
+	 * (isOrder > 0) { response.recordid = isOrder; return (response); } }
+	 * 
+	 */
 	/*
 	 * if (typeof order.addressbook !== 'undefined') { setAddress(order.entity,
 	 * order.addressbook); }
 	 */
-//nlapiLogExecution('DEBUG', 'xxxxxx ', order.billaddress );
+	// nlapiLogExecution('DEBUG', 'xxxxxx ', order.billaddress );
 	for ( var fieldname in order) {
 		if (order.hasOwnProperty(fieldname)) {
 			if (fieldname != 'recordtype' && fieldname != 'item'
@@ -309,7 +304,7 @@ function createOrder(args) {
 			: false;
 	setItems(record, order.item);
 
-if (order.hasOwnProperty('giftcertificateitem')) {
+	if ( order.hasOwnProperty('giftcertificateitem') && order.giftcertificateitem != null ) {
 		setGiftCertificates(record, order.giftcertificateitem);
 	}
 
@@ -339,8 +334,8 @@ function setGiftCertificates(record, gcData) {
 	filters = [];
 	certIdResults = [];
 	certCodeResults = [];
-        breakFromForLoop = false;
-       gcDataArray = gcData.codes;
+	breakFromForLoop = false;
+	gcDataArray = gcData.codes;
 
 	columns.push(new nlobjSearchColumn("giftcertcode"));
 
@@ -360,52 +355,60 @@ function setGiftCertificates(record, gcData) {
 		certIdResults.push(resultObj.getId());
 		certCodeResults.push(resultObj.getValue('giftcertcode'));
 	}
-//nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates: ',JSON.stringify(certCodeResults));
-       
+	// nlapiLogExecution('DEBUG', 'Added the Following Gift Certificates:
+	// ',JSON.stringify(certCodeResults));
+
 	for (count in gcDataArray) {
 
-                if( breakFromForLoop === true ){ break; }
+		if (breakFromForLoop === true) {
+			break;
+		}
 
-	counter = parseInt(count) + 1;
-	var index = certCodeResults.indexOf(gcDataArray[count]['giftcertcode']);
+		counter = parseInt(count) + 1;
+		var index = certCodeResults.indexOf(gcDataArray[count]['giftcertcode']);
 
-	switch( true ){
+		switch (true) {
 
-		case( index != -1 ):  // Valid Netsuite Cert
+		case (index != -1): // Valid Netsuite Cert
 
 			record.insertLineItem('giftcertredemption', counter);
-			record.setLineItemValue('giftcertredemption', 'authcode', counter, certIdResults[index]);
-			record.setLineItemValue('giftcertredemption', 'giftcertcode', counter, gcDataArray[count]['giftcertcode']);
+			record.setLineItemValue('giftcertredemption', 'authcode', counter,
+					certIdResults[index]);
+			record.setLineItemValue('giftcertredemption', 'giftcertcode',
+					counter, gcDataArray[count]['giftcertcode']);
 			break;
 
-		case(  parseInt(record.getFieldValue('custbody_pos_gc_total')) > 0 ): // LivePOS Cert
+		case (parseInt(record.getFieldValue('custbody_pos_gc_total')) > 0): // LivePOS
+																			// Cert
 
-			var discountAmount = parseFloat(record.getFieldValue('discountrate')) || 0;
-			var gcAmount = (parseFloat(record.getFieldValue('custbody_pos_gc_total')) * -1) || 0;
+			var discountAmount = parseFloat(record
+					.getFieldValue('discountrate')) || 0;
+			var gcAmount = (parseFloat(record
+					.getFieldValue('custbody_pos_gc_total')) * -1) || 0;
 			var newDiscountAmount = (gcAmount + discountAmount);
 			var discountItem = (discountAmount > 0) ? 1164 : 1165;
 
 			record.setFieldValue('discountitem', discountItem);
 			record.setFieldValue('discountrate', newDiscountAmount);
-                        breakFromForLoop = true;
+			breakFromForLoop = true;
 			break;
 
 		default:
 
-			var discountAmount = parseFloat(record.getFieldValue('discountrate')) || 0;
-			var gcAmount = ( gcData.applied  < 0 )? gcData.applied: 0;
+			var discountAmount = parseFloat(record
+					.getFieldValue('discountrate')) || 0;
+			var gcAmount = (gcData.applied < 0) ? gcData.applied : 0;
 			var newDiscountAmount = (gcAmount + discountAmount);
 			var discountItem = (discountAmount > 0) ? 1164 : 1165;
 
 			record.setFieldValue('discountitem', discountItem);
 			record.setFieldValue('discountrate', newDiscountAmount);
-                       // breakFromForLoop = true;
+			// breakFromForLoop = true;
 			break;
 
+		}
+
 	}
-
-
-}
 }
 
 function createBongoContact(args) {
@@ -492,7 +495,8 @@ function createCustomer(args) {
 
 	if (record.getFieldValue('isperson') == "F") {
 		var contact = createContact(args, existingContact.length);
-		nlapiAttachRecord('contact', contact.recordid, 'customer', recordId, null)
+		nlapiAttachRecord('contact', contact.recordid, 'customer', recordId,
+				null)
 	}
 
 	response.recordid = recordId;

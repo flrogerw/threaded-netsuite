@@ -49,7 +49,7 @@ final class Netsuite_Job_SetRecord {
 
 		$options = array(
 				CURLOPT_URL => NETSUITE_POST_ORDER,
-				CURLOPT_TIMEOUT => 30,
+				CURLOPT_TIMEOUT => 180,
 				CURLOPT_POST => 1,
 				CURLOPT_CUSTOMREQUEST => "POST",
 				CURLOPT_POSTFIELDS => $sPayload,

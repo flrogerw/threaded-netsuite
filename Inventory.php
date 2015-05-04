@@ -10,21 +10,31 @@
 try {
 
 	require_once( __DIR__ . DIRECTORY_SEPARATOR . 'Configure.php' ); // Has LivePOS Login Credentials
-
-	$aLocationsReport = array();
+	
 	$model = new Inventory_Db_Model();
 	$aPosCategories  = $model->getLivePosCategories();
 	//$aLocations = $model->getLivePosLocations();
 	//$aPosCategories = array( 61589, 61830, 61866, 61867, 61868, 61864, 62692 );
-	$aLocations = array( array( 'location_netsuite_id' => 2, 'location_id' => 28225, 'location_name' => 'Delray'),
-				array( 'location_netsuite_id' => 7, 'location_id' => 28225, 'location_name' => 'Boca Raton')
-	 );
+	  $aLocations = array(
+	  		array( 'location_netsuite_id' => 7, 'location_id' => 27449, 'location_name' => 'Boca Raton'),
+            array( 'location_netsuite_id' => 2, 'location_id' => 28045, 'location_name' => 'Delray'),
+            array( 'location_netsuite_id' => 11, 'location_id' => 27644, 'location_name' => 'Culver City'),
+	  		array( 'location_netsuite_id' => 13, 'location_id' => 27645, 'location_name' => 'Santa Anita'),
+	  		//array( 'location_netsuite_id' => 12, 'location_id' => 27739, 'location_name' => 'Topanga'),
+	  		//array( 'location_netsuite_id' => 15, 'location_id' => 27889, 'location_name' => 'Oakridge'),
+	  		//array( 'location_netsuite_id' => 14, 'location_id' => 27890, 'location_name' => 'Valley Fair'),
+	  		//array( 'location_netsuite_id' => 16, 'location_id' => 28033, 'location_name' => 'SF Centre'),
+	  		//array( 'location_netsuite_id' => 17, 'location_id' => 28034, 'location_name' => 'Roseville')
+         );
+	
+	
 
 	foreach( $aLocations as $aLocation ){
 
 		$aLivePosUpdate = array();
 		$aPosItemInventory = array();
 		$bIsSuccess = true;
+		$aLocationsReport = array();
 		
 		$aLocationsReport[ $aLocation['location_id'] ]['zero_price_items'] = array();
 		$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = 0;
@@ -88,10 +98,11 @@ try {
 			throw new Exception( "Could Not Get Netsuite Inventory from Netsuite for {$aLocation['location_netsuite_id']}: " . $inventory->getResponse() );
 		}
 
+		$aLocationsReport[ $aLocation['location_id'] ][ 'ns_item_count' ] = sizeof( $aNsItemInventory );
+		$aLocationsReport[ $aLocation['location_id'] ][ 'pos_item_count' ] = sizeof( $aPosInventory );
+		
 		if( !empty( $aLivePosUpdate )){
-			$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = sizeof( $aLivePosUpdate );
-			$aLocationsReport[ $aLocation['location_id'] ][ 'ns_item_count' ] = sizeof( $aNsItemInventory );
-			$aLocationsReport[ $aLocation['location_id'] ][ 'pos_item_count' ] = sizeof( $aPosInventory );
+			$aLocationsReport[ $aLocation['location_id'] ][ 'item_count' ] = sizeof( $aLivePosUpdate );			
 			
 			if( DEBUG ){
 			var_dump($aLivePosUpdate);
@@ -105,6 +116,8 @@ try {
 		if( $bIsSuccess === true ){
 		Utils_Email::sendInventoryEmail( $aLocationsReport );
 		}
+		
+		sleep( 61 );
 	}
 
 }catch( Exception $e ){

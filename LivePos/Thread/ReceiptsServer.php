@@ -10,7 +10,7 @@ class LivePos_Thread_ReceiptsServer {
 
 	public function __construct( array $aReceiptIDs, $sSessionId, $iLocationId, $dTransactionDate ){
 
-		$this->_pool = new Thread_Pool( MAX_THREADS );
+		$this->_pool = new Thread_Pool( LIVEPOS_MAX_RECORDS );
 		$this->receiptIds = $aReceiptIDs;
 		$this->_sessionId = $sSessionId;
 		$this->_locationId = $iLocationId;
