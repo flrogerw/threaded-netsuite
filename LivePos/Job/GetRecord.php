@@ -60,6 +60,7 @@ final class LivePos_Job_GetRecord {
 				CURLOPT_TIMEOUT => 30,
 				CURLOPT_POST => 1,
 				CURLOPT_CUSTOMREQUEST => "POST",
+				CURLOPT_SSL_VERIFYPEER => false,
 				CURLOPT_POSTFIELDS => $sPayload,
 				CURLOPT_HTTPHEADER => $this->_setHeader( strlen($sPayload), $sSessionId ),
 				CURLOPT_RETURNTRANSFER => true );
@@ -123,6 +124,7 @@ final class LivePos_Job_GetRecord {
 				CURLOPT_TIMEOUT => 30,
 				CURLOPT_POST => 1,
 				CURLOPT_CUSTOMREQUEST => "POST",
+				CURLOPT_SSL_VERIFYPEER => false,
 				CURLOPT_POSTFIELDS => $sPayload,
 				CURLOPT_HTTPHEADER => $this->_setAuthHeader( strlen($sPayload) ),
 				CURLOPT_RETURNTRANSFER => true );
