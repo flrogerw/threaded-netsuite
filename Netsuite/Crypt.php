@@ -31,5 +31,4 @@ class Netsuite_Crypt {
 		return( htmlspecialchars_decode($decrypted, ENT_QUOTES ) );
 	
 	}
-	
 }
