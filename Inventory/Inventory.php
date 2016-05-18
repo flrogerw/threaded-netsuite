@@ -12,7 +12,6 @@ class Inventory_Inventory extends Stackable {
 		$this->_sessionId = $sSessionId;
 	}
 
-
 	public function run(){
 
 		spl_autoload_register(function ($sClass) {

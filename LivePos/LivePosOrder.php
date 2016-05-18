@@ -31,8 +31,6 @@ final class LivePos_LivePosOrder extends Stackable {
 	protected $_orderType;
 	protected $_orderToMerge;
 
-
-
 	public function __construct( $sOrderId, $aOrder, $locationData, $sOrderToMerge = null ){
 
 		$this->_raworder =  current( json_decode( $aOrder['receipt_string'], true ) );
