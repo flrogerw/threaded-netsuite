@@ -56,5 +56,4 @@ function processOrders( $bResetOrders = false ){
 	}catch( Exception $e ){
 		Netsuite_Db_Model::logError( $e );
 	}
-
 }
