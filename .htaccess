@@ -1,5 +1,0 @@
-AuthName "Restricted Area"
-AuthType Basic
-AuthUserFile /usr/local/.htpasswd
-AuthGroupFile /dev/null
-require user webtest
